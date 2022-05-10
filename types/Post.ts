@@ -1,6 +1,6 @@
 import Visibility from "./enums/Visibility";
 import { Comment } from "./Comment";
-import Category from "./enums/Category";
+import { Category } from "./enums/Category";
 
 
 interface Post {

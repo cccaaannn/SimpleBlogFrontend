@@ -1,55 +1,27 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import dynamic from 'next/dynamic'
 
 // import Card from '@mui/material/Card';
 // import CardContent from '@mui/material/CardContent';
 // import CardMedia from '@mui/material/CardMedia';
 // import Typography from '@mui/material/Typography';
-import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
-import { ChevronLeftRounded } from '@mui/icons-material';
+// import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
+// import { ChevronLeftRounded } from '@mui/icons-material';
 // import Container from '@mui/material/Container';
 // import CssBaseline from '@mui/material/CssBaseline';
-import { cyan } from '@mui/material/colors';
+// import { cyan } from '@mui/material/colors';
 
 
 import { Storage } from '../../../utils/storage';
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { DateUtils } from '../../../utils/date-utils';
 import { ApiUtils } from '../../../utils/api-utils'
+import Image from 'next/image';
+import Link from 'next/link';
 
 
 const Post = ({ postProp }: any) => {
-    
-
-    const Card: any = dynamic(
-      () => import('@mui/material/Card'),
-      { ssr: false }
-    )
-    const CardContent: any = dynamic(
-        () => import('@mui/material/CardContent'),
-        { ssr: false }
-      )
-      const CardMedia: any = dynamic(
-        () => import('@mui/material/CardMedia'),
-        { ssr: false }
-      )
-      const Typography: any = dynamic(
-        () => import('@mui/material/Typography'),
-        { ssr: false }
-      )
-   
-      const Container: any = dynamic(
-        () => import('@mui/material/Container'),
-        { ssr: false }
-      )
-      const CssBaseline: any = dynamic(
-        () => import('@mui/material/CssBaseline'),
-        { ssr: false }
-      )
- 
-
     const router = useRouter();
     const paths = router.asPath.split("/");;
     const postId = paths[paths.length - 1];
@@ -81,45 +53,32 @@ const Post = ({ postProp }: any) => {
     const getPostWhenDefined = () => {
         if (post != null) {
             return (
-                <Card sx={{ minWidth: 700, maxWidth: 700 }}>
-                    <CardHeader
-                        avatar={
-                            <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
-                                {post.owner.username.charAt(0)}
-                            </Avatar>
-                        }
+                <div>
+                    <div>
+                        <Link href={'/users/' + post.owner._id}>{post.owner.username}</Link>
+                        {post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
+                    </div>
 
-                        title={
-                            <Button sx={{ padding: 0, textTransform:'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
-                        }
-                        subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
-                    // action={
-
-                    // }
-                    >
-                    </CardHeader>
-
-
-                    <CardMedia
-                        component="img"
-                        sx={{ maxWidth: '%100', maxHeight: 200 }}
-                        image={post.image}
+                    <Image
+                    loader={() => post.image}
+                        src={post.image}
                         onError={(e: any) => e.target.src = "http://via.placeholder.com/300"}
                         alt={post.header + "image"}
+                        width={500} height={500}
                     />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
+                    <div>
+                        <h5>
                             {post.header}
-                        </Typography>
+                        </h5>
 
-                        <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
+                        <p>
                             {post.body}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button size="small" href='/home'><ChevronLeftRounded /> Go Back</Button>
-                    </CardActions>
-                </Card>
+                        </p>
+                    </div>
+                    <div>
+                        <Link href='/home'>Go Back</Link>
+                    </div>
+                </div>
             )
         }
     }
@@ -128,26 +87,28 @@ const Post = ({ postProp }: any) => {
         if (post != null) {
             return post.comments.map((comment: any, key: any) => {
                 return (
-                    <Card sx={{ minWidth: 700, maxWidth: 700 }} key={comment._id}>
-                        <CardHeader
-                            avatar={
-                                <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
-                                    {post.owner.username.charAt(0)}
-                                </Avatar>
-                            }
+                    <div key={comment._id}>
+                        <div
+                        // avatar={
+                        //     <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                        //         {post.owner.username.charAt(0)}
+                        //     </Avatar>
+                        // }
 
-                            title={
-                                <Button sx={{ padding: 0, textTransform:'none' }} href={'/users/' + comment.owner._id}>{comment.owner.username}</Button>
-                            }
-                            subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
+                        // title={
+
+                        // }
+                        // subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
                         >
-                        </CardHeader>
-                        <CardContent>
-                            <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
+                            <Link href={'/users/' + comment.owner._id}>{comment.owner.username}</Link>
+                            {comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
+                        </div>
+                        <div>
+                            <p>
                                 {comment.comment}
-                            </Typography>
-                        </CardContent>
-                    </Card>
+                            </p>
+                        </div>
+                    </div>
                 )
             })
         }
@@ -155,25 +116,15 @@ const Post = ({ postProp }: any) => {
 
 
     return (
-        <Container component="main" sx={{
-            marginTop: 8,
-            marginBottom: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-        }}>
-            <CssBaseline />
+        <>
             {getPostWhenDefined()}
-            
-            <br />
-            <Typography gutterBottom variant="h5" component="div">
+            < br />
+            <h5>
                 Comments
-            </Typography>
+            </h5>
             <br />
-
             {getCommentsWhenDefined()}
-        </Container>
-
+        </>
     )
 }
 

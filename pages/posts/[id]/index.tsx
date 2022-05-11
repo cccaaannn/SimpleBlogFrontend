@@ -1,16 +1,16 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import dynamic from 'next/dynamic'
 
-
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
+// import Card from '@mui/material/Card';
+// import CardContent from '@mui/material/CardContent';
+// import CardMedia from '@mui/material/CardMedia';
+// import Typography from '@mui/material/Typography';
 import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
 import { ChevronLeftRounded } from '@mui/icons-material';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
+// import Container from '@mui/material/Container';
+// import CssBaseline from '@mui/material/CssBaseline';
 import { cyan } from '@mui/material/colors';
 
 
@@ -21,6 +21,35 @@ import { ApiUtils } from '../../../utils/api-utils'
 
 
 const Post = ({ postProp }: any) => {
+    
+
+    const Card: any = dynamic(
+      () => import('@mui/material/Card'),
+      { ssr: false }
+    )
+    const CardContent: any = dynamic(
+        () => import('@mui/material/CardContent'),
+        { ssr: false }
+      )
+      const CardMedia: any = dynamic(
+        () => import('@mui/material/CardMedia'),
+        { ssr: false }
+      )
+      const Typography: any = dynamic(
+        () => import('@mui/material/Typography'),
+        { ssr: false }
+      )
+   
+      const Container: any = dynamic(
+        () => import('@mui/material/Container'),
+        { ssr: false }
+      )
+      const CssBaseline: any = dynamic(
+        () => import('@mui/material/CssBaseline'),
+        { ssr: false }
+      )
+ 
+
     const router = useRouter();
     const paths = router.asPath.split("/");;
     const postId = paths[paths.length - 1];

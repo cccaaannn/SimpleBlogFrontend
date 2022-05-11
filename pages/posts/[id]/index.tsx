@@ -101,7 +101,7 @@ const Post = ({ postProp }: any) => {
         if (post != null) {
             return post.comments.map((comment: any, key: any) => {
                 return (
-                    <Card sx={{ minWidth: 700, maxWidth: 700 }} key={post._id}>
+                    <Card sx={{ minWidth: 700, maxWidth: 700 }} key={comment._id}>
                         <CardHeader
                             avatar={
                                 <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">

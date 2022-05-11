@@ -1,24 +1,22 @@
-import Link from 'next/link'
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Avatar, BottomNavigation, Button, CardActionArea, CardActions, CardHeader, Pagination, TableFooter } from '@mui/material';
-import { ChevronRightRounded, ChevronLeftRounded, Subtitles } from '@mui/icons-material';
-import Box from '@mui/material/Box';
+import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
+import { ChevronLeftRounded } from '@mui/icons-material';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-import { useEffect, useState } from 'react';
+import { cyan } from '@mui/material/colors';
+
+
 import { Storage } from '../../../utils/storage';
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { DateUtils } from '../../../utils/date-utils';
-import { useRouter } from 'next/router';
-import { red, cyan } from '@mui/material/colors';
 import { ApiUtils } from '../../../utils/api-utils'
 
 

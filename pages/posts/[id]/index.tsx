@@ -2,16 +2,16 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-// import Card from '@mui/material/Card';
-// import CardContent from '@mui/material/CardContent';
-// import CardMedia from '@mui/material/CardMedia';
-// import Typography from '@mui/material/Typography';
-// import Container from '@mui/material/Container';
-// import CssBaseline from '@mui/material/CssBaseline';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
 
-// import { cyan } from '@mui/material/colors';
+import { cyan } from '@mui/material/colors';
 // import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
-// import { ChevronLeftRounded } from '@mui/icons-material';
+import { ChevronLeftRounded } from '@mui/icons-material';
 
 
 import { Storage } from '../../../utils/storage';
@@ -25,35 +25,6 @@ const Post = ({ postProp }: any) => {
 
 
 
-    const Card: any = dynamic(
-        () => import('@mui/material/Card'),
-        { ssr: false }
-    )
-    const CardContent: any = dynamic(
-        () => import('@mui/material/CardContent'),
-        { ssr: false }
-    )
-    const CardMedia: any = dynamic(
-        () => import('@mui/material/CardMedia'),
-        { ssr: false }
-    )
-    const Typography: any = dynamic(
-        () => import('@mui/material/Typography'),
-        { ssr: false }
-    )
-    const Container: any = dynamic(
-        () => import('@mui/material/Container'),
-        { ssr: false }
-    )
-    const CssBaseline: any = dynamic(
-        () => import('@mui/material/CssBaseline'),
-        { ssr: false }
-    )
-
-    const cyan: any = dynamic(
-        () => import('@mui/material/colors/cyan') as any,
-        { ssr: false }
-    ) as any;
     const Avatar: any = dynamic(
         () => import('@mui/material/Avatar') as any,
         { ssr: false }
@@ -71,10 +42,15 @@ const Post = ({ postProp }: any) => {
         { ssr: false }
     ) as any;
 
-    const ChevronLeftRounded: any = dynamic(
-        () => import('@mui/icons-material/ChevronLeftRounded') as any,
-        { ssr: false }
-    ) as any;
+
+    // const cyan: any = dynamic(
+    //     () => import('@mui/material/colors/cyan') as any,
+    //     { ssr: false }
+    // ) as any;
+    // const ChevronLeftRounded: any = dynamic(
+    //     () => import('@mui/icons-material/ChevronLeftRounded') as any,
+    //     { ssr: false }
+    // ) as any;
 
 
 

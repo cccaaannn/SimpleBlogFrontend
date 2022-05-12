@@ -12,11 +12,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { cyan } from '@mui/material/colors';
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CardActions from '@mui/material/CardActions';
-import CardHeader from '@mui/material/CardHeader';
-
+import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
 
 import { Storage } from '../../../utils/storage';
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';

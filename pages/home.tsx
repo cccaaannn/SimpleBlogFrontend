@@ -1,52 +1,39 @@
 import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import * as React from 'react';
+import { useEffect, useState, useRef } from 'react';
+
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
-import { Avatar, BottomNavigation, Button, CardActionArea, CardActions, CardHeader, Grid, Pagination, styled, TableFooter } from '@mui/material';
-import { ChevronRightRounded } from '@mui/icons-material';
+import { Avatar, Button, CardHeader, Grid, Pagination, styled } from '@mui/material';
+import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import { useEffect, useState } from 'react';
-import { Storage } from '../utils/storage';
-import { LocalStorageKeys } from '../types/enums/local-storage-keys';
-import { DateUtils } from '../utils/date-utils';
 import { useRouter } from 'next/router';
-
 import { useTheme } from '@mui/material/styles';
-import IconButton from '@mui/material/IconButton';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-
 import Divider from '@mui/material/Divider';
 import Paper from '@mui/material/Paper';
 import MenuList from '@mui/material/MenuList';
 import MenuItem from '@mui/material/MenuItem';
 import ListItemText from '@mui/material/ListItemText';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ContentCut from '@mui/icons-material/ContentCut';
-import ContentCopy from '@mui/icons-material/ContentCopy';
-import ContentPaste from '@mui/icons-material/ContentPaste';
-import Cloud from '@mui/icons-material/Cloud';
-import { Category, CategoryArr } from '../types/enums/Category';
-import { red, cyan } from '@mui/material/colors';
+import { cyan } from '@mui/material/colors';
+
+import { DateUtils } from '../utils/date-utils';
+import { Storage } from '../utils/storage';
+import { LocalStorageKeys } from '../types/enums/local-storage-keys';
+import { CategoryArr } from '../types/enums/Category';
 import { ApiUtils } from '../utils/api-utils';
 
 
-
-const Home: NextPage = () => {
+const Home: NextPage = (props: any) => {
     const router = useRouter();
     const theme = useTheme();
+    const isMounted = useRef(false);
 
     const [pageCount, setPageCount] = useState(1);
     const [selectedPage, setSelectedPage] = useState(1);
-    const [allData, setAllData] = useState([] as any[]);
+    const [allData, setAllData] = useState(props.allData as any);
     const [activeData, setActiveData] = useState([] as any[]);
     const pageSize = 5;
     const [selectedCategory, setSelectedCategory] = React.useState(0);
@@ -54,6 +41,7 @@ const Home: NextPage = () => {
 
     const fetchPosts = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
+        console.log("CSR");
 
         const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
@@ -72,7 +60,10 @@ const Home: NextPage = () => {
     }
 
     useEffect(() => {
-        fetchPosts();
+        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
+        if (allData == null || token != "") {
+            fetchPosts();
+        }
     }, [])
 
     useEffect(() => {
@@ -81,13 +72,17 @@ const Home: NextPage = () => {
     }, [selectedCategory])
 
     useEffect(() => {
-        const pages = Math.ceil(allData.length / pageSize);
-        setPageCount(pages)
+        if (allData != null) {
+            const pages = Math.ceil(allData.length / pageSize);
+            setPageCount(pages)
+        }
     }, [allData])
 
     useEffect(() => {
-        const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
-        setActiveData(data)
+        if (allData != null) {
+            const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
+            setActiveData(data)
+        }
     }, [allData, selectedPage])
 
     const onPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -111,7 +106,7 @@ const Home: NextPage = () => {
                             }
 
                             title={
-                                <Button sx={{ padding: 0, textTransform:'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
+                                <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
                             }
                             subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
                         // action={
@@ -225,5 +220,24 @@ const Home: NextPage = () => {
         // </Container>
     )
 }
+
+
+export const getServerSideProps = async (context: any) => {
+    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=All`, {
+        method: "get",
+        headers: {
+            "Content-Type": "application/json",
+        },
+    });
+
+    const jsonData = await response.json();
+
+    return {
+        props: {
+            allData: jsonData.data
+        },
+    }
+}
+
 
 export default Home

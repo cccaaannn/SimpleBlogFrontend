@@ -10,50 +10,18 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 
 import { cyan } from '@mui/material/colors';
-// import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
-import { ChevronLeftRounded } from '@mui/icons-material';
+import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
 
+// Do NOT import all of the folder, ssr times out
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 
 import { Storage } from '../../../utils/storage';
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { DateUtils } from '../../../utils/date-utils';
 import { ApiUtils } from '../../../utils/api-utils'
-import dynamic from 'next/dynamic'
 
 
 const Post = ({ postProp }: any) => {
-
-
-
-    const Avatar: any = dynamic(
-        () => import('@mui/material/Avatar') as any,
-        { ssr: false }
-    ) as any;
-    const Button: any = dynamic(
-        () => import('@mui/material/Button') as any,
-        { ssr: false }
-    ) as any;
-    const CardActions: any = dynamic(
-        () => import('@mui/material/CardActions') as any,
-        { ssr: false }
-    ) as any;
-    const CardHeader: any = dynamic(
-        () => import('@mui/material/CardHeader') as any,
-        { ssr: false }
-    ) as any;
-
-
-    // const cyan: any = dynamic(
-    //     () => import('@mui/material/colors/cyan') as any,
-    //     { ssr: false }
-    // ) as any;
-    // const ChevronLeftRounded: any = dynamic(
-    //     () => import('@mui/icons-material/ChevronLeftRounded') as any,
-    //     { ssr: false }
-    // ) as any;
-
-
-
     const router = useRouter();
     const paths = router.asPath.split("/");;
     const postId = paths[paths.length - 1];
@@ -62,7 +30,7 @@ const Post = ({ postProp }: any) => {
 
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
-
+        console.log("CSR");
         const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${postId}`, {
             method: "get",
             headers: {

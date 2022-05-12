@@ -1,11 +1,57 @@
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { LocalStorageKeys } from "../../../types/enums/local-storage-keys";
-import { ApiUtils } from "../../../utils/api-utils";
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import CardMedia from '@mui/material/CardMedia';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import CssBaseline from '@mui/material/CssBaseline';
+
+// import { cyan } from '@mui/material/colors';
+// import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
+// import { ChevronLeftRounded } from '@mui/icons-material';
+
+
 import { Storage } from '../../../utils/storage';
+import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
+import { DateUtils } from '../../../utils/date-utils';
+import { ApiUtils } from '../../../utils/api-utils'
+import dynamic from 'next/dynamic'
 
 
-const Test1 = ({ postProp }: any) => {
+const Post = ({ postProp }: any) => {
+
+
+    const cyan: any = dynamic(
+        () => import('@mui/material/colors/cyan') as any,
+        { ssr: false }
+    ) as any;
+    const Avatar: any = dynamic(
+        () => import('@mui/material/Avatar') as any,
+        { ssr: false }
+    ) as any;
+    const Button: any = dynamic(
+        () => import('@mui/material/Button') as any,
+        { ssr: false }
+    ) as any;
+    const CardActions: any = dynamic(
+        () => import('@mui/material/CardActions') as any,
+        { ssr: false }
+    ) as any;
+    const CardHeader: any = dynamic(
+        () => import('@mui/material/CardHeader') as any,
+        { ssr: false }
+    ) as any;
+
+    const ChevronLeftRounded: any = dynamic(
+        () => import('@mui/icons-material/ChevronLeftRounded') as any,
+        { ssr: false }
+    ) as any;
+
+
+
     const router = useRouter();
     const paths = router.asPath.split("/");;
     const postId = paths[paths.length - 1];
@@ -14,8 +60,7 @@ const Test1 = ({ postProp }: any) => {
 
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
-        console.log("CLR");
-        
+
         const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${postId}`, {
             method: "get",
             headers: {
@@ -35,18 +80,109 @@ const Test1 = ({ postProp }: any) => {
         }
     }, [])
 
+    const getPostWhenDefined = () => {
+        if (post != null) {
+            return (
+                <Card sx={{ minWidth: 700, maxWidth: 700 }}>
+                    <CardHeader
+                        avatar={
+                            <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                                {post.owner.username.charAt(0)}
+                            </Avatar>
+                        }
+
+                        title={
+                            <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
+                        }
+                        subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
+                    // action={
+
+                    // }
+                    >
+                    </CardHeader>
+
+
+                    <CardMedia
+                        component="img"
+                        sx={{ maxWidth: '%100', maxHeight: 200 }}
+                        image={post.image}
+                        onError={(e: any) => e.target.src = "http://via.placeholder.com/300"}
+                        alt={post.header + "image"}
+                    />
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
+                            {post.header}
+                        </Typography>
+
+                        <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
+                            {post.body}
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" href='/home'><ChevronLeftRounded /> Go Back</Button>
+                    </CardActions>
+                </Card>
+            )
+        }
+    }
+
+    const getCommentsWhenDefined = () => {
+        if (post != null) {
+            return post.comments.map((comment: any, key: any) => {
+                return (
+                    <Card sx={{ minWidth: 700, maxWidth: 700 }} key={comment._id}>
+                        <CardHeader
+                            avatar={
+                                <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                                    {post.owner.username.charAt(0)}
+                                </Avatar>
+                            }
+
+                            title={
+                                <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + comment.owner._id}>{comment.owner.username}</Button>
+                            }
+                            subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
+                        >
+                        </CardHeader>
+                        <CardContent>
+                            <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
+                                {comment.comment}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                )
+            })
+        }
+    }
+
+
     return (
-        <div>
-             <p key={1}>{postProp._id}</p>
-        </div>
+        <Container component="main" sx={{
+            marginTop: 8,
+            marginBottom: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+        }}>
+            <CssBaseline />
+            {getPostWhenDefined()}
+
+            <br />
+            <Typography gutterBottom variant="h5" component="div">
+                Comments
+            </Typography>
+            <br />
+
+            {getCommentsWhenDefined()}
+        </Container>
+
     )
 }
 
 export const getServerSideProps = async (context: any) => {
     const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${context.params.id}`)
     const jsonData: any = await res.json();
-    console.log(res);
-    console.log(jsonData);
+
     return {
         props: {
             postProp: jsonData.data
@@ -54,4 +190,4 @@ export const getServerSideProps = async (context: any) => {
     }
 }
 
-export default Test1
+export default Post

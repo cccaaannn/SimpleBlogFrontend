@@ -6,22 +6,78 @@ import { useRouter } from 'next/router';
 // import CardContent from '@mui/material/CardContent';
 // import CardMedia from '@mui/material/CardMedia';
 // import Typography from '@mui/material/Typography';
-// import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
-// import { ChevronLeftRounded } from '@mui/icons-material';
 // import Container from '@mui/material/Container';
 // import CssBaseline from '@mui/material/CssBaseline';
+
 // import { cyan } from '@mui/material/colors';
+// import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
+// import { ChevronLeftRounded } from '@mui/icons-material';
 
 
 import { Storage } from '../../../utils/storage';
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { DateUtils } from '../../../utils/date-utils';
 import { ApiUtils } from '../../../utils/api-utils'
-import Image from 'next/image';
-import Link from 'next/link';
+import dynamic from 'next/dynamic'
 
 
 const Post = ({ postProp }: any) => {
+
+
+
+    const Card: any = dynamic(
+        () => import('@mui/material/Card'),
+        { ssr: false }
+    )
+    const CardContent: any = dynamic(
+        () => import('@mui/material/CardContent'),
+        { ssr: false }
+    )
+    const CardMedia: any = dynamic(
+        () => import('@mui/material/CardMedia'),
+        { ssr: false }
+    )
+    const Typography: any = dynamic(
+        () => import('@mui/material/Typography'),
+        { ssr: false }
+    )
+    const Container: any = dynamic(
+        () => import('@mui/material/Container'),
+        { ssr: false }
+    )
+    const CssBaseline: any = dynamic(
+        () => import('@mui/material/CssBaseline'),
+        { ssr: false }
+    )
+
+    const cyan: any = dynamic(
+        () => import('@mui/material/colors/cyan') as any,
+        { ssr: false }
+    ) as any;
+    const Avatar: any = dynamic(
+        () => import('@mui/material/Avatar') as any,
+        { ssr: false }
+    ) as any;
+    const Button: any = dynamic(
+        () => import('@mui/material/Button') as any,
+        { ssr: false }
+    ) as any;
+    const CardActions: any = dynamic(
+        () => import('@mui/material/CardActions') as any,
+        { ssr: false }
+    ) as any;
+    const CardHeader: any = dynamic(
+        () => import('@mui/material/CardHeader') as any,
+        { ssr: false }
+    ) as any;
+
+    const ChevronLeftRounded: any = dynamic(
+        () => import('@mui/icons-material/ChevronLeftRounded') as any,
+        { ssr: false }
+    ) as any;
+
+
+
     const router = useRouter();
     const paths = router.asPath.split("/");;
     const postId = paths[paths.length - 1];
@@ -53,32 +109,45 @@ const Post = ({ postProp }: any) => {
     const getPostWhenDefined = () => {
         if (post != null) {
             return (
-                <div>
-                    <div>
-                        <Link href={'/users/' + post.owner._id}>{post.owner.username}</Link>
-                        {post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
-                    </div>
+                <Card sx={{ minWidth: 700, maxWidth: 700 }}>
+                    <CardHeader
+                        avatar={
+                            <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                                {post.owner.username.charAt(0)}
+                            </Avatar>
+                        }
 
-                    <Image
-                    loader={() => post.image}
-                        src={post.image}
+                        title={
+                            <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
+                        }
+                        subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
+                    // action={
+
+                    // }
+                    >
+                    </CardHeader>
+
+
+                    <CardMedia
+                        component="img"
+                        sx={{ maxWidth: '%100', maxHeight: 200 }}
+                        image={post.image}
                         onError={(e: any) => e.target.src = "http://via.placeholder.com/300"}
                         alt={post.header + "image"}
-                        width={500} height={500}
                     />
-                    <div>
-                        <h5>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="div">
                             {post.header}
-                        </h5>
+                        </Typography>
 
-                        <p>
+                        <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
                             {post.body}
-                        </p>
-                    </div>
-                    <div>
-                        <Link href='/home'>Go Back</Link>
-                    </div>
-                </div>
+                        </Typography>
+                    </CardContent>
+                    <CardActions>
+                        <Button size="small" href='/home'><ChevronLeftRounded /> Go Back</Button>
+                    </CardActions>
+                </Card>
             )
         }
     }
@@ -87,28 +156,26 @@ const Post = ({ postProp }: any) => {
         if (post != null) {
             return post.comments.map((comment: any, key: any) => {
                 return (
-                    <div key={comment._id}>
-                        <div
-                        // avatar={
-                        //     <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
-                        //         {post.owner.username.charAt(0)}
-                        //     </Avatar>
-                        // }
+                    <Card sx={{ minWidth: 700, maxWidth: 700 }} key={comment._id}>
+                        <CardHeader
+                            avatar={
+                                <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                                    {post.owner.username.charAt(0)}
+                                </Avatar>
+                            }
 
-                        // title={
-
-                        // }
-                        // subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
+                            title={
+                                <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + comment.owner._id}>{comment.owner.username}</Button>
+                            }
+                            subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
                         >
-                            <Link href={'/users/' + comment.owner._id}>{comment.owner.username}</Link>
-                            {comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
-                        </div>
-                        <div>
-                            <p>
+                        </CardHeader>
+                        <CardContent>
+                            <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
                                 {comment.comment}
-                            </p>
-                        </div>
-                    </div>
+                            </Typography>
+                        </CardContent>
+                    </Card>
                 )
             })
         }
@@ -116,15 +183,25 @@ const Post = ({ postProp }: any) => {
 
 
     return (
-        <>
+        <Container component="main" sx={{
+            marginTop: 8,
+            marginBottom: 2,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+        }}>
+            <CssBaseline />
             {getPostWhenDefined()}
-            < br />
-            <h5>
-                Comments
-            </h5>
+
             <br />
+            <Typography gutterBottom variant="h5" component="div">
+                Comments
+            </Typography>
+            <br />
+
             {getCommentsWhenDefined()}
-        </>
+        </Container>
+
     )
 }
 

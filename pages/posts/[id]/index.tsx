@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head'
 
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -21,7 +22,7 @@ import { DateUtils } from '../../../utils/date-utils';
 import { ApiUtils } from '../../../utils/api-utils'
 
 
-const Post = ({ postProp }: any) => {
+const Post = ({ postProp, referer }: any) => {
     const router = useRouter();
     const paths = router.asPath.split("/");;
     const postId = paths[paths.length - 1];
@@ -127,35 +128,45 @@ const Post = ({ postProp }: any) => {
 
 
     return (
-        <Container component="main" sx={{
-            marginTop: 8,
-            marginBottom: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-        }}>
-            <CssBaseline />
-            {getPostWhenDefined()}
+        <>
+            <Head>
+                <meta property="og:url" content={referer}/>
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={postProp != null ? postProp.header as any: ""} />
+                <meta property="og:description" content={postProp != null ? postProp.body.slice(0, 50) + "..." as any: ""} />
+                <meta property="og:image" content={postProp != null ? postProp.image as any: ""} />
+            </Head>
 
-            <br />
-            <Typography gutterBottom variant="h5" component="div">
-                Comments
-            </Typography>
-            <br />
+            <Container component="main" sx={{
+                marginTop: 8,
+                marginBottom: 2,
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+            }}>
+                <CssBaseline />
+                {getPostWhenDefined()}
 
-            {getCommentsWhenDefined()}
-        </Container>
+                <br />
+                <Typography gutterBottom variant="h5" component="div">
+                    Comments
+                </Typography>
+                <br />
 
+                {getCommentsWhenDefined()}
+            </Container>
+        </>
     )
 }
 
 export const getServerSideProps = async (context: any) => {
-    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${context.params.id}`)
-    const jsonData: any = await res.json();
+    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${context.params.id}`)
+    const jsonData: any = await response.json();
 
     return {
         props: {
-            postProp: jsonData.data
+            postProp: jsonData.data,
+            referer: context.req.headers.referer ? context.req.headers.referer : ""
         },
     }
 }

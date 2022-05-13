@@ -42,7 +42,7 @@ const Home: NextPage = (props: any) => {
     const fetchPosts = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         console.log("CSR");
-
+        
         const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
             headers: {

@@ -1,6 +1,5 @@
-import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Alert, AlertColor } from '@mui/material';
@@ -19,17 +18,14 @@ import Zoom from '@mui/material/Zoom';
 import { ApiUtils } from '../../utils/api-utils';
 import { isValidEmail } from '../../utils/email-validation';
 import Copyright from '../../components/Copyright';
+import useAlertMessage from '../../hooks/useAlertMessage';
 
 
 export default function SendVerification() {
-
     const theme = createTheme();
 
     const [email, setEmail] = useState("");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("info" as AlertColor);
-
-    const router = useRouter();
+    const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

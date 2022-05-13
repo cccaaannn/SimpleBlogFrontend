@@ -22,17 +22,19 @@ import Copyright from '../../components/Copyright';
 import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../utils/api-utils';
 import { Storage } from '../../utils/storage';
+import useAlertMessage from '../../hooks/useAlertMessage';
 
 
 export default function Login() {
 
+	const router = useRouter();
 	const theme = createTheme();
 
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("info" as AlertColor);
 	const [rememberMe, setRememberMe] = useState(false);
+
+    const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
 
 	useEffect(() => {
 		const rememberMeUsername: string | null = Storage.get(LocalStorageKeys.REMEMBER_ME);
@@ -41,9 +43,7 @@ export default function Login() {
 			setRememberMe(true);
 		}
 	}, [])
-
-
-	const router = useRouter();
+	
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();

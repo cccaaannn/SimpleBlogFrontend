@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Alert, AlertColor, TextField } from '@mui/material';
@@ -17,9 +17,17 @@ import Zoom from '@mui/material/Zoom';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
+import useAlertMessage from '../../hooks/useAlertMessage';
 
 
 export default function ResetPassword() {
+    const router = useRouter();
+    const theme = createTheme();
+
+    const [password1, setPassword1] = useState("");
+    const [password2, setPassword2] = useState("");
+
+    const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
 
     const isPasswordsMatching = (password1: string, password2: string) => {
         if (password1 == "" || password2 == "") {
@@ -32,15 +40,6 @@ export default function ResetPassword() {
 
         return true;
     }
-
-    const theme = createTheme();
-
-    const [password1, setPassword1] = useState("");
-    const [password2, setPassword2] = useState("");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("info" as AlertColor);
-
-    const router = useRouter();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();

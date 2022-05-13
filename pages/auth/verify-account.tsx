@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Alert, AlertColor } from '@mui/material';
@@ -16,16 +16,14 @@ import Zoom from '@mui/material/Zoom';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
+import useAlertMessage from '../../hooks/useAlertMessage';
 
 
 export default function VerifyAccount() {
-
+    const router = useRouter();
     const theme = createTheme();
 
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("info" as AlertColor);
-
-    const router = useRouter();
+	const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
 
     useEffect(() => {
         if(router.query.token && router.query.token != null) {
@@ -63,7 +61,6 @@ export default function VerifyAccount() {
         }
     }
 
-
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
@@ -82,21 +79,11 @@ export default function VerifyAccount() {
                     <Typography component="h1" variant="h5">
                         Activate account
                     </Typography>
-                    {/* <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}> */}
                     <Box component="form" noValidate sx={{ mt: 1 }}>
 
                         <Zoom in={alertMessage == "" ? false : true}>
                             <Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
                         </Zoom>
-
-                        {/* <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Reset
-                        </Button> */}
                         <Grid container>
                             <Grid item xs>
                                 <Link href="/auth/login" variant="body2">

@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Alert, AlertColor } from '@mui/material';
+import { Alert, AlertColor, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -15,10 +15,13 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Zoom from '@mui/material/Zoom';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import Visibility from '@mui/icons-material/Visibility';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
 import { isValidEmail } from '../../utils/email-validation';
+import useAlertMessage from '../../hooks/useAlertMessage';
 
 
 export default function SignUp() {
@@ -28,8 +31,9 @@ export default function SignUp() {
 	const [email, setEmail] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-    const [alertMessage, setAlertMessage] = useState("");
-    const [alertType, setAlertType] = useState("info" as AlertColor);
+	const [showPassword, setShowPassword] = useState(false);
+
+	const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
 
 
 	const router = useRouter();
@@ -117,21 +121,35 @@ export default function SignUp() {
 							autoComplete="username"
 							autoFocus
 						/>
-						<TextField
-							value={password}
-							onChange={(e) => setPassword(e.target.value)}
-							error={password.trim() == "" ? true : false}
 
-							margin="normal"
-							required
-							fullWidth
-							name="password"
-							label="Password"
-							type="text"
-							id="password"
-							autoComplete="current-password"
-						/>
+						<FormControl sx={{ mt: 2, mb: 2, display: 'flex', }} variant="outlined">
+							<InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+							<OutlinedInput
+								id="outlined-adornment-password"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								error={password.trim() == "" ? true : false}
 
+								required
+								fullWidth
+								name="password"
+								label="Password"
+								type={showPassword ? 'text' : 'password'}
+								autoComplete="current-password"
+								endAdornment={
+									<InputAdornment position="end">
+										<IconButton
+											aria-label="toggle password visibility"
+											onClick={() => setShowPassword(!showPassword)}
+											edge="end"
+										>
+											{showPassword ? <VisibilityOff /> : <Visibility />}
+										</IconButton>
+									</InputAdornment>
+								}
+							/>
+						</FormControl>
+						
 						<Zoom in={alertMessage == "" ? false : true}>
 							<Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
 						</Zoom>

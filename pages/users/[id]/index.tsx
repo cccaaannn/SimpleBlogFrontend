@@ -1,26 +1,21 @@
-import Link from 'next/link'
-import type { NextPage } from 'next'
-import Head from 'next/head'
-import Image from 'next/image'
-import styles from '../styles/Home.module.css'
 import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import { Avatar, Button, CardActions, CardHeader, Pagination } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import Typography from '@mui/material/Typography';
-import { Avatar, BottomNavigation, Button, CardActionArea, CardActions, CardHeader, Pagination, TableFooter } from '@mui/material';
-import { ChevronRightRounded, ChevronLeftRounded, Subtitles } from '@mui/icons-material';
-import Box from '@mui/material/Box';
+import { cyan, red } from '@mui/material/colors';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import { useEffect, useState } from 'react';
-import { Storage } from '../../../utils/storage';
+import Typography from '@mui/material/Typography';
+
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
+import { ApiUtils } from '../../../utils/api-utils';
+import { AuthUtils } from '../../../utils/auth-utils';
 import { DateUtils } from '../../../utils/date-utils';
-import { useRouter } from 'next/router';
-import { red, cyan } from '@mui/material/colors';
-import { AuthUtils } from '../../../utils/auth-utils'
-import { ApiUtils } from '../../../utils/api-utils'
+import { Storage } from '../../../utils/storage';
 
 
 const User = ({ postsProp }: any) => {

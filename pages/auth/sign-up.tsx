@@ -16,7 +16,7 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Zoom from '@mui/material/Zoom';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import { Visibility } from '@mui/icons-material/Visibility';
+import Visibility from '@mui/icons-material/Visibility';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';

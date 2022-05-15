@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import * as React from 'react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { Alert, AlertColor, FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
@@ -16,16 +16,17 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Zoom from '@mui/material/Zoom';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import Visibility from '@mui/icons-material/Visibility';
+import { Visibility } from '@mui/icons-material/Visibility';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
 import { isValidEmail } from '../../utils/email-validation';
 import useAlertMessage from '../../hooks/useAlertMessage';
+import { AuthUtils } from '../../utils/auth-utils';
 
 
 export default function SignUp() {
-
+	const router = useRouter();
 	const theme = createTheme();
 
 	const [email, setEmail] = useState("");
@@ -33,17 +34,20 @@ export default function SignUp() {
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
 
-	const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
+	const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
+	useEffect(() => {
+		if (AuthUtils.isLoggedIn()) {
+			router.push('/home');
+		}
+	}, [])
 
-	const router = useRouter();
 
 	const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
 		event.preventDefault();
 
 		if (username.trim() == "" || password.trim() == "" || !isValidEmail(email)) {
-			setAlertType("error" as AlertColor)
-			setAlertMessage("Please fill empty fields");
+			setMessageWithType("Please fill empty fields", "error")
 			return;
 		}
 
@@ -68,8 +72,7 @@ export default function SignUp() {
 			router.push('/auth/login');
 		}
 		else {
-			setAlertType("error" as AlertColor)
-			setAlertMessage(jsonData.message)
+			setMessageWithType(jsonData.message, "error")
 		}
 
 	};
@@ -149,9 +152,9 @@ export default function SignUp() {
 								}
 							/>
 						</FormControl>
-						
+
 						<Zoom in={alertMessage == "" ? false : true}>
-							<Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
+							<Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
 						</Zoom>
 
 						<Button

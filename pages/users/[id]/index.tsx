@@ -2,41 +2,42 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
-import { Avatar, Button, CardActions, CardHeader, Pagination } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import { cyan, red } from '@mui/material/colors';
+import { Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../../utils/api-utils';
 import { AuthUtils } from '../../../utils/auth-utils';
-import { DateUtils } from '../../../utils/date-utils';
 import { Storage } from '../../../utils/storage';
+import PostCardHome from '../../../components/PostCardHome';
+import { Post } from '../../../types/Post';
+import CategoriesMenu from '../../../components/CategoriesMenu';
+import useSSRDetector from '../../../hooks/useSSRDetector';
+import { CategoryArr } from '../../../types/enums/Category';
 
 
-const User = ({ postsProp }: any) => {
+const User = ({ postsProp }: { postsProp: Post[] }) => {
     const router = useRouter();
     const paths = router.asPath.split("/");;
-    const postId = paths[paths.length - 1];
+    const userId = paths[paths.length - 1];
 
 
     const [pageCount, setPageCount] = useState(1);
     const [selectedPage, setSelectedPage] = useState(1);
-    const [allData, setAllData] = useState([] as any[]);
-    const [activeData, setActiveData] = useState(postsProp as any);
+    const [allData, setAllData] = useState(postsProp as Post[]);
+    const [activeData, setActiveData] = useState([] as Post[]);
     const pageSize = 5;
     const [selectedCategory, setSelectedCategory] = React.useState(0);
 
+
+    const [isSSR] = useSSRDetector();
 
 
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${postId}?field=dateCreated&asc=-1`, {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -46,94 +47,91 @@ const User = ({ postsProp }: any) => {
         const jsonData: any = await res.json();
         console.log(jsonData);
 
-        setActiveData(jsonData.data);
+        setAllData(jsonData.data as Post[]);
     }
-    
+
 
     useEffect(() => {
+        if (!isSSR && AuthUtils.isLoggedIn()) {
+            fetchData();
+        }
+    }, [])
+
+    useEffect(() => {
+        setSelectedPage(1)
         fetchData();
     }, [selectedCategory])
 
     useEffect(() => {
-        const pages = Math.ceil(allData.length / pageSize);
-        setPageCount(pages)
+        if (allData != null) {
+            const pages = Math.ceil(allData.length / pageSize);
+            setPageCount(pages)
+        }
     }, [allData])
 
     useEffect(() => {
-        const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
-        setActiveData(data)
+        if (allData != null) {
+            const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
+            setActiveData(data)
+        }
     }, [allData, selectedPage])
 
     const onPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
         setSelectedPage(value);
     };
 
-    const onBack = (userId: string) => {
-        // router.push(`/users/${userId}`);
-        router.push(`/home`);
-    }
 
-    useEffect(() => {
-        if (AuthUtils.isLoggedIn()) {
-            fetchData();
-        }
-    }, [])
-
-    const getPostWhenDefined = () => {
-        return activeData.map((post: any, key: any) => {
-            return (
-                <Card sx={{ minWidth: 700, maxWidth: 700 }} key={post._id}>
-                    <CardHeader
-                        avatar={
-                            <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
-                                {post.owner.username.charAt(0)}
-                            </Avatar>
-                        }
-
-                        title={
-                            <Button sx={{ padding: 0, textTransform:'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
-                        }
-                        subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
-                    // action={
-
-                    // }
-                    >
-                    </CardHeader>
-
-
-                    <CardMedia
-                        component="img"
-                        sx={{ maxWidth: '%100', maxHeight: 200 }}
-                        image={post.image}
-                        onError={(e: any) => e.target.src = "http://via.placeholder.com/300"}
-                        alt={post.header + "image"}
-                    />
-                    <CardContent>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {post.header}
-                        </Typography>
-
-                        <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
-                            {post.body}
-                        </Typography>
-                    </CardContent>
-                    <CardActions>
-                        <Button size="small" onClick={() => onBack(post.owner._id)}><ChevronLeftRounded /> Go Back</Button>
-                    </CardActions>
-                </Card>
-            )
+    const mapCards = () => {
+        const posts: any[] = []
+        activeData.map((post, key) => {
+            posts.push(<PostCardHome post={post} />)
         })
+        return posts
     }
+
 
     return (
         <Container component="main" sx={{
-            marginTop: 8,
+            marginTop: 2,
             display: 'flex',
             flexDirection: 'column',
-            alignItems: 'center',
+            alignItems: 'left',
         }}>
-            {getPostWhenDefined()}
-            <Pagination page={selectedPage} count={pageCount} onChange={onPageChange} />
+            {
+                postsProp.length > 0 ? (
+                    <>
+                        <Typography variant="h4" component="div" sx={{ mb: 2 }}>
+                            {postsProp[0].owner.username + "'s posts"}
+                        </Typography>
+
+                        <Grid container spacing={0} >
+                            <Grid item xs={2}>
+                                <CategoriesMenu
+                                    selected={selectedCategory}
+                                    setSelected={setSelectedCategory}
+                                />
+                            </Grid>
+                            <Grid item xs={10}>
+                                <Container component="main" sx={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center'
+                                }}>
+                                    {mapCards()}
+                                    <Pagination page={selectedPage} count={pageCount} onChange={onPageChange} />
+                                </Container>
+
+                            </Grid>
+                        </Grid >
+                    </>
+                ) :
+                    <>
+                        <Typography variant="h4" component="div" sx={{ mb: 2 }}>
+                            There are no posts here
+                        </Typography>
+                    </>
+            }
+
         </Container>
 
     )
@@ -145,7 +143,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
         props: {
-            postsProp: jsonData.data
+            postsProp: jsonData.data as Post[]
         },
     }
 }

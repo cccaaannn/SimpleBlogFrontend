@@ -25,14 +25,13 @@ export default function SendVerification() {
     const theme = createTheme();
 
     const [email, setEmail] = useState("");
-    const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         if (!isValidEmail(email)) {
-            setAlertType("error" as AlertColor);
-            setAlertMessage("Please enter a valid email");
+            setMessageWithType("Please enter a valid email", "error")
             return;
         }
 
@@ -47,13 +46,11 @@ export default function SendVerification() {
 
 
         if (response.status > 500) {
-            setAlertType("error" as AlertColor);
-            setAlertMessage(jsonData.message);
+            setMessageWithType(jsonData.message, "error")
         }
         else {
             setEmail("");
-            setAlertType("success" as AlertColor);
-            setAlertMessage("Email sent.");    
+            setMessageWithType("Email sent.", "success")
         }
 
     };
@@ -94,7 +91,7 @@ export default function SendVerification() {
                         />
 
                         <Zoom in={alertMessage == "" ? false : true}>
-                            <Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
+                            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
                         </Zoom>
 
                         <Button

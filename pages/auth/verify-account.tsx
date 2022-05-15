@@ -17,25 +17,29 @@ import Zoom from '@mui/material/Zoom';
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
 import useAlertMessage from '../../hooks/useAlertMessage';
+import { AuthUtils } from '../../utils/auth-utils';
 
 
 export default function VerifyAccount() {
     const router = useRouter();
     const theme = createTheme();
 
-	const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     useEffect(() => {
-        if(router.query.token && router.query.token != null) {
+        if (AuthUtils.isLoggedIn()) {
+            router.push('/home');
+        }
+
+        if (router.query.token && router.query.token != null) {
             verifyAccount();
         }
     }, [router.query.token])
 
-
     const verifyAccount = async () => {
         const { token } = router.query;
         console.log(token);
-        
+
         const body: string = JSON.stringify({
             token: token
         });
@@ -52,12 +56,10 @@ export default function VerifyAccount() {
         console.log(jsonData);
 
         if (jsonData.status) {
-            setAlertType("success" as AlertColor);
-            setAlertMessage(jsonData.message);
+            setMessageWithType(jsonData.message, "success")
         }
         else {
-            setAlertType("error" as AlertColor);
-            setAlertMessage(jsonData.message);
+            setMessageWithType(jsonData.message, "error" )
         }
     }
 
@@ -82,7 +84,7 @@ export default function VerifyAccount() {
                     <Box component="form" noValidate sx={{ mt: 1 }}>
 
                         <Zoom in={alertMessage == "" ? false : true}>
-                            <Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
+                            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
                         </Zoom>
                         <Grid container>
                             <Grid item xs>
@@ -91,10 +93,10 @@ export default function VerifyAccount() {
                                 </Link>
                             </Grid>
                             <Grid item>
-								<Link href="/auth/send-verification" variant="body2">
-									{"Re-send activation mail"}
-								</Link>
-							</Grid>
+                                <Link href="/auth/send-verification" variant="body2">
+                                    {"Re-send activation mail"}
+                                </Link>
+                            </Grid>
                         </Grid>
                     </Box>
                 </Box>

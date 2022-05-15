@@ -27,7 +27,7 @@ export default function ResetPassword() {
     const [password1, setPassword1] = useState("");
     const [password2, setPassword2] = useState("");
 
-    const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     const isPasswordsMatching = (password1: string, password2: string) => {
         if (password1 == "" || password2 == "") {
@@ -45,8 +45,7 @@ export default function ResetPassword() {
         event.preventDefault();
 
         if (!isPasswordsMatching(password1, password2)) {
-            setAlertType("error" as AlertColor);
-            setAlertMessage("Passwords are not matching.");
+            setMessageWithType("Passwords are not matching.", "error" )
             return;
         }
 
@@ -72,12 +71,10 @@ export default function ResetPassword() {
         if (jsonData.status) {
             setPassword1("");
             setPassword2("");
-            setAlertType("success" as AlertColor);
-            setAlertMessage(jsonData.message);
+            setMessageWithType(jsonData.message, "success")
         }
         else {
-            setAlertType("error" as AlertColor);
-            setAlertMessage(jsonData.message);
+            setMessageWithType(jsonData.message, "error")
         }
 
     };
@@ -132,7 +129,7 @@ export default function ResetPassword() {
                         />
 
                         <Zoom in={alertMessage == "" ? false : true}>
-                            <Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
+                            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
                         </Zoom>
 
                         <Button

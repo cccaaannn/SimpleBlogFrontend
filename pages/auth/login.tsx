@@ -23,6 +23,7 @@ import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../utils/api-utils';
 import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
+import { AuthUtils } from '../../utils/auth-utils';
 
 
 export default function Login() {
@@ -34,9 +35,13 @@ export default function Login() {
 	const [password, setPassword] = useState("");
 	const [rememberMe, setRememberMe] = useState(false);
 
-    const [alertMessage, setAlertMessage, alertType, setAlertType] = useAlertMessage();
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
 	useEffect(() => {
+		if(AuthUtils.isLoggedIn()) {
+			router.push('/home');
+		}
+
 		const rememberMeUsername: string | null = Storage.get(LocalStorageKeys.REMEMBER_ME);
 		if (rememberMeUsername != null) {
 			setUsername(rememberMeUsername);
@@ -49,8 +54,7 @@ export default function Login() {
 		event.preventDefault();
 
 		if (username.trim() == "" || password.trim() == "") {
-			setAlertType("error")
-			setAlertMessage("Please fill empty fields");
+			setMessageWithType("Please fill empty fields", "error")
 			return;
 		}
 
@@ -78,15 +82,13 @@ export default function Login() {
 				Storage.clear(LocalStorageKeys.REMEMBER_ME);
 			}
 
-			setAlertType("success")
-			setAlertMessage("Welcome")
+			setMessageWithType("Welcome", "success")
 
 			Storage.set(LocalStorageKeys.TOKEN, jsonData.data.token);
 			router.push('/home');
 		}
 		else {
-			setAlertType("error")
-			setAlertMessage(jsonData.message)
+			setMessageWithType(jsonData.message, "error")
 		}
 
 	};
@@ -144,7 +146,7 @@ export default function Login() {
 						/>
 
 						<Zoom in={alertMessage == "" ? false : true}>
-							<Alert severity={alertType} onClose={() => { setAlertMessage("") }}>{alertMessage}</Alert>
+							<Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
 						</Zoom>
 
 						<Button

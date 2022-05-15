@@ -9,17 +9,22 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
-
+import Link from '@mui/material/Link';
+import IconButton, { IconButtonProps } from '@mui/material/IconButton';
 import { cyan } from '@mui/material/colors';
-import { Avatar, Button, CardActions, CardHeader } from '@mui/material';
+import { Alert, Avatar, Button, CardActions, CardHeader, TextareaAutosize, Zoom } from '@mui/material';
 
 // Do NOT import all of the folder, ssr times out
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { Storage } from '../../../utils/storage';
 import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { DateUtils } from '../../../utils/date-utils';
 import { ApiUtils } from '../../../utils/api-utils'
+import { AuthUtils } from '../../../utils/auth-utils';
+import useAlertMessage from '../../../hooks/useAlertMessage';
+import useSSRDetector from '../../../hooks/useSSRDetector';
 
 
 const Post = ({ postProp, referer }: any) => {
@@ -28,6 +33,11 @@ const Post = ({ postProp, referer }: any) => {
     const postId = paths[paths.length - 1];
 
     const [post, setPost] = useState(postProp);
+    const [comment, setComment] = useState("");
+
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
+
+    const [isSSR] = useSSRDetector();
 
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
@@ -99,9 +109,14 @@ const Post = ({ postProp, referer }: any) => {
 
     const getCommentsWhenDefined = () => {
         if (post != null) {
+            let userId: any = null;
+            if (!isSSR && AuthUtils.isLoggedIn()) {
+                userId = AuthUtils.getTokenPayload().id;
+            }
+
             return post.comments.map((comment: any, key: any) => {
                 return (
-                    <Card sx={{ minWidth: 700, maxWidth: 700 }} key={comment._id}>
+                    <Card sx={{ minWidth: 700, maxWidth: 700, mb: 2 }} key={comment._id}>
                         <CardHeader
                             avatar={
                                 <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
@@ -113,6 +128,14 @@ const Post = ({ postProp, referer }: any) => {
                                 <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + comment.owner._id}>{comment.owner.username}</Button>
                             }
                             subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
+                            action={
+                                userId == comment.owner._id &&
+                                (
+                                    <IconButton onClick={() => onCommentDelete(comment._id)}>
+                                        <CloseIcon />
+                                    </IconButton>
+                                )
+                            }
                         >
                         </CardHeader>
                         <CardContent>
@@ -127,14 +150,113 @@ const Post = ({ postProp, referer }: any) => {
     }
 
 
+    const onCommentDelete = async (commentId: any) => {
+        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/removeComment/${postId}/${commentId}`, {
+            method: "put",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
+            },
+        });
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+
+        if (jsonData.status) {
+            setMessageWithType("Comment removed", "success");
+            fetchData();
+        }
+        else {
+            setMessageWithType(jsonData.message, "error");
+        }
+    }
+
+    const onCommentPost = async () => {
+        if (comment.trim() == "") {
+            setMessageWithType("Please write a comment", "error");
+            return;
+        }
+
+        const body = JSON.stringify({
+            comment: comment
+        });
+
+        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/addComment/${postId}`, {
+            method: "put",
+            body: body,
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
+            },
+        });
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+        if (jsonData.status) {
+            setMessageWithType("Comment added", "success");
+            fetchData();
+        }
+        else {
+            setMessageWithType(jsonData.message, "error");
+        }
+
+    }
+
+
+    const addCommentBox = () => {
+        if (!isSSR && AuthUtils.isLoggedIn()) {
+            return (
+                <>
+                    <Typography gutterBottom variant="h6" component="div">
+                        Add comment
+                    </Typography>
+                    <TextareaAutosize
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        aria-label="Comment area"
+                        placeholder="Comment"
+                        style={{ minWidth: 700, maxWidth: 700, minHeight: 100 }}
+                    />
+                    <Button
+                        onClick={onCommentPost}
+                        variant="contained"
+                        sx={{ mt: 2, mb: 2 }}
+                    >
+                        send
+                    </Button>
+                </>
+            )
+        }
+        else {
+            return (
+                <>
+                    <Typography gutterBottom variant="h6" component="div">
+                        Add comment
+                    </Typography>
+                    <TextareaAutosize
+                        value={comment}
+                        onChange={(e) => setComment(e.target.value)}
+                        aria-label="Comment area"
+                        placeholder="Comment"
+                        style={{ minWidth: 700, maxWidth: 700, minHeight: 100 }}
+                    />
+                    <Link href="/auth/login" variant="body2">
+                        Login to add comment.
+                    </Link>
+                </>
+            )
+        }
+    }
+
+
     return (
         <>
             <Head>
-                <meta property="og:url" content={referer}/>
+                <meta property="og:url" content={referer} />
                 <meta property="og:type" content="website" />
-                <meta property="og:title" content={postProp != null ? postProp.header as any: ""} />
-                <meta property="og:description" content={postProp != null ? postProp.body.slice(0, 50) + "..." as any: ""} />
-                <meta property="og:image" content={postProp != null ? postProp.image as any: ""} />
+                <meta property="og:title" content={postProp != null ? postProp.header as any : ""} />
+                <meta property="og:description" content={postProp != null ? postProp.body.slice(0, 100) + "..." as any : ""} />
+                <meta property="og:image" content={postProp != null ? postProp.image as any : ""} />
             </Head>
 
             <Container component="main" sx={{
@@ -154,6 +276,14 @@ const Post = ({ postProp, referer }: any) => {
                 <br />
 
                 {getCommentsWhenDefined()}
+
+                <Zoom in={alertMessage == "" ? false : true} style={{ minWidth: 700, maxWidth: 700 }}>
+                    <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
+                </Zoom>
+
+                {addCommentBox()}
+
+                <br /> <br /> <br />
             </Container>
         </>
     )

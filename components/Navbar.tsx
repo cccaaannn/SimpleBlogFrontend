@@ -4,24 +4,16 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import { AuthUtils } from '../utils/auth-utils';
 import { TokenPayload } from '../types/TokenPayload';
-import { Utils } from '../utils/utils';
-import { useEffect, useState } from 'react';
-import { Router } from '@mui/icons-material';
 import { useRouter } from 'next/router';
+import useSSRDetector from '../hooks/useSSRDetector';
 
 
 export default function Navbar() {
     const router = useRouter();
 
-    const [isSSR, setIsSSR] = useState(true);
-    useEffect(() => {
-        setIsSSR(false);
-    }, []);
-
+    const [isSSR] = useSSRDetector();
 
     const getButtons = () => {
         if (isSSR || !AuthUtils.isLoggedIn()) {
@@ -38,7 +30,7 @@ export default function Navbar() {
             
             return (
                 <>
-                    <Button color="inherit" href='/auth/login'>{tokenPayload.username}</Button>
+                    <Button color="inherit" href='/me'>{tokenPayload.username}</Button>
                     <Button color="inherit" onClick={() => onLogout()}>Logout</Button>
                 </>
             )

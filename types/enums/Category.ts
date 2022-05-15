@@ -26,4 +26,17 @@ const CategoryArr = [
     "Personal"
 ]
 
-export { Category, CategoryArr };
+const CategoryArrWithoutAll = [
+    "General",
+    "Technology",
+    "Food",
+    "Health",
+    "Music",
+    "Movie",
+    "Game",
+    "Book",
+    "Business",
+    "Personal"
+]
+
+export { Category, CategoryArr, CategoryArrWithoutAll };

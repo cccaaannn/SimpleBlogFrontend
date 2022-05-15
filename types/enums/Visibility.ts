@@ -1,7 +1,13 @@
 enum Visibility {
-    PUBLIC="public",
-    MEMBERS="members",
-    PRIVATE="private"
+    PUBLIC = "public",
+    MEMBERS = "members",
+    PRIVATE = "private"
 }
 
-export default Visibility;
+const VisibilityArr = [
+    "public",
+    "members",
+    "private"
+]
+
+export { Visibility, VisibilityArr };

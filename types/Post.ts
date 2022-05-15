@@ -1,11 +1,11 @@
-import Visibility from "./enums/Visibility";
+import { Visibility } from "./enums/Visibility";
 import { Comment } from "./Comment";
 import { Category } from "./enums/Category";
 
 
 interface Post {
     _id: string,
-    owner: string,
+    owner: Owner,
     header: string,
     body: string,
     image: string,
@@ -14,6 +14,11 @@ interface Post {
     comments: Comment[],
     dateCreated: Date
 };
+
+interface Owner {
+    _id: string,
+    username: string
+}
 
 interface PostAdd {
     owner: string,

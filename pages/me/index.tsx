@@ -14,26 +14,34 @@ import useAlertMessage from '../../hooks/useAlertMessage';
 import { CategoryArr } from '../../types/enums/Category';
 import UpdateAccount from '../../components/UpdateAccount';
 import CategoriesMenu from '../../components/CategoriesMenu';
-import PostCardHome from '../../components/PostCardHome';
-import useSSRDetector from '../../hooks/useSSRDetector';
+import PostCardMe from '../../components/PostCardMe';
+import AlertMessage from '../../components/AlertMessage';
+import usePagination from '../../hooks/usePagination';
 
 
 const User = () => {
     const router = useRouter();
-    const paths = router.asPath.split("/");;
-    const postId = paths[paths.length - 1];
 
-    const [pageCount, setPageCount] = useState(1);
-    const [selectedPage, setSelectedPage] = useState(1);
+
     const [allData, setAllData] = useState([] as any[]);
-    const [activeData, setActiveData] = useState([] as any[]);
-    const pageSize = 5;
-    const [selectedCategory, setSelectedCategory] = React.useState(0);
+    const [selectedCategory, setSelectedCategory] = useState(0);
+    const [selectedTab, setSelectedTab] = useState(0);
+
+    const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
+
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
-    const [selectedTab, setSelectedTab] = React.useState(0);
+    useEffect(() => {
+        if (AuthUtils.isLoggedIn()) {
+            fetchData();
+        }
+    }, [])
 
-    const [isSSR] = useSSRDetector();
+    useEffect(() => {
+        setSelectedPage(1)
+        fetchData();
+    }, [selectedCategory])
+
 
 
     const fetchData = async () => {
@@ -52,41 +60,30 @@ const User = () => {
         setAllData(jsonData.data);
     }
 
+    const onDelete = async (postId: string) => {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/delete/${postId}`, {
+            method: "delete",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
+            },
+        });
+        const jsonData: any = await res.json();
+        console.log(jsonData);
 
-    useEffect(() => {
-        if (!isSSR && AuthUtils.isLoggedIn()) {
+        if (jsonData.status) {
+            setMessageWithType("Post deleted", "success");
             fetchData();
         }
-    }, [])
-
-    useEffect(() => {
-        setSelectedPage(1)
-        fetchData();
-    }, [selectedCategory])
-
-    useEffect(() => {
-        if (allData != null) {
-            const pages = Math.ceil(allData.length / pageSize);
-            setPageCount(pages)
+        else {
+            setMessageWithType(jsonData.message, "error");
         }
-    }, [allData])
-
-    useEffect(() => {
-        if (allData != null) {
-            const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
-            setActiveData(data)
-        }
-    }, [allData, selectedPage])
-
-    const onPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setSelectedPage(value);
-    };
-
+    }
 
     const mapCards = () => {
         const posts: any[] = []
-        activeData.map((post, key) => {
-            posts.push(<PostCardHome post={post} />)
+        activeData.map((post: any, key: any) => {
+            posts.push(<PostCardMe post={post} onDelete={onDelete} />)
         })
         return posts
     }
@@ -95,7 +92,7 @@ const User = () => {
         if (selectedTab == 0) {
             return (
                 <>
-                   <Box display="flex" justifyContent="flex-end">
+                    <Box display="flex" justifyContent="flex-end">
                         <Button
                             href='/me/add-post'
                             variant="contained"
@@ -118,8 +115,9 @@ const User = () => {
                                 flexDirection: 'column',
                                 alignItems: 'center'
                             }}>
+                                <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
                                 {mapCards()}
-                                <Pagination page={selectedPage} count={pageCount} onChange={onPageChange} />
+                                <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
                             </Container>
                         </Grid>
                     </Grid >

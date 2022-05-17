@@ -10,17 +10,17 @@ import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
-import { ApiUtils } from '../../utils/api-utils';
-import { AuthUtils } from '../../utils/auth-utils';
-import { Storage } from '../../utils/storage';
-import useAlertMessage from '../../hooks/useAlertMessage';
-import { CategoryArr, CategoryArrWithoutAll } from '../../types/enums/Category';
-import { VisibilityArr } from '../../types/enums/Visibility';
-import ComboBox from '../../components/ComboBox';
+import { LocalStorageKeys } from '../../../../types/enums/local-storage-keys';
+import { ApiUtils } from '../../../../utils/api-utils';
+import { AuthUtils } from '../../../../utils/auth-utils';
+import { Storage } from '../../../../utils/storage';
+import useAlertMessage from '../../../../hooks/useAlertMessage';
+import { CategoryArrWithoutAll } from '../../../../types/enums/Category';
+import { VisibilityArr } from '../../../../types/enums/Visibility';
+import ComboBox from '../../../../components/ComboBox';
 
 
-const AddPost = () => {
+const EditPost = () => {
     const router = useRouter();
 
     const [newPostHeader, setNewPostHeader] = useState("");
@@ -31,23 +31,50 @@ const AddPost = () => {
 
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
-    const onBack = () => {
-        router.push(`/home`);
-    }
-
     useEffect(() => {
         if (!AuthUtils.isLoggedIn()) {
             router.push(`/home`);
         }
+        else {
+            fillPostDetail();
+        }
     }, [])
 
+    const fillPostDetail = async () => {
+        const paths = router.asPath.split("/");
+        const postId = paths[paths.length - 1];
 
-    const onPostAdd = async () => {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${postId}`, {
+            method: "get",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN) }`
+            },
+        });
+        const jsonData: any = await res.json();
+        console.log(jsonData);
+
+        if(!jsonData.status) {
+            console.log("SV is dead");
+            return;
+        }
+
+        setNewPostHeader(jsonData.data.header)
+        setNewPostBody(jsonData.data.body)
+        setNewPostImage(jsonData.data.image)
+        setNewPostCategory(jsonData.data.category)
+        setNewPostVisibility(jsonData.data.visibility)
+    }
+
+    const onPosteEdit = async () => {
 
         if (newPostHeader.trim() == "" || newPostBody.trim() == "" || newPostImage.trim() == "") {
             setMessageWithType("Please fill empty fields", "error");
             return;
         }
+
+        const paths = router.asPath.split("/");
+        const postId = paths[paths.length - 1];
 
         const body = JSON.stringify({
             header: newPostHeader,
@@ -58,8 +85,8 @@ const AddPost = () => {
         });
 
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/add`, {
-            method: "post",
+        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/update/${postId}`, {
+            method: "put",
             body: body,
             headers: {
                 "Content-Type": "application/json",
@@ -71,8 +98,8 @@ const AddPost = () => {
         console.log(jsonData);
 
         if (jsonData.status) {
-            setMessageWithType("Post added", "success");
-            router.push(`/home`);
+            setMessageWithType("Post updated", "success");
+            router.push(`/posts/${postId}`);
         }
         else {
             setMessageWithType(jsonData.message, "error");
@@ -89,7 +116,7 @@ const AddPost = () => {
         }}>
 
             <Typography gutterBottom variant="h6" component="div">
-                Add post
+                Update post
             </Typography>
             <TextField
                 value={newPostHeader}
@@ -130,11 +157,11 @@ const AddPost = () => {
             />
 
             <Button
-                onClick={onPostAdd}
+                onClick={onPosteEdit}
                 variant="contained"
                 sx={{ mt: 2, mb: 2 }}
             >
-                Post
+                Update
             </Button>
 
 
@@ -147,4 +174,4 @@ const AddPost = () => {
     )
 }
 
-export default AddPost
+export default EditPost

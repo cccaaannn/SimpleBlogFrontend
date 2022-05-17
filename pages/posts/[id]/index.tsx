@@ -29,8 +29,6 @@ import useSSRDetector from '../../../hooks/useSSRDetector';
 
 const Post = ({ postProp, referer }: any) => {
     const router = useRouter();
-    const paths = router.asPath.split("/");;
-    const postId = paths[paths.length - 1];
 
     const [post, setPost] = useState(postProp);
     const [comment, setComment] = useState("");
@@ -39,8 +37,17 @@ const Post = ({ postProp, referer }: any) => {
 
     const [isSSR] = useSSRDetector();
 
+    useEffect(() => {
+        if (post == null) {
+            fetchData();
+        }
+    }, [])
+
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
+        const paths = router.asPath.split("/");
+        const postId = paths[paths.length - 1];
+
         console.log("CSR");
         const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${postId}`, {
             method: "get",
@@ -55,11 +62,6 @@ const Post = ({ postProp, referer }: any) => {
         setPost(jsonData.data);
     }
 
-    useEffect(() => {
-        if (post == null) {
-            fetchData();
-        }
-    }, [])
 
     const getPostWhenDefined = () => {
         if (post != null) {
@@ -151,6 +153,9 @@ const Post = ({ postProp, referer }: any) => {
 
 
     const onCommentDelete = async (commentId: any) => {
+        const paths = router.asPath.split("/");
+        const postId = paths[paths.length - 1];
+
         const response = await fetch(`${ApiUtils.getApiUrl()}/posts/removeComment/${postId}/${commentId}`, {
             method: "put",
             headers: {
@@ -172,6 +177,9 @@ const Post = ({ postProp, referer }: any) => {
     }
 
     const onCommentPost = async () => {
+        const paths = router.asPath.split("/");
+        const postId = paths[paths.length - 1];
+
         if (comment.trim() == "") {
             setMessageWithType("Please write a comment", "error");
             return;

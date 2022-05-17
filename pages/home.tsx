@@ -1,6 +1,6 @@
 import type { NextPage } from 'next'
 import * as React from 'react';
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
@@ -15,21 +15,34 @@ import CategoriesMenu from '../components/CategoriesMenu';
 import PostCardHome from '../components/PostCardHome';
 import useSSRDetector from '../hooks/useSSRDetector';
 import { AuthUtils } from '../utils/auth-utils';
+import usePagination from '../hooks/usePagination';
 
 
 const Home: NextPage = (props: any) => {
     const router = useRouter();
     const theme = useTheme();
-    const isMounted = useRef(false);
 
-    const [pageCount, setPageCount] = useState(1);
-    const [selectedPage, setSelectedPage] = useState(1);
-    const [allData, setAllData] = useState(props.allData as any);
-    const [activeData, setActiveData] = useState([] as any[]);
-    const pageSize = 5;
-    const [selectedCategory, setSelectedCategory] = React.useState(0);
+
+    const [allData, setAllData] = useState([] as any[]);
+    const [selectedCategory, setSelectedCategory] = useState(0);
+
+    const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
     const [isSSR] = useSSRDetector();
+
+
+    useEffect(() => {
+        if (!isSSR && AuthUtils.isLoggedIn()) {
+            fetchPosts();
+        }
+    }, [])
+
+    useEffect(() => {
+        setSelectedPage(1)
+        fetchPosts();
+    }, [selectedCategory])
+
+
 
     const fetchPosts = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
@@ -51,38 +64,10 @@ const Home: NextPage = (props: any) => {
         }
     }
 
-    useEffect(() => {
-        if (!isSSR && AuthUtils.isLoggedIn()) {
-            fetchPosts();
-        }
-    }, [])
-
-    useEffect(() => {
-        setSelectedPage(1)
-        fetchPosts();
-    }, [selectedCategory])
-
-    useEffect(() => {
-        if (allData != null) {
-            const pages = Math.ceil(allData.length / pageSize);
-            setPageCount(pages)
-        }
-    }, [allData])
-
-    useEffect(() => {
-        if (allData != null) {
-            const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
-            setActiveData(data)
-        }
-    }, [allData, selectedPage])
-
-    const onPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setSelectedPage(value);
-    };
 
     const mapCards = () => {
         const posts: any[] = []
-        activeData.map((post, key) => {
+        activeData.map((post: any, key: any) => {
             posts.push(<PostCardHome post={post} />)
         })
         return posts
@@ -107,7 +92,7 @@ const Home: NextPage = (props: any) => {
                         {/* <CssBaseline /> */}
                         {mapCards()}
 
-                        <Pagination page={selectedPage} count={pageCount} onChange={onPageChange} />
+                        <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
                     </Container>
 
                 </Grid>

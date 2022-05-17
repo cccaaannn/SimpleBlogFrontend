@@ -13,29 +13,24 @@ import { Storage } from '../../../utils/storage';
 import PostCardHome from '../../../components/PostCardHome';
 import { Post } from '../../../types/Post';
 import CategoriesMenu from '../../../components/CategoriesMenu';
-import useSSRDetector from '../../../hooks/useSSRDetector';
 import { CategoryArr } from '../../../types/enums/Category';
+import usePagination from '../../../hooks/usePagination';
 
 
 const User = ({ postsProp }: { postsProp: Post[] }) => {
     const router = useRouter();
-    const paths = router.asPath.split("/");;
-    const userId = paths[paths.length - 1];
 
+    const [allData, setAllData] = useState([] as any[]);
+    const [selectedCategory, setSelectedCategory] = useState(0);
+    const [selectedTab, setSelectedTab] = useState(0);
 
-    const [pageCount, setPageCount] = useState(1);
-    const [selectedPage, setSelectedPage] = useState(1);
-    const [allData, setAllData] = useState(postsProp as Post[]);
-    const [activeData, setActiveData] = useState([] as Post[]);
-    const pageSize = 5;
-    const [selectedCategory, setSelectedCategory] = React.useState(0);
-
-
-    const [isSSR] = useSSRDetector();
+    const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
 
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
+        const paths = router.asPath.split("/");
+        const userId = paths[paths.length - 1];
 
         const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
@@ -52,7 +47,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
 
 
     useEffect(() => {
-        if (!isSSR && AuthUtils.isLoggedIn()) {
+        if (AuthUtils.isLoggedIn()) {
             fetchData();
         }
     }, [])
@@ -62,28 +57,10 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
         fetchData();
     }, [selectedCategory])
 
-    useEffect(() => {
-        if (allData != null) {
-            const pages = Math.ceil(allData.length / pageSize);
-            setPageCount(pages)
-        }
-    }, [allData])
-
-    useEffect(() => {
-        if (allData != null) {
-            const data = allData.slice((selectedPage - 1) * pageSize, selectedPage * pageSize);
-            setActiveData(data)
-        }
-    }, [allData, selectedPage])
-
-    const onPageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setSelectedPage(value);
-    };
-
 
     const mapCards = () => {
         const posts: any[] = []
-        activeData.map((post, key) => {
+        activeData.map((post: any, key: any) => {
             posts.push(<PostCardHome post={post} />)
         })
         return posts
@@ -118,7 +95,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
                                     alignItems: 'center'
                                 }}>
                                     {mapCards()}
-                                    <Pagination page={selectedPage} count={pageCount} onChange={onPageChange} />
+                                    <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
                                 </Container>
 
                             </Grid>

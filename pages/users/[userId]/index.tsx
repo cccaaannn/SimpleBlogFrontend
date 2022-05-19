@@ -10,7 +10,7 @@ import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../../utils/api-utils';
 import { AuthUtils } from '../../../utils/auth-utils';
 import { Storage } from '../../../utils/storage';
-import PostCardHome from '../../../components/PostCardHome';
+import PostCardHome from '../../../components/Cards/PostCardHome';
 import { Post } from '../../../types/Post';
 import CategoriesMenu from '../../../components/CategoriesMenu';
 import { CategoryArr } from '../../../types/enums/Category';
@@ -22,7 +22,6 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
 
     const [allData, setAllData] = useState([] as any[]);
     const [selectedCategory, setSelectedCategory] = useState(0);
-    const [selectedTab, setSelectedTab] = useState(0);
 
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
@@ -104,7 +103,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
                 ) :
                     <>
                         <Typography variant="h4" component="div" sx={{ mb: 2 }}>
-                            There are no posts here
+                            Nothing posted yet
                         </Typography>
                     </>
             }
@@ -115,7 +114,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
 }
 
 export const getServerSideProps = async (context: any) => {
-    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${context.params.id}?field=dateCreated&asc=-1`)
+    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${context.params.userId}?field=dateCreated&asc=-1`)
     const jsonData: any = await res.json();
 
     return {

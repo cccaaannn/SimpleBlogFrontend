@@ -12,7 +12,7 @@ import { LocalStorageKeys } from '../types/enums/local-storage-keys';
 import { CategoryArr } from '../types/enums/Category';
 import { ApiUtils } from '../utils/api-utils';
 import CategoriesMenu from '../components/CategoriesMenu';
-import PostCardHome from '../components/PostCardHome';
+import PostCardHome from '../components/Cards/PostCardHome';
 import useSSRDetector from '../hooks/useSSRDetector';
 import { AuthUtils } from '../utils/auth-utils';
 import usePagination from '../hooks/usePagination';
@@ -89,7 +89,6 @@ const Home: NextPage = (props: any) => {
                         flexDirection: 'column',
                         alignItems: 'center'
                     }}>
-                        {/* <CssBaseline /> */}
                         {mapCards()}
 
                         <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />

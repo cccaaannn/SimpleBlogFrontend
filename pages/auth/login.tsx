@@ -3,20 +3,17 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Alert, AlertColor } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Zoom from '@mui/material/Zoom';
 
 import Copyright from '../../components/Copyright';
 import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
@@ -24,6 +21,7 @@ import { ApiUtils } from '../../utils/api-utils';
 import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import { AuthUtils } from '../../utils/auth-utils';
+import AlertMessage from '../../components/AlertMessage';
 
 
 export default function Login() {
@@ -96,7 +94,6 @@ export default function Login() {
 	return (
 		<ThemeProvider theme={theme}>
 			<Container component="main" maxWidth="xs">
-				<CssBaseline />
 				<Box
 					sx={{
 						marginTop: 8,
@@ -145,9 +142,7 @@ export default function Login() {
 							label="Remember me"
 						/>
 
-						<Zoom in={alertMessage == "" ? false : true}>
-							<Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
-						</Zoom>
+						<AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
 						<Button
 							type="submit"

@@ -2,22 +2,21 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Alert, AlertColor, Button } from '@mui/material';
+import { Button } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import Zoom from '@mui/material/Zoom';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
 import { isValidEmail } from '../../utils/email-validation';
 import useAlertMessage from '../../hooks/useAlertMessage';
+import AlertMessage from '../../components/AlertMessage';
 
 
 export default function ForgotPassword() {
@@ -59,7 +58,6 @@ export default function ForgotPassword() {
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
                 <Box
                     sx={{
                         marginTop: 8,
@@ -91,9 +89,7 @@ export default function ForgotPassword() {
                             autoComplete="current-email"
                         />
 
-                        <Zoom in={alertMessage == "" ? false : true}>
-                            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
-                        </Zoom>
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
                         <Button
                             type="submit"

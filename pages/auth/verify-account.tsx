@@ -3,21 +3,19 @@ import * as React from 'react';
 import { useEffect } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import { Alert, AlertColor } from '@mui/material';
 import Avatar from '@mui/material/Avatar';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
-import Zoom from '@mui/material/Zoom';
 
 import Copyright from '../../components/Copyright';
 import { ApiUtils } from '../../utils/api-utils';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import { AuthUtils } from '../../utils/auth-utils';
+import AlertMessage from '../../components/AlertMessage';
 
 
 export default function VerifyAccount() {
@@ -66,7 +64,6 @@ export default function VerifyAccount() {
     return (
         <ThemeProvider theme={theme}>
             <Container component="main" maxWidth="xs">
-                <CssBaseline />
                 <Box
                     sx={{
                         marginTop: 8,
@@ -83,9 +80,8 @@ export default function VerifyAccount() {
                     </Typography>
                     <Box component="form" noValidate sx={{ mt: 1 }}>
 
-                        <Zoom in={alertMessage == "" ? false : true}>
-                            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
-                        </Zoom>
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+
                         <Grid container>
                             <Grid item xs>
                                 <Link href="/auth/login" variant="body2">

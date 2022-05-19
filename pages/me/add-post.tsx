@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Alert, Button, TextareaAutosize, Zoom } from '@mui/material';
+import { Button, TextareaAutosize } from '@mui/material';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
@@ -18,6 +18,7 @@ import useAlertMessage from '../../hooks/useAlertMessage';
 import { CategoryArr, CategoryArrWithoutAll } from '../../types/enums/Category';
 import { VisibilityArr } from '../../types/enums/Visibility';
 import ComboBox from '../../components/ComboBox';
+import AlertMessage from '../../components/AlertMessage';
 
 
 const AddPost = () => {
@@ -137,10 +138,7 @@ const AddPost = () => {
                 Post
             </Button>
 
-
-            <Zoom in={alertMessage == "" ? false : true} style={{ minWidth: 700, maxWidth: 700 }}>
-                <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
-            </Zoom>
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
         </Container >
 

@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import { Box, Button, Grid, Pagination, Tab, Tabs } from '@mui/material';
 import Container from '@mui/material/Container';
@@ -12,17 +11,14 @@ import { AuthUtils } from '../../utils/auth-utils';
 import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import { CategoryArr } from '../../types/enums/Category';
-import UpdateAccount from '../../components/UpdateAccount';
+import UpdateAccountForm from '../../components/forms/UpdateAccountForm';
 import CategoriesMenu from '../../components/CategoriesMenu';
-import PostCardMe from '../../components/PostCardMe';
+import PostCardMe from '../../components/Cards/PostCardMe';
 import AlertMessage from '../../components/AlertMessage';
 import usePagination from '../../hooks/usePagination';
 
 
 const User = () => {
-    const router = useRouter();
-
-
     const [allData, setAllData] = useState([] as any[]);
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [selectedTab, setSelectedTab] = useState(0);
@@ -41,7 +37,6 @@ const User = () => {
         setSelectedPage(1)
         fetchData();
     }, [selectedCategory])
-
 
 
     const fetchData = async () => {
@@ -125,7 +120,7 @@ const User = () => {
             )
         }
         if (selectedTab == 1) {
-            return <UpdateAccount />
+            return <UpdateAccountForm />
         }
     }
 

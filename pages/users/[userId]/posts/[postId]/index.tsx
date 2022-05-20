@@ -10,7 +10,6 @@ import { Storage } from '../../../../../utils/storage';
 import { LocalStorageKeys } from '../../../../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../../../../utils/api-utils'
 import useAlertMessage from '../../../../../hooks/useAlertMessage';
-import useSSRDetector from '../../../../../hooks/useSSRDetector';
 import PostCardDetail from '../../../../../components/Cards/PostCardDetail';
 import OpenGraph from '../../../../../components/OpenGraph';
 import AlertMessage from '../../../../../components/AlertMessage';
@@ -27,8 +26,6 @@ const Post = ({ postProp, referer }: any) => {
     const [comment, setComment] = useState("");
 
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
-
-    const [isSSR] = useSSRDetector();
 
     useEffect(() => {
         if (post == null) {

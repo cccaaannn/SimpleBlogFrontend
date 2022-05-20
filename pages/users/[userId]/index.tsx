@@ -76,7 +76,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
             {
                 postsProp.length > 0 ? (
                     <>
-                        <Typography variant="h4" component="div" sx={{ mb: 2 }}>
+                        <Typography variant="h3" component="div" sx={{ mb: 2 }}>
                             {postsProp[0].owner.username + "'s posts"}
                         </Typography>
 

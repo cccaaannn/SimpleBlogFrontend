@@ -86,37 +86,47 @@ const User = () => {
     const getContentForSelectedTab = () => {
         if (selectedTab == 0) {
             return (
-                <>
-                    <Box display="flex" justifyContent="flex-end">
+                <Grid container spacing={0} >
+                    <Grid item xs={10} sx={{ mb: 1, mt: 1 }}>
+                    </Grid>
+                    <Grid item xs={2} sx={{ mb: 1, mt: 1 }}>
                         <Button
                             href='/me/add-post'
                             variant="contained"
-                            sx={{ mt: 2, mb: 2 }}
+                            sx={{ mt: 1, mb: 1, float: 'right' }}
                         >
                             Add new
                         </Button>
-                    </Box>
+                    </Grid>
 
-                    <Grid container spacing={0} >
-                        <Grid item xs={2}>
-                            <CategoriesMenu
-                                selected={selectedCategory}
-                                setSelected={setSelectedCategory}
-                            />
-                        </Grid>
-                        <Grid item xs={10}>
-                            <Container component="main" sx={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'center'
-                            }}>
-                                <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                                {mapCards()}
-                                <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
-                            </Container>
-                        </Grid>
-                    </Grid >
-                </>
+                    <Grid item xs={2}>
+                        <CategoriesMenu
+                            selected={selectedCategory}
+                            setSelected={setSelectedCategory}
+                        />
+                    </Grid>
+                    <Grid item xs={10}>
+                        <Container component="div" sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}>
+                            {alertMessage != "" &&
+                                <Grid container spacing={0} >
+                                    <Grid item xs={2}>
+                                    </Grid>
+                                    <Grid item xs={8} sx={{ mb: 1, mt: 1 }}>
+                                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                                    </Grid>
+                                    <Grid item xs={2}>
+                                    </Grid>
+                                </Grid>
+                            }
+                            {mapCards()}
+                            <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
+                        </Container>
+                    </Grid>
+                </Grid >
             )
         }
         if (selectedTab == 1) {
@@ -133,7 +143,7 @@ const User = () => {
             alignItems: 'left',
         }}>
 
-            <Typography variant="h3" component="div" sx={{ mb: 2 }}>
+            <Typography variant="h2" component="div" sx={{ mb: 2 }}>
                 Account
             </Typography>
 

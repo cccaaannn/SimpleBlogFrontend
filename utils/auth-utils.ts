@@ -19,4 +19,13 @@ export namespace AuthUtils {
         Storage.clear(LocalStorageKeys.TOKEN);
     }
 
+    export function isExpired() {
+        const token = Storage.get(LocalStorageKeys.TOKEN);
+        const tokenPayload: any = jwt.decode(token);
+        if(tokenPayload.exp > +new Date) {
+            return true;
+        }
+        return false;
+    }
+
 }

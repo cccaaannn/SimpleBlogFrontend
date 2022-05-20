@@ -2,13 +2,11 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Button, TextareaAutosize } from '@mui/material';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
+import { Button, Grid } from '@mui/material';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded'
 
 import { LocalStorageKeys } from '../../../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../../../utils/api-utils';
@@ -49,13 +47,13 @@ const EditPost = () => {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN) }`
+                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
             },
         });
         const jsonData: any = await res.json();
         console.log(jsonData);
 
-        if(!jsonData.status) {
+        if (!jsonData.status) {
             console.log("SV is dead");
             return;
         }
@@ -70,7 +68,7 @@ const EditPost = () => {
     const onPosteEdit = async () => {
 
         if (newPostHeader.trim() == "" || newPostBody.trim() == "" || newPostImage.trim() == "") {
-            setMessageWithType("Please fill empty fields", "error");
+            setMessageWithType("Please fill required fields", "warning");
             return;
         }
 
@@ -100,7 +98,7 @@ const EditPost = () => {
 
         if (jsonData.status) {
             setMessageWithType("Post updated", "success");
-            router.push(`/posts/${postId}`);
+            router.push(`/users/${AuthUtils.getTokenPayload().id}/posts/${postId}`);
         }
         else {
             setMessageWithType(jsonData.message, "error");
@@ -110,66 +108,101 @@ const EditPost = () => {
 
     return (
         <Container component="main" sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            marginTop: 2,
+            padding: 2,
+            boxShadow: 3
         }}>
 
-            <Typography gutterBottom variant="h6" component="div">
-                Update post
-            </Typography>
-            <TextField
-                value={newPostHeader}
-                onChange={(e) => setNewPostHeader(e.target.value)}
-                error={newPostHeader.trim() == "" ? true : false}
-                required
-                label="Title"
-            />
+            <Grid container spacing={0} >
+                <Grid item xs={12} sx={{ mb: 2 }}>
+                    <Typography gutterBottom variant="h2" component="div">
+                        Update post
+                    </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        value={newPostHeader}
+                        onChange={(e) => setNewPostHeader(e.target.value)}
+                        error={newPostHeader.trim() == "" ? true : false}
+                        required
+                        autoFocus
+                        label="Post title"
+                        placeholder="Title"
+                        sx={{ mb: 2, display: 'flex' }}
+                    />
+                </Grid>
+                <Grid item xs={8}>
+                    <TextField
+                        value={newPostImage}
+                        onChange={(e) => setNewPostImage(e.target.value)}
+                        error={newPostImage.trim() == "" ? true : false}
+                        required
+                        label="Post image"
+                        placeholder="Image url"
+                        sx={{ mb: 2, display: 'flex' }}
+                    />
+                </Grid>
 
-            <TextField
-                value={newPostImage}
-                onChange={(e) => setNewPostImage(e.target.value)}
-                error={newPostImage.trim() == "" ? true : false}
-                required
-                label="Image url"
-            />
+                <Grid item xs={2}>
+                    <ComboBox
+                        name='Category'
+                        inputsList={CategoryArrWithoutAll}
+                        selected={newPostCategory}
+                        setSelected={setNewPostCategory}
+                    />
+                </Grid>
+                <Grid item xs={2}>
+                    <ComboBox
+                        name='Visibility'
+                        inputsList={VisibilityArr}
+                        selected={newPostVisibility}
+                        setSelected={setNewPostVisibility}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="Post body"
+                        multiline
+                        required
+                        rows={12}
+                        value={newPostBody}
+                        onChange={(e) => setNewPostBody(e.target.value)}
+                        aria-label="Post area"
+                        placeholder="Post"
+                        error={newPostBody.trim() == "" ? true : false}
+                        sx={{ display: 'flex' }}
+                    />
+                </Grid>
+                <Grid item xs={12} sx={{ mt: 1 }}>
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                </Grid>
+                <Grid item xs={3}>
+                    <Button
+                        size="large"
+                        variant="outlined"
+                        href='/me'
+                        sx={{ mt: 1, mb: 1, float: 'left' }}
+                    >
+                        <ChevronLeftRounded /> Go Back
+                    </Button>
+                </Grid>
+                <Grid item xs={6}>
 
-            <TextareaAutosize
-                value={newPostBody}
-                onChange={(e) => setNewPostBody(e.target.value)}
-                aria-label="Post area"
-                placeholder="Post body"
-                style={{ minWidth: 700, maxWidth: 700, minHeight: 100 }}
-            />
-
-            <ComboBox
-                name='Category'
-                inputsList={CategoryArrWithoutAll}
-                selected={newPostCategory}
-                setSelected={setNewPostCategory}
-            />
-
-            <ComboBox
-                name='Visibility'
-                inputsList={VisibilityArr}
-                selected={newPostVisibility}
-                setSelected={setNewPostVisibility}
-            />
-
-            <Button
-                onClick={onPosteEdit}
-                variant="contained"
-                sx={{ mt: 2, mb: 2 }}
-            >
-                Update
-            </Button>
-
-
-            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                </Grid>
+                <Grid item xs={3}>
+                    <Button
+                        onClick={onPosteEdit}
+                        variant="contained"
+                        size="large"
+                        sx={{ mt: 1, mb: 1, float: 'right' }}
+                    >
+                        Update!
+                    </Button>
+                </Grid>
+            </Grid >
 
         </Container >
-
     )
 }
 

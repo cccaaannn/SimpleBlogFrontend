@@ -16,14 +16,16 @@ import PostCardHome from '../components/Cards/PostCardHome';
 import useSSRDetector from '../hooks/useSSRDetector';
 import { AuthUtils } from '../utils/auth-utils';
 import usePagination from '../hooks/usePagination';
+import Head from 'next/head';
+import OpenGraph from '../components/OpenGraph';
 
 
-const Home: NextPage = (props: any) => {
+const Home: NextPage = ({ postProp, referer }: any) => {
     const router = useRouter();
     const theme = useTheme();
 
 
-    const [allData, setAllData] = useState([] as any[]);
+    const [allData, setAllData] = useState(postProp);
     const [selectedCategory, setSelectedCategory] = useState(0);
 
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
@@ -47,7 +49,7 @@ const Home: NextPage = (props: any) => {
     const fetchPosts = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         console.log("CSR");
-        
+
         const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
             headers: {
@@ -74,29 +76,41 @@ const Home: NextPage = (props: any) => {
     }
 
     return (
-        <Container maxWidth="xl" sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', marginTop: 3, marginBottom: 2 }}>
+        <>
+            <Head>
+                <OpenGraph
+                    url={referer}
+                    title={"Simple Blog"}
+                    description={"A simple blog website."}
+                    image={""}
+                />
+            </Head>
+    
+            <Container maxWidth="xl" sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', marginTop: 3, marginBottom: 2 }}>
 
-            <Grid container spacing={0} >
-                <Grid item xs={2}>
-                    <CategoriesMenu 
-                        selected={selectedCategory}
-                        setSelected={setSelectedCategory}
-                    />
-                </Grid>
-                <Grid item xs={10}>
-                    <Container component="main" sx={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center'
-                    }}>
-                        {mapCards()}
+                <Grid container spacing={0} >
+                    <Grid item xs={2}>
+                        <CategoriesMenu
+                            selected={selectedCategory}
+                            setSelected={setSelectedCategory}
+                        />
+                    </Grid>
+                    <Grid item xs={10}>
+                        <Container component="main" sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center'
+                        }}>
+                            {mapCards()}
 
-                        <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
-                    </Container>
+                            <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
+                        </Container>
 
-                </Grid>
-            </Grid >
-        </Container >
+                    </Grid>
+                </Grid >
+            </Container >
+        </>
+
     )
 }
 
@@ -112,7 +126,8 @@ export const getServerSideProps = async (context: any) => {
 
     return {
         props: {
-            allData: jsonData.data
+            postProp: jsonData.data,
+            referer: context.req.headers.referer ? context.req.headers.referer : ""
         },
     }
 }

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Button, TextField } from '@mui/material';
+import { Button, Grid, TextField } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
@@ -17,7 +17,7 @@ import AlertMessage from '../AlertMessage';
 const UpdateAccountForm = () => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    
+
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     useEffect(() => {
@@ -28,12 +28,12 @@ const UpdateAccountForm = () => {
     const onUserUpdate = async () => {
 
         if (username.trim() == "") {
-            setMessageWithType("Please fill empty fields", "error");
+            setMessageWithType("Please fill required fields", "warning");
             return;
         }
 
         let body = "";
-        if(password.trim() == "") {
+        if (password.trim() == "") {
             body = JSON.stringify({
                 username: username,
             });
@@ -69,40 +69,53 @@ const UpdateAccountForm = () => {
     return (
         <Container component="main" sx={{
             marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
         }}>
+            <Grid container spacing={0} >
+                <Grid item xs={12} sx={{ mb: 2 }}>
+                    <Typography gutterBottom variant="h4" component="div">
+                        Account information
+                    </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        error={username.trim() == "" ? true : false}
+                        required
+                        label="username"
+                        sx={{  mr: 2, display: 'flex' }}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <TextField
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        label="password"
+                        placeholder='Leave empty to keep same'
+                        type='password'
+                        sx={{ display: 'flex' }}
+                    />
+                </Grid>
+                <Grid item xs={12} sx={{ mt: 1 }}>
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                </Grid>
+                <Grid item xs={11}>
 
-            <Typography gutterBottom variant="h6" component="div">
-                Update account
-            </Typography>
+                </Grid>
+                <Grid item xs={1}>
+                    <Button
+                        onClick={onUserUpdate}
+                        variant="contained"
+                        size="large"
+                        sx={{ mt: 1, mb: 1, float: 'right' }}
+                    >
+                        Update
+                    </Button>
+                </Grid>
+                <Grid item xs={12}>
 
-            <TextField
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                error={username.trim() == "" ? true : false}
-                required
-                label="username"
-            />
-
-            <TextField
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                label="password"
-                placeholder='Leave empty to keep same'
-                type='password'
-            />
-
-            <Button
-                onClick={onUserUpdate}
-                variant="contained"
-                sx={{ mt: 2, mb: 2 }}
-            >
-                send
-            </Button>
-
-            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                </Grid>
+            </Grid>
 
         </Container >
 

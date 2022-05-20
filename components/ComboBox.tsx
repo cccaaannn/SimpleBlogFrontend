@@ -5,14 +5,10 @@ interface ComboBoxProps {
     inputsList: any,
     selected: any,
     setSelected: any,
-    minWidth?: any
+    sx?: any
 }
 
-export default function ComboBox({ name, inputsList, selected, setSelected, minWidth }: ComboBoxProps) {
-
-    if (!minWidth) {
-        minWidth = 100;
-    }
+export default function ComboBox({ name, inputsList, selected, setSelected, sx }: ComboBoxProps) {
 
     const mapMenuItems = () => {
         const menuItems: any = [];
@@ -25,7 +21,7 @@ export default function ComboBox({ name, inputsList, selected, setSelected, minW
     }
 
     return (
-        <FormControl variant="outlined">
+        <FormControl variant="outlined" sx={ sx ? sx: { ml: 1, display: 'flex'  }}>
             <InputLabel
                 htmlFor={name + "-select-box"}
             >
@@ -36,7 +32,6 @@ export default function ComboBox({ name, inputsList, selected, setSelected, minW
                 onChange={(e) => setSelected(e.target.value)}
                 input={
                     <OutlinedInput
-                        sx={{ minWidth: minWidth }}
                         name={name}
                         id={name + "-select-box"}
                     />

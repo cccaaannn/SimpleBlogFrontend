@@ -1,6 +1,4 @@
-import { useRouter } from 'next/router';
-
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import { cyan } from '@mui/material/colors';
 

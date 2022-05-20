@@ -15,24 +15,13 @@ import AlertMessage from '../AlertMessage';
 
 
 const UpdateAccountForm = () => {
-    const router = useRouter();
-    
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
-    const onBack = () => {
-        router.push(`/home`);
-    }
-
     useEffect(() => {
-        if (!AuthUtils.isLoggedIn()) {
-            router.push(`/home`);
-        }
-        else {
-            setUsername(AuthUtils.getTokenPayload().username);
-        }
+        setUsername(AuthUtils.getTokenPayload().username);
     }, [])
 
 

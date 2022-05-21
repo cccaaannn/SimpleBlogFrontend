@@ -4,6 +4,7 @@ import { cyan } from '@mui/material/colors';
 
 import { Post } from "../../types/Post";
 import { DateUtils } from "../../utils/date-utils";
+import { StaticPaths } from "../../utils/static-paths";
 
 
 interface PostCardDetailProps {
@@ -37,7 +38,7 @@ export default function PostCardDetail({ post }: PostCardDetailProps) {
                 component="img"
                 sx={{ maxWidth: '%100', maxHeight: 200 }}
                 image={post.image}
-                onError={(e: any) => e.target.src = "http://via.placeholder.com/300"}
+                onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
                 alt={post.header + "image"}
             />
             <CardContent>

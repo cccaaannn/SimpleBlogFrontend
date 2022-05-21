@@ -16,6 +16,7 @@ import { AuthUtils } from '../utils/auth-utils';
 import usePagination from '../hooks/usePagination';
 import Head from 'next/head';
 import OpenGraph from '../components/OpenGraph';
+import { StaticPaths } from '../utils/static-paths';
 
 
 const Home: NextPage = ({ postProp, referer }: any) => {
@@ -61,7 +62,6 @@ const Home: NextPage = ({ postProp, referer }: any) => {
         }
     }
 
-
     const mapCards = () => {
         const posts: any[] = []
         activeData.map((post: any, key: any) => {
@@ -77,7 +77,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
                     url={referer}
                     title={"Simple Blog"}
                     description={"A simple blog website."}
-                    image={"/favicon.ico"}
+                    image={StaticPaths.ICON_100}
                 />
             </Head>
     

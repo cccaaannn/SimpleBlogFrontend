@@ -7,6 +7,7 @@ import { cyan } from '@mui/material/colors';
 import { Post } from "../../types/Post";
 import { DateUtils } from "../../utils/date-utils";
 import { Visibility } from '../../types/enums/Visibility';
+import { StaticPaths } from '../../utils/static-paths';
 
 
 interface PostCardHomeProps {
@@ -60,7 +61,7 @@ export default function PostCardHome({ post }: PostCardHomeProps) {
                 component="img"
                 sx={{ width: 170 }}
                 image={post.image}
-                onError={(e: any) => e.target.src = "http://via.placeholder.com/300"}
+                onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
                 alt={post.header + "image"}
             />
         </Card>

@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Typography } from "@mui/material";
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import { cyan } from '@mui/material/colors';
 
@@ -24,9 +24,15 @@ export default function PostCardDetail({ post }: PostCardDetailProps) {
                     <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
                 }
                 subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
+                action={
+                    <Typography variant="body2" color="text.secondary" component="div">
+                        <Chip label={post.category} />
+                        {/* {post.visibility != Visibility.PUBLIC && <Chip label={post.visibility} variant="outlined" sx={{float:'right'}} />} */}
+                        <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                    </Typography>
+                }
             >
             </CardHeader>
-
             <CardMedia
                 component="img"
                 sx={{ maxWidth: '%100', maxHeight: 200 }}

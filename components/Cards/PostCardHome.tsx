@@ -1,11 +1,12 @@
 import { useRouter } from 'next/router';
 
-import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, Typography } from "@mui/material";
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 import { cyan } from '@mui/material/colors';
 
 import { Post } from "../../types/Post";
 import { DateUtils } from "../../utils/date-utils";
+import { Visibility } from '../../types/enums/Visibility';
 
 
 interface PostCardHomeProps {
@@ -40,8 +41,14 @@ export default function PostCardHome({ post }: PostCardHomeProps) {
                         {post.header}
                     </Typography>
 
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" gutterBottom>
                         {post.body.length < 300 ? post.body : post.body.slice(0, 300) + "..."}
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary" component="div">
+                        <Chip label={post.category} />
+                        {/* {post.visibility != Visibility.PUBLIC && <Chip label={post.visibility} variant="outlined" sx={{float:'right'}} />} */}
+                        <Chip label={post.visibility} variant="outlined" sx={{float:'right'}} />
                     </Typography>
                 </CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>

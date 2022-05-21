@@ -1,4 +1,4 @@
-import { Divider, ListItemText, MenuItem, MenuList, Paper } from "@mui/material";
+import { Divider, ListItemText, MenuItem, MenuList, Paper, Typography } from "@mui/material";
 import { CategoryArr } from "../types/enums/Category";
 
 interface CategoriesMenuProps {
@@ -18,7 +18,7 @@ export default function CategoriesMenu({ selected, setSelected }: CategoriesMenu
                 </MenuItem>
             )
             if (i == 0) {
-                categoryList.push(<Divider key={-1} />);
+                categoryList.push(<Divider key={-2} />);
             }
         }
 
@@ -27,6 +27,10 @@ export default function CategoriesMenu({ selected, setSelected }: CategoriesMenu
 
     return (
         <Paper sx={{ width: 300, maxWidth: '100%' }}>
+            <Typography align="center" sx={{ pt: 1, pb: 1, fontWeight: 'bold' }}>
+                Categories
+            </Typography>
+            <Divider key={-1} />
             <MenuList>
                 {mapCategories()}
             </MenuList>

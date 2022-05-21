@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 
 import { Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
-import { useRouter } from 'next/router';
-import { useTheme } from '@mui/material/styles';
 
 import { Storage } from '../utils/storage';
 import { LocalStorageKeys } from '../types/enums/local-storage-keys';
@@ -21,9 +19,6 @@ import OpenGraph from '../components/OpenGraph';
 
 
 const Home: NextPage = ({ postProp, referer }: any) => {
-    const router = useRouter();
-    const theme = useTheme();
-
 
     const [allData, setAllData] = useState(postProp);
     const [selectedCategory, setSelectedCategory] = useState(0);
@@ -82,7 +77,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
                     url={referer}
                     title={"Simple Blog"}
                     description={"A simple blog website."}
-                    image={""}
+                    image={"/favicon.ico"}
                 />
             </Head>
     
@@ -113,7 +108,6 @@ const Home: NextPage = ({ postProp, referer }: any) => {
 
     )
 }
-
 
 export const getServerSideProps = async (context: any) => {
     const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=All`, {

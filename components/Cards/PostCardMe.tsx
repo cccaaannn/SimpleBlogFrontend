@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, IconButton, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, IconButton, Tooltip, Typography } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit'
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -52,9 +52,11 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
                         }
                         subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
                         action={
-                            <IconButton onClick={() => setDeleteConfirmOpen(true)}>
-                                <DeleteIcon />
-                            </IconButton>
+                            <Tooltip title="Delete">
+                                <IconButton onClick={() => setDeleteConfirmOpen(true)}>
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Tooltip>
                         }
                     >
                     </CardHeader>
@@ -63,8 +65,14 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
                             {post.header}
                         </Typography>
 
-                        <Typography variant="body2" color="text.secondary">
+                        <Typography variant="body2" color="text.secondary" gutterBottom>
                             {post.body.length < 300 ? post.body : post.body.slice(0, 300) + "..."}
+                        </Typography>
+
+                        <Typography variant="body2" color="text.secondary" component="div">
+                            <Chip label={post.category} />
+                            {/* {post.visibility != Visibility.PUBLIC && <Chip label={post.visibility} variant="outlined" sx={{float:'right'}} />} */}
+                            <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
                         </Typography>
                     </CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>

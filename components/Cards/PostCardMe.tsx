@@ -5,12 +5,12 @@ import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, Ic
 import EditIcon from '@mui/icons-material/Edit'
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 import DeleteIcon from '@mui/icons-material/Delete';
-import { cyan } from '@mui/material/colors';
 
 import { Post } from "../../types/Post";
 import { DateUtils } from "../../utils/date-utils";
 import ConfirmDialog from '../ConfirmDialog';
 import { StaticPaths } from '../../utils/static-paths';
+import { AvatarUtils } from '../../utils/avatar-utils';
 
 
 interface PostCardHomeProps {
@@ -37,13 +37,13 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
 
     return (
         <div key={post._id}>
-            <ConfirmDialog open={deleteConfirmOpen} setOpen={setDeleteConfirmOpen} onConfirm={() => deleteAndClose(post._id)} text={`${post.header}`} title={`You sure want to delete`} />
+            <ConfirmDialog open={deleteConfirmOpen} setOpen={setDeleteConfirmOpen} onConfirm={() => deleteAndClose(post._id)} text={`${post.header}`} title={`You sure want to delete this post`} />
 
             <Card sx={{ display: 'flex', minWidth: 600, maxWidth: 700, marginBottom: 2 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 550 }}>
                     <CardHeader
                         avatar={
-                            <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                            <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)}>
                                 {post.owner.username.charAt(0)}
                             </Avatar>
                         }
@@ -71,15 +71,21 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
                         </Typography>
 
                         <Typography variant="body2" color="text.secondary" component="div">
-                            <Chip label={post.category} />
-                            {/* {post.visibility != Visibility.PUBLIC && <Chip label={post.visibility} variant="outlined" sx={{float:'right'}} />} */}
-                            <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                            <Tooltip title="Category">
+                                <Chip label={post.category} />
+                            </Tooltip>
+                            <Tooltip title="Visibility">
+                                <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                            </Tooltip>
                         </Typography>
                     </CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                        <Button size="small" onClick={() => onEdit(post._id)}>Edit <EditIcon /></Button>
-
-                        <Button size="small" onClick={() => onReadMore(post._id)}>Go to post<ChevronRightRounded /></Button>
+                        <Tooltip title="Edit this post">
+                            <Button size="small" onClick={() => onEdit(post._id)}>Edit <EditIcon /></Button>
+                        </Tooltip>
+                        <Tooltip title="Go to this post">
+                            <Button size="small" onClick={() => onReadMore(post._id)}>Read more<ChevronRightRounded /></Button>
+                        </Tooltip>
                     </Box>
                 </Box>
 

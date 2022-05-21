@@ -13,7 +13,6 @@ import Container from '@mui/material/Container';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
@@ -29,7 +28,6 @@ import AlertMessage from '../../components/AlertMessage';
 const LoginForm = () => {
 
     const router = useRouter();
-    const theme = createTheme();
 
     const { executeRecaptcha } = useGoogleReCaptcha();
     const [username, setUsername] = useState("");
@@ -104,83 +102,81 @@ const LoginForm = () => {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Login
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        error={username.trim() == "" ? true : false}
+
+                        margin="normal"
+                        required
+                        fullWidth
+                        id="username"
+                        label="username"
+                        name="username"
+                        autoComplete="username"
+                        autoFocus
+                    />
+                    <TextField
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        error={password.trim() == "" ? true : false}
+
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password"
+                        label="Password"
+                        type="password"
+                        id="password"
+                        autoComplete="current-password"
+                    />
+                    <FormControlLabel
+                        control={<Checkbox onClick={() => setRememberMe(!rememberMe)} checked={rememberMe} color="primary" />}
+                        label="Remember me"
+                    />
+
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
                         Login
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
-                            error={username.trim() == "" ? true : false}
-
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="username"
-                            label="username"
-                            name="username"
-                            autoComplete="username"
-                            autoFocus
-                        />
-                        <TextField
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            error={password.trim() == "" ? true : false}
-
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
-                        <FormControlLabel
-                            control={<Checkbox onClick={() => setRememberMe(!rememberMe)} checked={rememberMe} color="primary" />}
-                            label="Remember me"
-                        />
-
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Login
-                        </Button>
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="/auth/forgot-password" variant="body2">
-                                    Can not login?
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="/auth/sign-up" variant="body2">
-                                    {"Don't have an account? Sign Up"}
-                                </Link>
-                            </Grid>
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/auth/forgot-password" variant="body2">
+                                Can not login?
+                            </Link>
                         </Grid>
-                    </Box>
+                        <Grid item>
+                            <Link href="/auth/sign-up" variant="body2">
+                                {"Don't have an account? Sign Up"}
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
-            </Container>
-        </ThemeProvider>
+            </Box>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
     )
 }
 

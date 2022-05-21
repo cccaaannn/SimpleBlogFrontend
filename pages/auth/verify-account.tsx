@@ -8,7 +8,6 @@ import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import Copyright from '../../components/Copyright';
@@ -20,8 +19,6 @@ import AlertMessage from '../../components/AlertMessage';
 
 export default function VerifyAccount() {
     const router = useRouter();
-    const theme = createTheme();
-
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     useEffect(() => {
@@ -57,47 +54,45 @@ export default function VerifyAccount() {
             setMessageWithType(jsonData.message, "success")
         }
         else {
-            setMessageWithType(jsonData.message, "error" )
+            setMessageWithType(jsonData.message, "error")
         }
     }
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Activate account
-                    </Typography>
-                    <Box component="form" noValidate sx={{ mt: 1 }}>
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Activate account
+                </Typography>
+                <Box component="form" noValidate sx={{ mt: 1 }}>
 
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
-                        <Grid container>
-                            <Grid item xs>
-                                <Link href="/auth/login" variant="body2">
-                                    Login
-                                </Link>
-                            </Grid>
-                            <Grid item>
-                                <Link href="/auth/send-verification" variant="body2">
-                                    {"Re-send activation mail"}
-                                </Link>
-                            </Grid>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/auth/login" variant="body2">
+                                Login
+                            </Link>
                         </Grid>
-                    </Box>
+                        <Grid item>
+                            <Link href="/auth/send-verification" variant="body2">
+                                {"Re-send activation mail"}
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
-            </Container>
-        </ThemeProvider>
+            </Box>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
     );
 }

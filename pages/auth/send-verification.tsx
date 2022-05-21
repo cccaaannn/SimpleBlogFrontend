@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
@@ -20,7 +19,6 @@ import AlertMessage from '../../components/AlertMessage';
 
 
 export default function SendVerification() {
-    const theme = createTheme();
 
     const [email, setEmail] = useState("");
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
@@ -54,60 +52,58 @@ export default function SendVerification() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                         Send account activation link
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            sx={{mr:20}} 
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            error={!isValidEmail(email) ? true : false}
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Send account activation link
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        sx={{ mr: 20 }}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        error={!isValidEmail(email) ? true : false}
 
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="email"
-                            label="email"
-                            type="email"
-                            id="email"
-                            autoComplete="current-email"
-                        />
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="email"
+                        label="email"
+                        type="email"
+                        id="email"
+                        autoComplete="current-email"
+                    />
 
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Send
-                        </Button>
-                        <Grid container>
-							<Grid item xs>
-								<Link href="/auth/login" variant="body2">
-									Login
-								</Link>
-							</Grid>
-						</Grid>
-                    </Box>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Send
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/auth/login" variant="body2">
+                                Login
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
-            </Container>
-        </ThemeProvider>
+            </Box>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
     );
 }

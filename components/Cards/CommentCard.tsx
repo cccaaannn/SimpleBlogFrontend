@@ -1,11 +1,11 @@
 import { Avatar, Button, Card, CardContent, CardHeader, IconButton, Typography } from "@mui/material";
-import { cyan } from '@mui/material/colors';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { DateUtils } from "../../utils/date-utils";
 import { Comment } from '../../types/Comment';
 import useSSRDetector from "../../hooks/useSSRDetector";
 import { AuthUtils } from "../../utils/auth-utils";
+import { AvatarUtils } from "../../utils/avatar-utils";
 
 
 interface CommentCardProps {
@@ -28,7 +28,7 @@ export default function CommentCard({ comment, onDelete }: CommentCardProps) {
         <Card sx={{ minWidth: 700, maxWidth: 700, mb: 2 }} key={comment._id}>
             <CardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                    <Avatar {...AvatarUtils.getColorWithLetters(comment.owner.username)}>
                         {comment.owner.username.charAt(0)}
                     </Avatar>
                 }

@@ -10,7 +10,6 @@ import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 import Copyright from '../../components/Copyright';
@@ -21,7 +20,6 @@ import AlertMessage from '../../components/AlertMessage';
 
 export default function ResetPassword() {
     const router = useRouter();
-    const theme = createTheme();
 
     const [password1, setPassword1] = useState("");
     const [password2, setPassword2] = useState("");
@@ -44,7 +42,7 @@ export default function ResetPassword() {
         event.preventDefault();
 
         if (!isPasswordsMatching(password1, password2)) {
-            setMessageWithType("Passwords are not matching.", "error" )
+            setMessageWithType("Passwords are not matching.", "error")
             return;
         }
 
@@ -79,74 +77,72 @@ export default function ResetPassword() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <Container component="main" maxWidth="xs">
-                <Box
-                    sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
-                    }}
-                >
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Reset password
-                    </Typography>
-                    <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-                        <TextField
-                            value={password1}
-                            onChange={(e) => setPassword1(e.target.value)}
-                            error={!isPasswordsMatching(password1, password2) ? true : false}
+        <Container component="main" maxWidth="xs">
+            <Box
+                sx={{
+                    marginTop: 8,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                }}
+            >
+                <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                </Avatar>
+                <Typography component="h1" variant="h5">
+                    Reset password
+                </Typography>
+                <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+                    <TextField
+                        value={password1}
+                        onChange={(e) => setPassword1(e.target.value)}
+                        error={!isPasswordsMatching(password1, password2) ? true : false}
 
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password1"
-                            label="password"
-                            type="password"
-                            id="password1"
-                            autoComplete="current-password"
-                        />
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password1"
+                        label="password"
+                        type="password"
+                        id="password1"
+                        autoComplete="current-password"
+                    />
 
-                        <TextField
-                            value={password2}
-                            onChange={(e) => setPassword2(e.target.value)}
-                            error={!isPasswordsMatching(password1, password2) ? true : false}
+                    <TextField
+                        value={password2}
+                        onChange={(e) => setPassword2(e.target.value)}
+                        error={!isPasswordsMatching(password1, password2) ? true : false}
 
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password2"
-                            label="re-password"
-                            type="password"
-                            id="password2"
-                            autoComplete="current-password"
-                        />
+                        margin="normal"
+                        required
+                        fullWidth
+                        name="password2"
+                        label="re-password"
+                        type="password"
+                        id="password2"
+                        autoComplete="current-password"
+                    />
 
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
-                        <Button
-                            type="submit"
-                            fullWidth
-                            variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
-                        >
-                            Reset
-                        </Button>
-                        <Grid container>
-							<Grid item xs>
-								<Link href="/auth/login" variant="body2">
-									Login
-								</Link>
-							</Grid>
-						</Grid>
-                    </Box>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        sx={{ mt: 3, mb: 2 }}
+                    >
+                        Reset
+                    </Button>
+                    <Grid container>
+                        <Grid item xs>
+                            <Link href="/auth/login" variant="body2">
+                                Login
+                            </Link>
+                        </Grid>
+                    </Grid>
                 </Box>
-                <Copyright sx={{ mt: 8, mb: 4 }} />
-            </Container>
-        </ThemeProvider>
+            </Box>
+            <Copyright sx={{ mt: 8, mb: 4 }} />
+        </Container>
     );
 }

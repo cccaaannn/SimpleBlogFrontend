@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Grid, Pagination, Tab, Tabs } from '@mui/material';
+import { Box, Button, Grid, Pagination, Tab, Tabs, Tooltip } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
@@ -37,6 +37,25 @@ const User = () => {
         setSelectedPage(1)
         fetchData();
     }, [selectedCategory])
+
+
+    const onDeleteAccount = async () => {
+        const token = Storage.get(LocalStorageKeys.TOKEN);
+
+        // const res = await fetch(`${ApiUtils.getApiUrl()}/api/v1/users/purge/${AuthUtils.getTokenPayload().id}`, {
+        //     method: "delete",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": `Bearer ${token}`
+        //     },
+        // });
+        // const jsonData: any = await res.json();
+        // console.log(jsonData);
+        
+        AuthUtils.logout();
+
+        window.location = "/home" as any;
+    } 
 
 
     const fetchData = async () => {
@@ -90,13 +109,15 @@ const User = () => {
                     <Grid item xs={10} sx={{ mb: 1, mt: 1 }}>
                     </Grid>
                     <Grid item xs={2} sx={{ mb: 1, mt: 1 }}>
-                        <Button
-                            href='/me/add-post'
-                            variant="contained"
-                            sx={{ mt: 1, mb: 1, float: 'right' }}
-                        >
-                            Add new
-                        </Button>
+                        <Tooltip title="Create new post">
+                            <Button
+                                href='/me/add-post'
+                                variant="contained"
+                                sx={{ mt: 1, mb: 1, float: 'right' }}
+                            >
+                                New
+                            </Button>
+                        </Tooltip>
                     </Grid>
 
                     <Grid item xs={2}>
@@ -130,7 +151,19 @@ const User = () => {
             )
         }
         if (selectedTab == 1) {
-            return <UpdateAccountForm />
+            return (
+                <>
+                    <UpdateAccountForm />
+                    <Button
+                        variant="contained"
+                        color="error"
+                        onClick={() => onDeleteAccount()}
+                        sx={{ mt:3, float: "right" }}
+                    >
+                        Delete account
+                    </Button>
+                </>
+            )
         }
     }
 

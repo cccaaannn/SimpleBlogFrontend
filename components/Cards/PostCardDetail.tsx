@@ -1,10 +1,10 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Tooltip, Typography } from "@mui/material";
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
-import { cyan } from '@mui/material/colors';
 
 import { Post } from "../../types/Post";
 import { DateUtils } from "../../utils/date-utils";
 import { StaticPaths } from "../../utils/static-paths";
+import { AvatarUtils } from "../../utils/avatar-utils";
 
 
 interface PostCardDetailProps {
@@ -16,7 +16,7 @@ export default function PostCardDetail({ post }: PostCardDetailProps) {
         <Card sx={{ minWidth: 700, maxWidth: 700 }}>
             <CardHeader
                 avatar={
-                    <Avatar sx={{ bgcolor: cyan[500] }} aria-label="username">
+                    <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)}>
                         {post.owner.username.charAt(0)}
                     </Avatar>
                 }
@@ -27,9 +27,12 @@ export default function PostCardDetail({ post }: PostCardDetailProps) {
                 subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
                 action={
                     <Typography variant="body2" color="text.secondary" component="div">
-                        <Chip label={post.category} />
-                        {/* {post.visibility != Visibility.PUBLIC && <Chip label={post.visibility} variant="outlined" sx={{float:'right'}} />} */}
-                        <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                        <Tooltip title="Category">
+                            <Chip label={post.category} />
+                        </Tooltip>
+                        <Tooltip title="Visibility">
+                            <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                        </Tooltip>
                     </Typography>
                 }
             >

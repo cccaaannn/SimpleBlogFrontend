@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Button, Grid, TextField } from '@mui/material';
+import { Button, Grid, TextField, Tooltip } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
@@ -83,18 +83,20 @@ const UpdateAccountForm = () => {
                         error={username.trim() == "" ? true : false}
                         required
                         label="username"
-                        sx={{  mr: 2, display: 'flex' }}
+                        sx={{ mr: 2, display: 'flex' }}
                     />
                 </Grid>
                 <Grid item xs={6}>
-                    <TextField
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        label="password"
-                        placeholder='Leave empty to keep same'
-                        type='password'
-                        sx={{ display: 'flex' }}
-                    />
+                    <Tooltip title="Leave empty to keep same">
+                        <TextField
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            label="password"
+                            placeholder='Leave empty to keep same'
+                            type='password'
+                            sx={{ display: 'flex' }}
+                        />
+                    </Tooltip>
                 </Grid>
                 <Grid item xs={12} sx={{ mt: 1 }}>
                     <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />

@@ -16,9 +16,7 @@ export default function PostCardDetail({ post }: PostCardDetailProps) {
         <Card sx={{ minWidth: 700, maxWidth: 700 }}>
             <CardHeader
                 avatar={
-                    <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)}>
-                        {post.owner.username.charAt(0)}
-                    </Avatar>
+                    <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)} />
                 }
 
                 title={

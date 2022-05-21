@@ -28,9 +28,7 @@ export default function CommentCard({ comment, onDelete }: CommentCardProps) {
         <Card sx={{ minWidth: 700, maxWidth: 700, mb: 2 }} key={comment._id}>
             <CardHeader
                 avatar={
-                    <Avatar {...AvatarUtils.getColorWithLetters(comment.owner.username)}>
-                        {comment.owner.username.charAt(0)}
-                    </Avatar>
+                    <Avatar {...AvatarUtils.getColorWithLetters(comment.owner.username)} />
                 }
 
                 title={

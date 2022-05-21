@@ -23,8 +23,15 @@ export namespace AvatarUtils {
     export function stringAvatar(name: string) {
         let letters = "";
         const nameArr = name.split(' ');
-        for (let i = 0; i < nameArr.length; i++) {
-            letters += nameArr[i][0]
+        if(nameArr.length == 0) {
+            letters = "?";
+        }
+        else if (nameArr.length == 1) {
+            letters = nameArr[0][0];
+        }
+        else {
+            letters = nameArr[0][0];
+            letters += nameArr[1][0];
         }
         return letters;
     }

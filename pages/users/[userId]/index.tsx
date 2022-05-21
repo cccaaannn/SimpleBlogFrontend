@@ -20,7 +20,7 @@ import usePagination from '../../../hooks/usePagination';
 const User = ({ postsProp }: { postsProp: Post[] }) => {
     const router = useRouter();
 
-    const [allData, setAllData] = useState([] as any[]);
+    const [allData, setAllData] = useState(postsProp);
     const [selectedCategory, setSelectedCategory] = useState(0);
 
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
@@ -74,10 +74,10 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
             alignItems: 'left',
         }}>
             {
-                postsProp.length > 0 ? (
+                allData.length > 0 ? (
                     <>
                         <Typography variant="h3" component="div" sx={{ mb: 2 }}>
-                            {postsProp[0].owner.username + "'s posts"}
+                            {allData[0].owner.username + "'s posts"}
                         </Typography>
 
                         <Grid container spacing={0} >

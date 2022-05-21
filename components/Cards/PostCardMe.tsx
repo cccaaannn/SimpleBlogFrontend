@@ -43,9 +43,7 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
                 <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 550 }}>
                     <CardHeader
                         avatar={
-                            <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)}>
-                                {post.owner.username.charAt(0)}
-                            </Avatar>
+                            <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)} />
                         }
 
                         title={

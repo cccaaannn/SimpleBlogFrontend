@@ -22,6 +22,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
 
     const [allData, setAllData] = useState(postsProp);
     const [selectedCategory, setSelectedCategory] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
@@ -42,6 +43,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
         console.log(jsonData);
 
         setAllData(jsonData.data as Post[]);
+        setLoading(false);
     }
 
 
@@ -60,7 +62,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
     const mapCards = () => {
         const posts: any[] = []
         activeData.map((post: any, key: any) => {
-            posts.push(<PostCardHome post={post} />)
+            posts.push(<PostCardHome post={post} loading={loading} />)
         })
         return posts
     }

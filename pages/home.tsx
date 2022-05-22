@@ -27,7 +27,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
     const [isSSR] = useSSRDetector();
-
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         if (!isSSR && AuthUtils.isLoggedIn()) {
@@ -59,13 +59,14 @@ const Home: NextPage = ({ postProp, referer }: any) => {
 
         if (jsonData.status) {
             setAllData(jsonData.data);
+            setLoading(false);
         }
     }
 
     const mapCards = () => {
         const posts: any[] = []
         activeData.map((post: any, key: any) => {
-            posts.push(<PostCardHome post={post} />)
+            posts.push(<PostCardHome post={post} loading={loading} />)
         })
         return posts
     }

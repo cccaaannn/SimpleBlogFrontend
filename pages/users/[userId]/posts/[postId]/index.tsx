@@ -24,12 +24,16 @@ const Post = ({ postProp, referer }: any) => {
 
     const [post, setPost] = useState(postProp);
     const [comment, setComment] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     useEffect(() => {
         if (post == null) {
             fetchData();
+        }
+        else {
+            setLoading(false);
         }
     }, [])
 
@@ -48,13 +52,14 @@ const Post = ({ postProp, referer }: any) => {
         console.log(jsonData);
 
         setPost(jsonData.data);
+        setLoading(false);
     }
 
 
     const mapComments = () => {
         const comments: any[] = []
         post.comments.map((comment: any, key: any) => {
-            comments.push(<CommentCard comment={comment} onDelete={onCommentDelete} />)
+            comments.push(<CommentCard comment={comment} onDelete={onCommentDelete} loading={loading} />)
         })
         return comments
     }
@@ -132,7 +137,7 @@ const Post = ({ postProp, referer }: any) => {
                 alignItems: 'center',
             }}>
 
-                {post != null ? <PostCardDetail post={post} /> : ""}
+                <PostCardDetail post={post} loading={loading} />
 
                 <Divider sx={{ mt: 5 }} />
                 <Typography gutterBottom variant="h5" component="div">

@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 
-import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, IconButton, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, IconButton, Skeleton, Tooltip, Typography } from "@mui/material";
 import EditIcon from '@mui/icons-material/Edit'
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -11,14 +11,16 @@ import { DateUtils } from "../../utils/date-utils";
 import ConfirmDialog from '../ConfirmDialog';
 import { StaticPaths } from '../../utils/static-paths';
 import { AvatarUtils } from '../../utils/avatar-utils';
+import SkeletonTextBody from '../SkeletonTextBody';
 
 
 interface PostCardHomeProps {
     post: Post,
-    onDelete: any
+    onDelete: any,
+    loading: boolean
 }
 
-export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
+export default function PostCardMe({ post, onDelete, loading }: PostCardHomeProps) {
     const router = useRouter();
     const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
 
@@ -26,8 +28,8 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
         router.push(`me/edit-post/${postId}`);
     }
 
-    const onReadMore = (postId: string) => {
-        router.push(`/posts/${postId}`);
+    const onReadMore = (post: Post) => {
+        router.push(`/users/${post.owner._id}/posts/${post._id}`);
     }
 
     const deleteAndClose = async (postId: string) => {
@@ -43,57 +45,92 @@ export default function PostCardMe({ post, onDelete }: PostCardHomeProps) {
                 <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 550 }}>
                     <CardHeader
                         avatar={
-                            <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)} />
+                            loading ?
+                                <Skeleton animation="wave" variant="circular" width={40} height={40} />
+                                :
+                                <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)} />
                         }
 
                         title={
-                            <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
+                            loading ?
+                                <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 6 }} />
+                                :
+                                <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
                         }
-                        subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
+                        subheader={
+                            loading ?
+                                <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
+                                :
+                                post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""
+                        }
                         action={
-                            <Tooltip title="Delete">
-                                <IconButton onClick={() => setDeleteConfirmOpen(true)}>
-                                    <DeleteIcon />
-                                </IconButton>
-                            </Tooltip>
+                            loading ?
+                                <Skeleton animation="wave" variant="rectangular" width={100} height={25} />
+                                :
+                                <>
+                                    <Tooltip title="Delete">
+                                        <IconButton onClick={() => setDeleteConfirmOpen(true)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                </>
                         }
                     >
                     </CardHeader>
                     <CardContent sx={{ flex: '1 0 auto', paddingTop: 0 }}>
-                        <Typography gutterBottom variant="h5" component="div">
-                            {post.header}
-                        </Typography>
+                        {loading ? (
+                            <SkeletonTextBody lineCount={7} />
+                        ) : (
+                            <>
+                                <Typography gutterBottom variant="h5" component="div">
+                                    {post.header}
+                                </Typography>
 
-                        <Typography variant="body2" color="text.secondary" gutterBottom>
-                            {post.body.length < 300 ? post.body : post.body.slice(0, 300) + "..."}
-                        </Typography>
+                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                    {post.body.length < 300 ? post.body : post.body.slice(0, 300) + "..."}
+                                </Typography>
 
-                        <Typography variant="body2" color="text.secondary" component="div">
-                            <Tooltip title="Category">
-                                <Chip label={post.category} />
-                            </Tooltip>
-                            <Tooltip title="Visibility">
-                                <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
-                            </Tooltip>
-                        </Typography>
+                                <Typography variant="body2" color="text.secondary" component="div">
+                                    <Tooltip title="Category">
+                                        <Chip label={post.category} />
+                                    </Tooltip>
+                                    <Tooltip title="Visibility">
+                                        <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                                    </Tooltip>
+                                </Typography>
+                            </>
+                        )}
                     </CardContent>
                     <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                        <Tooltip title="Edit this post">
-                            <Button size="small" onClick={() => onEdit(post._id)}>Edit <EditIcon /></Button>
-                        </Tooltip>
-                        <Tooltip title="Go to this post">
-                            <Button size="small" onClick={() => onReadMore(post._id)}>Read more<ChevronRightRounded /></Button>
-                        </Tooltip>
+                        {loading ?
+                            <>
+                                <Skeleton animation="wave" height={10} width="10%" style={{ marginBottom: 6, marginRight: 5 }} />
+                                <Skeleton animation="wave" height={10} width="10%" style={{ marginBottom: 6 }} />
+                            </>
+                            :
+                            <>
+                                <Tooltip title="Edit this post">
+                                    <Button size="small" onClick={() => onEdit(post._id)}>Edit <EditIcon /></Button>
+                                </Tooltip>
+                                <Tooltip title="Go to this post">
+                                    <Button size="small" onClick={() => onReadMore(post)}>Read more<ChevronRightRounded /></Button>
+                                </Tooltip>
+                            </>
+                        }
                     </Box>
                 </Box>
 
-                <CardMedia
-                    component="img"
-                    sx={{ width: 170 }}
-                    image={post.image}
-                    onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
-                    alt={post.header + "image"}
-                />
+                {loading ?
+                    <Skeleton animation="wave" variant="rectangular" width={120} height={258} />
+                    :
+                    <CardMedia
+                        component="img"
+                        sx={{ width: 170 }}
+                        image={post.image}
+                        onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
+                        alt={post.header + "image"}
+                    />
+                }
             </Card>
         </div>
 

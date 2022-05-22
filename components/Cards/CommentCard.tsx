@@ -1,4 +1,4 @@
-import { Avatar, Button, Card, CardContent, CardHeader, IconButton, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardContent, CardHeader, IconButton, Skeleton, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 
 import { DateUtils } from "../../utils/date-utils";
@@ -6,14 +6,16 @@ import { Comment } from '../../types/Comment';
 import useSSRDetector from "../../hooks/useSSRDetector";
 import { AuthUtils } from "../../utils/auth-utils";
 import { AvatarUtils } from "../../utils/avatar-utils";
+import SkeletonTextBody from "../SkeletonTextBody";
 
 
 interface CommentCardProps {
     comment: Comment,
-    onDelete: any
+    onDelete: any,
+    loading: boolean
 }
 
-export default function CommentCard({ comment, onDelete }: CommentCardProps) {
+export default function CommentCard({ comment, onDelete, loading }: CommentCardProps) {
     const [isSSR] = useSSRDetector();
 
     const getUserId = () => {
@@ -28,15 +30,26 @@ export default function CommentCard({ comment, onDelete }: CommentCardProps) {
         <Card sx={{ minWidth: 700, maxWidth: 700, mb: 2 }} key={comment._id}>
             <CardHeader
                 avatar={
-                    <Avatar {...AvatarUtils.getColorWithLetters(comment.owner.username)} />
+                    loading ?
+                        <Skeleton animation="wave" variant="circular" width={40} height={40} />
+                        :
+                        <Avatar {...AvatarUtils.getColorWithLetters(comment.owner.username)} />
                 }
 
                 title={
-                    <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + comment.owner._id}>{comment.owner.username}</Button>
+                    loading ?
+                        <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 6 }} />
+                        :
+                        <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + comment.owner._id}>{comment.owner.username}</Button>
                 }
-                subheader={comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""}
+                subheader={
+                    loading ?
+                        <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
+                        :
+                        comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""
+                }
                 action={
-                    getUserId() == comment.owner._id &&
+                    !loading && getUserId() == comment.owner._id &&
                     (
                         <IconButton onClick={() => onDelete(comment._id)}>
                             <DeleteIcon />
@@ -46,9 +59,15 @@ export default function CommentCard({ comment, onDelete }: CommentCardProps) {
             >
             </CardHeader>
             <CardContent>
-                <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
-                    {comment.comment}
-                </Typography>
+                {loading ? (
+                    <SkeletonTextBody lineCount={4} />
+                ) : (
+                    <>
+                        <Typography sx={{ whiteSpace: 'pre-line' }} variant="body2" color="text.secondary" component="p">
+                            {comment.comment}
+                        </Typography>
+                    </>
+                )}
             </CardContent>
         </Card>
     );

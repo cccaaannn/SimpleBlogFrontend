@@ -1,20 +1,21 @@
 import { useRouter } from 'next/router';
 
-import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, Tooltip, Typography } from "@mui/material";
+import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, Skeleton, Tooltip, Typography } from "@mui/material";
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 
 import { Post } from "../../types/Post";
 import { DateUtils } from "../../utils/date-utils";
-import { Visibility } from '../../types/enums/Visibility';
 import { StaticPaths } from '../../utils/static-paths';
 import { AvatarUtils } from '../../utils/avatar-utils';
+import SkeletonTextBody from '../SkeletonTextBody';
 
 
 interface PostCardHomeProps {
-    post: Post
+    post: Post,
+    loading: boolean
 }
 
-export default function PostCardHome({ post }: PostCardHomeProps) {
+export default function PostCardHome({ post, loading }: PostCardHomeProps) {
     const router = useRouter();
 
     const onReadMore = (post: Post) => {
@@ -26,45 +27,69 @@ export default function PostCardHome({ post }: PostCardHomeProps) {
             <Box sx={{ display: 'flex', flexDirection: 'column', minWidth: 550 }}>
                 <CardHeader
                     avatar={
-                        <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)} />
+                        loading ?
+                            <Skeleton animation="wave" variant="circular" width={40} height={40} />
+                            :
+                            <Avatar {...AvatarUtils.getColorWithLetters(post.owner.username)} />
                     }
 
                     title={
-                        <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
+                        loading ?
+                            <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 6 }} />
+                            :
+                            <Button sx={{ padding: 0, textTransform: 'none' }} href={'/users/' + post.owner._id}>{post.owner.username}</Button>
                     }
-                    subheader={post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""}
+                    subheader={
+                        loading ?
+                            <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
+                            :
+                            post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""
+                    }
                 >
                 </CardHeader>
                 <CardContent sx={{ flex: '1 0 auto', paddingTop: 0 }}>
-                    <Typography gutterBottom variant="h5" component="div">
-                        {post.header}
-                    </Typography>
 
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                        {post.body.length < 300 ? post.body : post.body.slice(0, 300) + "..."}
-                    </Typography>
+                    {loading ? (
+                        <SkeletonTextBody lineCount={7} />
+                    ) : (
+                        <>
+                            <Typography gutterBottom variant="h5" component="div">
+                                {post.header}
+                            </Typography>
 
-                    <Typography variant="body2" color="text.secondary" component="div">
-                        <Tooltip title="Category">
-                            <Chip label={post.category} />
-                        </Tooltip>
-                        <Tooltip title="Visibility">
-                            <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
-                        </Tooltip>
-                    </Typography>
+                            <Typography variant="body2" color="text.secondary" gutterBottom>
+                                {post.body.length < 300 ? post.body : post.body.slice(0, 300) + "..."}
+                            </Typography>
+
+                            <Typography variant="body2" color="text.secondary" component="div">
+                                <Tooltip title="Category">
+                                    <Chip label={post.category} />
+                                </Tooltip>
+                                <Tooltip title="Visibility">
+                                    <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
+                                </Tooltip>
+                            </Typography>
+                        </>
+                    )}
+
                 </CardContent>
                 <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                    <Button size="small" onClick={() => onReadMore(post)}>Read More <ChevronRightRounded /></Button>
+                    {loading ?
+                        <Skeleton animation="wave" height={10} width="10%" style={{ marginBottom: 6 }} />
+                        :
+                        <Button size="small" onClick={() => onReadMore(post)}>Read More <ChevronRightRounded /></Button>}
                 </Box>
             </Box>
-
-            <CardMedia
-                component="img"
-                sx={{ width: 170 }}
-                image={post.image}
-                onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
-                alt={post.header + "image"}
-            />
+            {loading ?
+                <Skeleton animation="wave" variant="rectangular" width={120} height={158} />
+                :
+                <CardMedia
+                    component="img"
+                    sx={{ width: 170 }}
+                    image={post.image}
+                    onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
+                    alt={post.header + "image"}
+                />}
         </Card>
     );
 }

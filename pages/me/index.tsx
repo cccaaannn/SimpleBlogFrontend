@@ -10,7 +10,7 @@ import { ApiUtils } from '../../utils/api-utils';
 import { AuthUtils } from '../../utils/auth-utils';
 import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
-import { CategoryArr } from '../../types/enums/Category';
+import { Category, CategoryArr } from '../../types/enums/Category';
 import UpdateAccountForm from '../../components/forms/UpdateAccountForm';
 import CategoriesMenu from '../../components/CategoriesMenu';
 import PostCardMe from '../../components/Cards/PostCardMe';
@@ -19,9 +19,11 @@ import usePagination from '../../hooks/usePagination';
 
 
 const User = () => {
-    const [allData, setAllData] = useState([] as any[]);
+
+    const [allData, setAllData] = useState([1,2,3,4,5] as any[]);
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [selectedTab, setSelectedTab] = useState(0);
+    const [loading, setLoading] = useState(true);
 
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
@@ -39,6 +41,13 @@ const User = () => {
     }, [selectedCategory])
 
 
+    useEffect(() => {
+        if(allData.length == 0 || allData[0].owner) {
+            setLoading(false);
+        }
+    }, [allData])
+
+
     const onDeleteAccount = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN);
 
@@ -51,11 +60,11 @@ const User = () => {
         // });
         // const jsonData: any = await res.json();
         // console.log(jsonData);
-        
+
         AuthUtils.logout();
 
         window.location = "/home" as any;
-    } 
+    }
 
 
     const fetchData = async () => {
@@ -72,6 +81,7 @@ const User = () => {
         console.log(jsonData);
 
         setAllData(jsonData.data);
+        
     }
 
     const onDelete = async (postId: string) => {
@@ -97,7 +107,7 @@ const User = () => {
     const mapCards = () => {
         const posts: any[] = []
         activeData.map((post: any, key: any) => {
-            posts.push(<PostCardMe post={post} onDelete={onDelete} />)
+            posts.push(<PostCardMe post={post} onDelete={onDelete} loading={loading} />)
         })
         return posts
     }
@@ -158,7 +168,7 @@ const User = () => {
                         variant="contained"
                         color="error"
                         onClick={() => onDeleteAccount()}
-                        sx={{ mt:3, float: "right" }}
+                        sx={{ mt: 3, float: "right" }}
                     >
                         Delete account
                     </Button>

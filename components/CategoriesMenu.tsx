@@ -1,12 +1,13 @@
-import { Divider, ListItemText, MenuItem, MenuList, Paper, Typography } from "@mui/material";
+import { Divider, ListItemText, MenuItem, MenuList, Paper, Skeleton, Typography } from "@mui/material";
 import { CategoryArr } from "../types/enums/Category";
 
 interface CategoriesMenuProps {
     selected: any,
-    setSelected: any
+    setSelected: any,
+    loading: boolean
 }
 
-export default function CategoriesMenu({ selected, setSelected }: CategoriesMenuProps) {
+export default function CategoriesMenu({ selected, setSelected, loading  }: CategoriesMenuProps) {
 
     const mapCategories = () => {
         const categoryList = [];
@@ -14,7 +15,10 @@ export default function CategoriesMenu({ selected, setSelected }: CategoriesMenu
         for (let i = 0; i < CategoryArr.length; i++) {
             categoryList.push(
                 <MenuItem selected={selected == i ? true : false} onClick={(e: any) => setSelected(i)} key={i}>
-                    <ListItemText>{CategoryArr[i]}</ListItemText>
+                    {loading ?
+                        <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 6 }} />
+                        :
+                        <ListItemText>{CategoryArr[i]}</ListItemText>}
                 </MenuItem>
             )
             if (i == 0) {

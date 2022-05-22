@@ -46,7 +46,7 @@ export default function CommentCard({ comment, onDelete, loading }: CommentCardP
                     loading ?
                         <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
                         :
-                        comment.dateCreated ? DateUtils.toLocalDateString(comment.dateCreated) : ""
+                        comment.createdAt ? DateUtils.toLocalDateString(comment.createdAt) : ""
                 }
                 action={
                     !loading && getUserId() == comment.owner._id &&

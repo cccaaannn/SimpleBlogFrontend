@@ -10,17 +10,18 @@ import { ApiUtils } from '../../utils/api-utils';
 import { AuthUtils } from '../../utils/auth-utils';
 import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
-import { Category, CategoryArr } from '../../types/enums/Category';
+import { CategoryArr } from '../../types/enums/Category';
 import UpdateAccountForm from '../../components/forms/UpdateAccountForm';
 import CategoriesMenu from '../../components/CategoriesMenu';
 import PostCardMe from '../../components/Cards/PostCardMe';
 import AlertMessage from '../../components/AlertMessage';
 import usePagination from '../../hooks/usePagination';
+import AccountDeleteForm from '../../components/forms/AccountDeleteForm';
 
 
 const User = () => {
 
-    const [allData, setAllData] = useState([1,2,3,4,5] as any[]);
+    const [allData, setAllData] = useState([1, 2, 3, 4, 5] as any[]);
     const [selectedCategory, setSelectedCategory] = useState(0);
     const [selectedTab, setSelectedTab] = useState(0);
     const [loading, setLoading] = useState(true);
@@ -42,35 +43,16 @@ const User = () => {
 
 
     useEffect(() => {
-        if(allData.length == 0 || allData[0].owner) {
+        if (allData.length == 0 || allData[0].owner) {
             setLoading(false);
         }
     }, [allData])
 
 
-    const onDeleteAccount = async () => {
-        const token = Storage.get(LocalStorageKeys.TOKEN);
-
-        // const res = await fetch(`${ApiUtils.getApiUrl()}/api/v1/users/purge/${AuthUtils.getTokenPayload().id}`, {
-        //     method: "delete",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         "Authorization": `Bearer ${token}`
-        //     },
-        // });
-        // const jsonData: any = await res.json();
-        // console.log(jsonData);
-
-        AuthUtils.logout();
-
-        window.location = "/home" as any;
-    }
-
-
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${AuthUtils.getTokenPayload().id}?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${AuthUtils.getTokenPayload().id}?field=createdAt&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -81,7 +63,7 @@ const User = () => {
         console.log(jsonData);
 
         setAllData(jsonData.data);
-        
+
     }
 
     const onDelete = async (postId: string) => {
@@ -134,6 +116,7 @@ const User = () => {
                         <CategoriesMenu
                             selected={selectedCategory}
                             setSelected={setSelectedCategory}
+                            loading={loading}
                         />
                     </Grid>
                     <Grid item xs={10}>
@@ -142,17 +125,6 @@ const User = () => {
                             flexDirection: 'column',
                             alignItems: 'center'
                         }}>
-                            {alertMessage != "" &&
-                                <Grid container spacing={0} >
-                                    <Grid item xs={2}>
-                                    </Grid>
-                                    <Grid item xs={8} sx={{ mb: 1, mt: 1 }}>
-                                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                                    </Grid>
-                                    <Grid item xs={2}>
-                                    </Grid>
-                                </Grid>
-                            }
                             {mapCards()}
                             <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
                         </Container>
@@ -162,17 +134,15 @@ const User = () => {
         }
         if (selectedTab == 1) {
             return (
-                <>
-                    <UpdateAccountForm />
-                    <Button
-                        variant="contained"
-                        color="error"
-                        onClick={() => onDeleteAccount()}
-                        sx={{ mt: 3, float: "right" }}
-                    >
-                        Delete account
-                    </Button>
-                </>
+                <Container component="main" sx={{
+                    marginTop: 4,
+                }}>
+                    <UpdateAccountForm
+                        setMessageWithType={setMessageWithType}
+                    />
+                    <hr />
+                    <AccountDeleteForm />
+                </Container>
             )
         }
     }
@@ -190,7 +160,7 @@ const User = () => {
                 Account
             </Typography>
 
-            <Box sx={{ width: '100%' }}>
+            <Box sx={{ width: '100%', mb: 1 }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={selectedTab} onChange={(e, value) => setSelectedTab(value)} aria-label="basic tabs example">
                         <Tab label="My post" value={0} />
@@ -198,7 +168,7 @@ const User = () => {
                     </Tabs>
                 </Box>
             </Box>
-
+            {(alertMessage != "") && <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />}
             {getContentForSelectedTab()}
 
         </Container >

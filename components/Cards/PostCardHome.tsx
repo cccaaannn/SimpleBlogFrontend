@@ -43,7 +43,16 @@ export default function PostCardHome({ post, loading }: PostCardHomeProps) {
                         loading ?
                             <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
                             :
-                            post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""
+                            post.createdAt ? DateUtils.toLocalDateString(post.createdAt) : ""
+                    }
+                    action={
+                        !loading && (post.createdAt != post.updatedAt) && (
+                            <Typography variant="body2" color="text.secondary" component="div">
+                                <Tooltip title={"Updated: " + DateUtils.toLocalDateString(post.updatedAt)}>
+                                    <Chip label={"Edited"} variant="outlined" sx={{ float: 'right' }} />
+                                </Tooltip>
+                            </Typography>
+                        )
                     }
                 >
                 </CardHeader>

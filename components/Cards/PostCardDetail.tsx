@@ -34,7 +34,7 @@ export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
                     loading ?
                         <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
                         :
-                        post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""
+                        post.createdAt ? DateUtils.toLocalDateString(post.createdAt) : ""
                 }
                 action={
                     loading ?
@@ -42,6 +42,13 @@ export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
                         :
                         <>
                             <Typography variant="body2" color="text.secondary" component="div">
+                                {
+                                    (post.createdAt != post.updatedAt) &&
+                                    <Tooltip title={"Updated: " + DateUtils.toLocalDateString(post.updatedAt)}>
+                                        <Chip label={"Edited"} variant="outlined" sx={{ mr: 2 }} />
+                                    </Tooltip>
+                                }
+
                                 <Tooltip title="Category">
                                     <Chip label={post.category} />
                                 </Tooltip>

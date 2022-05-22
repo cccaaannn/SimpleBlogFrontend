@@ -61,7 +61,7 @@ export default function PostCardMe({ post, onDelete, loading }: PostCardHomeProp
                             loading ?
                                 <Skeleton animation="wave" height={10} width="40%" style={{ marginBottom: 6 }} />
                                 :
-                                post.dateCreated ? DateUtils.toLocalDateString(post.dateCreated) : ""
+                                post.createdAt ? DateUtils.toLocalDateString(post.createdAt) : ""
                         }
                         action={
                             loading ?

@@ -32,7 +32,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
         const paths = router.asPath.split("/");
         const userId = paths[paths.length - 1];
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?field=createdAt&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -79,7 +79,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
                 allData.length > 0 ? (
                     <>
                         <Typography variant="h3" component="div" sx={{ mb: 2 }}>
-                            {allData[0].owner.username + "'s posts"}
+                            {`${allData[0].owner.username}'s posts (${allData.length})`}
                         </Typography>
 
                         <Grid container spacing={0} >
@@ -87,6 +87,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
                                 <CategoriesMenu
                                     selected={selectedCategory}
                                     setSelected={setSelectedCategory}
+                                    loading={loading}
                                 />
                             </Grid>
                             <Grid item xs={10}>
@@ -116,7 +117,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
 }
 
 export const getServerSideProps = async (context: any) => {
-    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${context.params.userId}?field=dateCreated&asc=-1`)
+    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${context.params.userId}?field=createdAt&asc=-1`)
     const jsonData: any = await res.json();
 
     return {

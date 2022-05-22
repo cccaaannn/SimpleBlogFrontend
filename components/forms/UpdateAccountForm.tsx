@@ -1,24 +1,23 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import { Button, Grid, TextField, Tooltip } from '@mui/material';
-import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../utils/api-utils';
 import { AuthUtils } from '../../utils/auth-utils';
 import { Storage } from '../../utils/storage';
-import useAlertMessage from '../../hooks/useAlertMessage';
-import AlertMessage from '../AlertMessage';
 
 
-const UpdateAccountForm = () => {
+interface UpdateAccountFormProps {
+    setMessageWithType: any
+}
+
+const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 
-    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
     useEffect(() => {
         setUsername(AuthUtils.getTokenPayload().username);
@@ -58,7 +57,9 @@ const UpdateAccountForm = () => {
         console.log(jsonData);
 
         if (jsonData.status) {
-            setMessageWithType("Changes will be effective on next login", "success");
+            setMessageWithType("Account updated", "success");
+            AuthUtils.logout();
+            window.location = "/auth/login" as any;
         }
         else {
             setMessageWithType(jsonData.message, "error");
@@ -67,60 +68,60 @@ const UpdateAccountForm = () => {
 
 
     return (
-        <Container component="main" sx={{
-            marginTop: 8,
-        }}>
-            <Grid container spacing={0} >
-                <Grid item xs={12} sx={{ mb: 2 }}>
-                    <Typography gutterBottom variant="h4" component="div">
+        <Grid container spacing={0} sx={{ mt: 1, mb: 4 }} >
+            <Grid item xs={6} >
+                <Grid item xs={12} >
+                    <Typography gutterBottom variant="h4" component="h4">
                         Account information
                     </Typography>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} >
+                    <Typography gutterBottom variant="subtitle1" component="p">
+                        Update your account information.
+                    </Typography>
+                </Grid>
+            </Grid>
+            <Grid item xs={6}>
+                <Grid item xs={12}>
+                    <Typography gutterBottom variant="subtitle1" component="p">
+                        Username
+                    </Typography>
                     <TextField
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
                         error={username.trim() == "" ? true : false}
                         required
                         label="username"
-                        sx={{ mr: 2, display: 'flex' }}
+                        sx={{ mt: 1, mb: 2, display: 'flex' }}
                     />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
+                    <Typography gutterBottom variant="subtitle1" component="p">
+                        Password (Leave empty to keep same)
+                    </Typography>
                     <Tooltip title="Leave empty to keep same">
                         <TextField
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             label="password"
                             placeholder='Leave empty to keep same'
-                            type='password'
-                            sx={{ display: 'flex' }}
+                            type='text'
+                            sx={{ mt: 1, mb: 2, display: 'flex' }}
                         />
                     </Tooltip>
                 </Grid>
-                <Grid item xs={12} sx={{ mt: 1 }}>
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                </Grid>
-                <Grid item xs={11}>
-
-                </Grid>
-                <Grid item xs={1}>
+                <Grid item xs={12}>
                     <Button
                         onClick={onUserUpdate}
                         variant="contained"
                         size="large"
-                        sx={{ mt: 1, mb: 1, float: 'right' }}
+                        sx={{ float: 'right' }}
                     >
                         Update
                     </Button>
                 </Grid>
-                <Grid item xs={12}>
-
-                </Grid>
             </Grid>
-
-        </Container >
-
+        </Grid>
     )
 }
 

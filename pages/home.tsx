@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
@@ -14,7 +15,6 @@ import PostCardHome from '../components/Cards/PostCardHome';
 import useSSRDetector from '../hooks/useSSRDetector';
 import { AuthUtils } from '../utils/auth-utils';
 import usePagination from '../hooks/usePagination';
-import Head from 'next/head';
 import OpenGraph from '../components/OpenGraph';
 import { StaticPaths } from '../utils/static-paths';
 
@@ -46,7 +46,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         console.log("CSR");
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=${CategoryArr[selectedCategory]}`, {
+        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=createdAt&asc=-1&category=${CategoryArr[selectedCategory]}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -89,6 +89,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
                         <CategoriesMenu
                             selected={selectedCategory}
                             setSelected={setSelectedCategory}
+                            loading={loading}
                         />
                     </Grid>
                     <Grid item xs={10}>
@@ -111,7 +112,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
 }
 
 export const getServerSideProps = async (context: any) => {
-    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=dateCreated&asc=-1&category=All`, {
+    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=createdAt&asc=-1&category=All`, {
         method: "get",
         headers: {
             "Content-Type": "application/json",

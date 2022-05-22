@@ -8,7 +8,8 @@ interface User {
     password: string,
     status: Status,
     role: Roles,
-    dateCreated: Date
+    createdAt: Date,
+    updatedAt: Date
 };
 
 interface UserAdd {
@@ -28,7 +29,8 @@ interface UserSort {
     email?: number,
     status?: number,
     role?: number,
-    dateCreated?: number
+    createdAt?: number,
+    updatedAt?: number
 };
 
 export type { User, UserAdd, UserUpdate,  UserSort };

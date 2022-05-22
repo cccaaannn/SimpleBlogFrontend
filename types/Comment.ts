@@ -2,7 +2,8 @@ interface Comment {
     _id: string,
     owner: Owner,
     comment: string,
-    dateCreated: Date
+    createdAt: Date,
+    updatedAt: Date
 };
 
 interface Owner {

@@ -8,15 +8,15 @@ import DialogTitle from '@mui/material/DialogTitle';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 
-interface ResponsiveDialogProps {
+interface ConfirmDialogProps {
     open: any,
     setOpen: any,
-    title: any,
-    text: any,
+    title: string,
+    text: string,
     onConfirm: any
 }
 
-export default function ConfirmDialog({ open, setOpen, title, text, onConfirm }: ResponsiveDialogProps) {
+export default function ConfirmDialog({ open, setOpen, title, text, onConfirm }: ConfirmDialogProps) {
     const theme = useTheme();
     const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     return (

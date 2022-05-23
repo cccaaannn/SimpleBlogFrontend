@@ -17,13 +17,16 @@ import { AuthUtils } from '../utils/auth-utils';
 import usePagination from '../hooks/usePagination';
 import OpenGraph from '../components/OpenGraph';
 import { StaticPaths } from '../utils/static-paths';
+import useBreakpointDetector from '../hooks/useBreakpointDetector';
+import ComboBox from '../components/ComboBox';
 
 
 const Home: NextPage = ({ postProp, referer }: any) => {
 
     const [allData, setAllData] = useState(postProp);
-    const [selectedCategory, setSelectedCategory] = useState(0);
+    const [selectedCategory, setSelectedCategory] = useState("All");
 
+    const isMobile = useBreakpointDetector('md');
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
     const [isSSR] = useSSRDetector();
@@ -46,7 +49,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         console.log("CSR");
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=createdAt&asc=-1&category=${CategoryArr[selectedCategory]}`, {
+        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=createdAt&asc=-1&category=${selectedCategory}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -81,28 +84,39 @@ const Home: NextPage = ({ postProp, referer }: any) => {
                     image={StaticPaths.ICON_100}
                 />
             </Head>
-    
-            <Container maxWidth="xl" sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', marginTop: 3, marginBottom: 2 }}>
 
-                <Grid container spacing={0} >
-                    <Grid item xs={2}>
-                        <CategoriesMenu
-                            selected={selectedCategory}
-                            setSelected={setSelectedCategory}
-                            loading={loading}
-                        />
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Container component="main" sx={{
+            <Container maxWidth="lg" sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', marginTop: 3, marginBottom: 2 }}>
+
+                <Grid container spacing={1} >
+                    {isMobile &&
+                        <Grid item xs={12}>
+                            <ComboBox
+                                name='Categories'
+                                inputsList={CategoryArr}
+                                selected={selectedCategory}
+                                setSelected={setSelectedCategory}
+                            />
+                        </Grid>
+                    }
+                    {!isMobile &&
+                        <Grid item md={2}>
+                            <CategoriesMenu
+                                selected={selectedCategory}
+                                setSelected={setSelectedCategory}
+                                loading={loading}
+                            />
+                        </Grid>
+                    }
+                    <Grid item xs={12} md={10}>
+                        {mapCards()}
+                        <Container component="div" sx={{
+                            marginBottom: 3,
                             display: 'flex',
                             flexDirection: 'column',
-                            alignItems: 'center'
+                            alignItems: 'center',
                         }}>
-                            {mapCards()}
-
                             <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
                         </Container>
-
                     </Grid>
                 </Grid >
             </Container >

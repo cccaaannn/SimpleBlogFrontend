@@ -15,7 +15,7 @@ import OpenGraph from '../../../../../components/OpenGraph';
 import AlertMessage from '../../../../../components/AlertMessage';
 import CommentCard from '../../../../../components/Cards/CommentCard';
 import AddCommentForm from '../../../../../components/forms/AddCommentForm';
-import { Divider } from '@mui/material';
+import { Divider, Grid } from '@mui/material';
 
 
 const Post = ({ postProp, referer }: any) => {
@@ -129,26 +129,40 @@ const Post = ({ postProp, referer }: any) => {
                 />
             </Head>
 
-            <Container component="main" sx={{
-                marginTop: 8,
-                marginBottom: 2,
+            <Container component="main" maxWidth="lg" sx={{
+                marginTop: 2,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
             }}>
+                <Grid container spacing={1} >
+                    <Grid item xs={12} md={12}>
+                        <PostCardDetail post={post} loading={loading} />
+                    </Grid>
+                    {(alertMessage != "") &&
+                        <Grid item xs={12} md={12}>
+                            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                        </Grid>
+                    }
+                    <Grid item xs={12} md={12}>
+                        <Container component="main" sx={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            mt: 2
+                        }}>
+                            <Typography gutterBottom variant="h5" component="div">
+                                Comments
+                            </Typography>
+                        </Container>
 
-                <PostCardDetail post={post} loading={loading} />
+                        {post != null ? mapComments() : ""}
 
-                <Divider sx={{ mt: 5 }} />
-                <Typography gutterBottom variant="h5" component="div">
-                    Comments
-                </Typography>
-
-                {post != null ? mapComments() : ""}
-
-                <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-
-                <AddCommentForm comment={comment} setComment={setComment} onPost={onCommentPost} />
+                    </Grid>
+                    <Grid item xs={12} md={12}>
+                        <AddCommentForm comment={comment} setComment={setComment} onPost={onCommentPost} />
+                    </Grid>
+                </Grid>
             </Container>
         </>
     )

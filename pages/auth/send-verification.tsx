@@ -69,7 +69,6 @@ export default function SendVerification() {
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
-                        sx={{ mr: 20 }}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         error={!isValidEmail(email) ? true : false}
@@ -83,8 +82,10 @@ export default function SendVerification() {
                         id="email"
                         autoComplete="current-email"
                     />
-
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    
+                    {(alertMessage != "") &&
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    }
 
                     <Button
                         type="submit"

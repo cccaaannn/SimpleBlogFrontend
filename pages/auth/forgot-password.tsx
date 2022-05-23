@@ -53,7 +53,7 @@ export default function ForgotPassword() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main">
             <Box
                 sx={{
                     marginTop: 8,
@@ -70,7 +70,6 @@ export default function ForgotPassword() {
                 </Typography>
                 <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
                     <TextField
-                        sx={{ mr: 20 }}
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                         error={!isValidEmail(email) ? true : false}
@@ -85,7 +84,9 @@ export default function ForgotPassword() {
                         autoComplete="current-email"
                     />
 
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    {(alertMessage != "") &&
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    }
 
                     <Button
                         type="submit"
@@ -103,7 +104,7 @@ export default function ForgotPassword() {
                         </Grid>
                         <Grid item>
                             <Link href="/auth/send-verification" variant="body2">
-                                {"Have inactive account? Activate account"}
+                                {"Activate account"}
                             </Link>
                         </Grid>
                     </Grid>

@@ -47,7 +47,7 @@ const SignUpForm = () => {
         event.preventDefault();
 
         if (username.trim() == "" || password.trim() == "" || !isValidEmail(email)) {
-            setMessageWithType("Please fill empty fields", "error")
+            setMessageWithType("Please fill required fields", "error")
             return;
         }
 
@@ -160,7 +160,9 @@ const SignUpForm = () => {
                         />
                     </FormControl>
 
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    {(alertMessage != "") &&
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    }
 
                     <Button
                         type="submit"

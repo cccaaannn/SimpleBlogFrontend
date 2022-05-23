@@ -14,7 +14,7 @@ export default function CategoriesMenu({ selected, setSelected, loading  }: Cate
 
         for (let i = 0; i < CategoryArr.length; i++) {
             categoryList.push(
-                <MenuItem selected={selected == i ? true : false} onClick={(e: any) => setSelected(i)} key={i}>
+                <MenuItem selected={selected == CategoryArr[i] ? true : false} onClick={(e: any) => setSelected(CategoryArr[i])} key={i}>
                     {loading ?
                         <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 6 }} />
                         :

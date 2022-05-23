@@ -82,8 +82,8 @@ const AddPost = () => {
             boxShadow: 3
         }}>
 
-            <Grid container spacing={0} >
-                <Grid item xs={12} sx={{ mb: 2 }}>
+            <Grid container spacing={2} >
+                <Grid item xs={12}>
                     <Typography gutterBottom variant="h2" component="div">
                         Create a new post
                     </Typography>
@@ -100,7 +100,7 @@ const AddPost = () => {
                         sx={{ mb: 2, display: 'flex' }}
                     />
                 </Grid>
-                <Grid item xs={8}>
+                <Grid item xs={4} md={8}>
                     <TextField
                         value={newPostImage}
                         onChange={(e) => setNewPostImage(e.target.value)}
@@ -112,7 +112,7 @@ const AddPost = () => {
                     />
                 </Grid>
 
-                <Grid item xs={2}>
+                <Grid item xs={4} md={2}>
                     <ComboBox
                         name='Category'
                         inputsList={CategoryArrWithoutAll}
@@ -120,7 +120,7 @@ const AddPost = () => {
                         setSelected={setNewPostCategory}
                     />
                 </Grid>
-                <Grid item xs={2}>
+                <Grid item xs={4} md={2}>
                     <ComboBox
                         name='Visibility'
                         inputsList={VisibilityArr}
@@ -143,10 +143,12 @@ const AddPost = () => {
                         sx={{ display: 'flex' }}
                     />
                 </Grid>
-                <Grid item xs={12} sx={{ mt: 1 }}>
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                </Grid>
-                <Grid item xs={3}>
+                {(alertMessage != "") &&
+                    <Grid item xs={12} sx={{ mt: 1 }}>
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    </Grid>
+                }
+                <Grid item xs={6}>
                     <Button
                         size="large"
                         variant="outlined"
@@ -157,9 +159,6 @@ const AddPost = () => {
                     </Button>
                 </Grid>
                 <Grid item xs={6}>
-
-                </Grid>
-                <Grid item xs={3}>
                     <Button
                         onClick={onPostAdd}
                         variant="contained"

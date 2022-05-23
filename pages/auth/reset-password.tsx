@@ -77,7 +77,7 @@ export default function ResetPassword() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
+        <Container component="main">
             <Box
                 sx={{
                     marginTop: 8,
@@ -123,7 +123,9 @@ export default function ResetPassword() {
                         autoComplete="current-password"
                     />
 
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    {(alertMessage != "") &&
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    }
 
                     <Button
                         type="submit"

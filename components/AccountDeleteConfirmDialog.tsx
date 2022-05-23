@@ -48,7 +48,7 @@ export default function AccountDeleteConfirmDialog({ open, setOpen, onConfirm }:
                         autoFocus
                         margin="dense"
                         id="dialog-text-field"
-                        label={`Please type '${textToMatch}' to delete your account`}
+                        label={`Please type '${textToMatch}'`}
                         type="text"
                         fullWidth
                         variant="standard"

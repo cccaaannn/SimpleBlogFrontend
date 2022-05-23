@@ -2,12 +2,12 @@ import type { AppProps } from 'next/app'
 import '../styles/globals.css'
 
 import Layout from '../components/Layout'
-import { createTheme, ThemeProvider } from '@mui/material';
+import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material';
 import Head from 'next/head';
 
 
 function MyApp({ Component, pageProps }: AppProps) {
-	const theme = createTheme({
+	let theme = createTheme({
 		palette: {
 			primary: {
 				main: "#009688"
@@ -18,6 +18,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 			}
 		}
 	});
+	theme = responsiveFontSizes(theme);
 
 	return (
 		<ThemeProvider theme={theme}>

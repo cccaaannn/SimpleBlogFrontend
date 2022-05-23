@@ -17,12 +17,9 @@ interface ConfirmDialogProps {
 }
 
 export default function ConfirmDialog({ open, setOpen, title, text, onConfirm }: ConfirmDialogProps) {
-    const theme = useTheme();
-    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
     return (
         <div>
             <Dialog
-                fullScreen={fullScreen}
                 open={open}
                 onClose={()=>setOpen(false)}
                 aria-labelledby="responsive-dialog-title"

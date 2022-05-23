@@ -68,7 +68,7 @@ const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
 
 
     return (
-        <Grid container spacing={0} sx={{ mt: 1, mb: 4 }} >
+        <Grid container spacing={0} sx={{ mb: 4 }} >
             <Grid item xs={6} >
                 <Grid item xs={12} >
                     <Typography gutterBottom variant="h4" component="h4">

@@ -21,7 +21,7 @@ export default function ComboBox({ name, inputsList, selected, setSelected, sx }
     }
 
     return (
-        <FormControl variant="outlined" sx={ sx ? sx: { ml: 1, display: 'flex'  }}>
+        <FormControl variant="outlined" sx={ sx ? sx: { display: 'flex'  }}>
             <InputLabel
                 htmlFor={name + "-select-box"}
             >

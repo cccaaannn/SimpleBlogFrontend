@@ -17,15 +17,18 @@ import PostCardMe from '../../components/Cards/PostCardMe';
 import AlertMessage from '../../components/AlertMessage';
 import usePagination from '../../hooks/usePagination';
 import AccountDeleteForm from '../../components/forms/AccountDeleteForm';
+import ComboBox from '../../components/ComboBox';
+import useBreakpointDetector from '../../hooks/useBreakpointDetector';
 
 
 const User = () => {
 
     const [allData, setAllData] = useState([1, 2, 3, 4, 5] as any[]);
-    const [selectedCategory, setSelectedCategory] = useState(0);
+    const [selectedCategory, setSelectedCategory] = useState("All");
     const [selectedTab, setSelectedTab] = useState(0);
     const [loading, setLoading] = useState(true);
 
+    const isMobile = useBreakpointDetector('md');
     const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
 
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
@@ -52,7 +55,7 @@ const User = () => {
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${AuthUtils.getTokenPayload().id}?field=createdAt&asc=-1&category=${CategoryArr[selectedCategory]}`, {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${AuthUtils.getTokenPayload().id}?field=createdAt&asc=-1&category=${selectedCategory}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -97,52 +100,68 @@ const User = () => {
     const getContentForSelectedTab = () => {
         if (selectedTab == 0) {
             return (
-                <Grid container spacing={0} >
-                    <Grid item xs={10} sx={{ mb: 1, mt: 1 }}>
+                <Grid container spacing={1} >
+                    <Grid item xs={8} md={10} sx={{ mb: 1 }}>
+                        {isMobile &&
+                            <ComboBox
+                                name='Categories'
+                                inputsList={CategoryArr}
+                                selected={selectedCategory}
+                                setSelected={setSelectedCategory}
+                            />
+                        }
                     </Grid>
-                    <Grid item xs={2} sx={{ mb: 1, mt: 1 }}>
+                    <Grid item xs={4} md={2} sx={{ mb: 1 }}>
                         <Tooltip title="Create new post">
                             <Button
                                 href='/me/add-post'
                                 variant="contained"
-                                sx={{ mt: 1, mb: 1, float: 'right' }}
+                                size="large"
+                                sx={{ mb: 1, float: 'right' }}
                             >
                                 New
                             </Button>
                         </Tooltip>
                     </Grid>
 
-                    <Grid item xs={2}>
-                        <CategoriesMenu
-                            selected={selectedCategory}
-                            setSelected={setSelectedCategory}
-                            loading={loading}
-                        />
-                    </Grid>
-                    <Grid item xs={10}>
-                        <Container component="div" sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center'
-                        }}>
+                    <Grid container xs={12} md={12} item spacing={3} >
+                        {!isMobile &&
+                            <Grid item md={3} >
+
+                                <CategoriesMenu
+                                    selected={selectedCategory}
+                                    setSelected={setSelectedCategory}
+                                    loading={loading}
+                                />
+
+                            </Grid>
+                        }
+
+                        <Grid item xs={12} md={9} >
                             {mapCards()}
-                            <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
-                        </Container>
+                            <Container component="div" sx={{
+                                marginBottom: 3,
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                            }}>
+                                <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
+                            </Container>
+                        </Grid>
                     </Grid>
+
                 </Grid >
             )
         }
         if (selectedTab == 1) {
             return (
-                <Container component="main" sx={{
-                    marginTop: 4,
-                }}>
+                <>
                     <UpdateAccountForm
                         setMessageWithType={setMessageWithType}
                     />
                     <hr />
                     <AccountDeleteForm />
-                </Container>
+                </>
             )
         }
     }
@@ -160,7 +179,7 @@ const User = () => {
                 Account
             </Typography>
 
-            <Box sx={{ width: '100%', mb: 1 }}>
+            <Box sx={{ width: '100%', mb: 4 }}>
                 <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                     <Tabs value={selectedTab} onChange={(e, value) => setSelectedTab(value)} aria-label="basic tabs example">
                         <Tab label="My post" value={0} />
@@ -168,9 +187,9 @@ const User = () => {
                     </Tabs>
                 </Box>
             </Box>
+
             {(alertMessage != "") && <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />}
             {getContentForSelectedTab()}
-
         </Container >
 
     )

@@ -27,7 +27,7 @@ export default function CommentCard({ comment, onDelete, loading }: CommentCardP
     }
 
     return (
-        <Card sx={{ minWidth: 700, maxWidth: 700, mb: 2 }} key={comment._id}>
+        <Card sx={{ mb: 2}} key={comment._id}>
             <CardHeader
                 avatar={
                     loading ?

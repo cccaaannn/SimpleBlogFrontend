@@ -6,6 +6,7 @@ import { DateUtils } from "../../utils/date-utils";
 import { StaticPaths } from "../../utils/static-paths";
 import { AvatarUtils } from "../../utils/avatar-utils";
 import SkeletonTextBody from "../SkeletonTextBody";
+import useBreakpointDetector from "../../hooks/useBreakpointDetector";
 
 
 interface PostCardDetailProps {
@@ -14,8 +15,11 @@ interface PostCardDetailProps {
 }
 
 export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
+
+    const isMobile = useBreakpointDetector('md');
+
     return (
-        <Card sx={{ minWidth: 700, maxWidth: 700 }}>
+        <Card>
             <CardHeader
                 avatar={
                     loading ?
@@ -42,12 +46,6 @@ export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
                         :
                         <>
                             <Typography variant="body2" color="text.secondary" component="div">
-                                {
-                                    (post.createdAt != post.updatedAt) &&
-                                    <Tooltip title={"Updated: " + DateUtils.toLocalDateString(post.updatedAt)}>
-                                        <Chip label={"Edited"} variant="outlined" sx={{ mr: 2 }} />
-                                    </Tooltip>
-                                }
 
                                 <Tooltip title="Category">
                                     <Chip label={post.category} />
@@ -55,6 +53,13 @@ export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
                                 <Tooltip title="Visibility">
                                     <Chip label={post.visibility} variant="outlined" sx={{ float: 'right' }} />
                                 </Tooltip>
+                                {/* {
+                                    (post.createdAt != post.updatedAt) &&
+                                    <Tooltip title={"Updated: " + DateUtils.toLocalDateString(post.updatedAt)}>
+                                        <Chip label={"Edited"} variant="outlined" sx={{ mt: 1 }} />
+                                    </Tooltip>
+                                } */}
+
                             </Typography>
                         </>
                 }
@@ -65,7 +70,7 @@ export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
                 :
                 <CardMedia
                     component="img"
-                    sx={{ maxWidth: '%100', maxHeight: 200 }}
+                    sx={{ maxHeight: 200 }}
                     image={post.image}
                     onError={(e: any) => e.target.src = StaticPaths.PLACEHOLDER_IMAGE_PATH}
                     alt={post.header + "image"}

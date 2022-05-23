@@ -53,7 +53,7 @@ const LoginForm = () => {
         event.preventDefault();
 
         if (username.trim() == "" || password.trim() == "") {
-            setMessageWithType("Please fill empty fields", "error")
+            setMessageWithType("Please fill required fields", "error")
             return;
         }
 
@@ -151,7 +151,9 @@ const LoginForm = () => {
                         label="Remember me"
                     />
 
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    {(alertMessage != "") &&
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    }
 
                     <Button
                         type="submit"

@@ -3,8 +3,9 @@ import Head from 'next/head';
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { Grid, Pagination } from '@mui/material';
+import { Fab, Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
+import EditIcon from '@mui/icons-material/Edit';
 
 import { Storage } from '../utils/storage';
 import { LocalStorageKeys } from '../types/enums/local-storage-keys';
@@ -19,10 +20,12 @@ import OpenGraph from '../components/OpenGraph';
 import { StaticPaths } from '../utils/static-paths';
 import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import ComboBox from '../components/ComboBox';
+import { useRouter } from 'next/router';
 
 
 const Home: NextPage = ({ postProp, referer }: any) => {
-
+    
+    const router = useRouter();
     const [allData, setAllData] = useState(postProp);
     const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -36,13 +39,16 @@ const Home: NextPage = ({ postProp, referer }: any) => {
         if (!isSSR && AuthUtils.isLoggedIn()) {
             fetchPosts();
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         setSelectedPage(1)
         fetchPosts();
-    }, [selectedCategory])
 
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCategory])
 
 
     const fetchPosts = async () => {
@@ -119,7 +125,22 @@ const Home: NextPage = ({ postProp, referer }: any) => {
                         </Container>
                     </Grid>
                 </Grid >
+
             </Container >
+            
+            {/* Fab */}
+            {!isSSR && AuthUtils.isLoggedIn() &&
+                <Fab color="secondary" aria-label="edit" onClick={() => router.push("/me/add-post")} sx={{
+                    margin: 0,
+                    top: 'auto',
+                    right: 20,
+                    bottom: 20,
+                    left: 'auto',
+                    position: 'fixed'
+                }}>
+                    <EditIcon />
+                </Fab>
+            }
         </>
 
     )

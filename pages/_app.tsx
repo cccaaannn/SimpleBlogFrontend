@@ -4,6 +4,7 @@ import '../styles/globals.css'
 import Layout from '../components/Layout'
 import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material';
 import Head from 'next/head';
+import Guard from '../components/Guard';
 
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -21,13 +22,16 @@ function MyApp({ Component, pageProps }: AppProps) {
 	theme = responsiveFontSizes(theme);
 
 	return (
+		
 		<ThemeProvider theme={theme}>
 			<Head>
 				<title>Simple Blog</title>
 			</Head>
-			<Layout>
-				<Component {...pageProps} />
-			</Layout>
+			<Guard>
+				<Layout>
+					<Component {...pageProps} />
+				</Layout>
+			</Guard>
 		</ThemeProvider>
 	)
 }

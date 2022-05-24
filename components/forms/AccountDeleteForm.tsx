@@ -16,7 +16,9 @@ const AccountDeleteForm = () => {
     const onDeleteAccount = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN);
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/users/purge/${AuthUtils.getTokenPayload().id}`, {
+        const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
+
+        const res = await fetch(`${ApiUtils.getApiUrl()}/users/purge/${id}`, {
             method: "delete",
             headers: {
                 "Content-Type": "application/json",

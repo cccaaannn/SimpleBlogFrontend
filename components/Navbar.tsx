@@ -14,12 +14,14 @@ import ArticleIcon from '@mui/icons-material/Article';
 import { AuthUtils } from '../utils/auth-utils';
 import { TokenPayload } from '../types/TokenPayload';
 import useSSRDetector from '../hooks/useSSRDetector';
+import useBreakpointDetector from '../hooks/useBreakpointDetector';
 
 
 export default function Navbar() {
 
     const router = useRouter();
     const [isSSR] = useSSRDetector();
+    const isMobile = useBreakpointDetector('md');
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
     const onLogout = () => {
@@ -34,7 +36,7 @@ export default function Navbar() {
     }
 
     const getButtons = () => {
-        if(isSSR) {
+        if (isSSR) {
             return (<></>)
         }
         else if (!AuthUtils.isLoggedIn()) {
@@ -85,32 +87,30 @@ export default function Navbar() {
     }
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar>
-                    <IconButton
-                        size="large"
-                        edge="start"
-                        color="inherit"
-                        aria-label="menu"
-                        href='/home'
-                        sx={{ mr: 2 }}
-                    >
-                        <ArticleIcon fontSize="large" />
-                    </IconButton>
+        <AppBar position={isMobile ? "sticky" : "static"}>
+            <Toolbar>
+                <IconButton
+                    size="large"
+                    edge="start"
+                    color="inherit"
+                    aria-label="menu"
+                    href='/home'
+                    sx={{ mr: 2 }}
+                >
+                    <ArticleIcon fontSize="large" />
+                </IconButton>
 
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        <Button color="inherit" href='/home'>
-                            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                                Simple blog
-                            </Typography>
-                        </Button>
-                    </Typography>
+                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Button color="inherit" href='/home'>
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                            Simple blog
+                        </Typography>
+                    </Button>
+                </Typography>
 
-                    {getButtons()}
+                {getButtons()}
 
-                </Toolbar>
-            </AppBar>
-        </Box>
+            </Toolbar>
+        </AppBar>
     );
 }

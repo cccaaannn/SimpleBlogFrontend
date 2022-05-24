@@ -37,11 +37,15 @@ const User = () => {
         if (AuthUtils.isLoggedIn()) {
             fetchData();
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     useEffect(() => {
         setSelectedPage(1)
         fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCategory])
 
 
@@ -55,7 +59,9 @@ const User = () => {
     const fetchData = async () => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${AuthUtils.getTokenPayload().id}?field=createdAt&asc=-1&category=${selectedCategory}`, {
+        const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
+
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${id}?field=createdAt&asc=-1&category=${selectedCategory}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -65,7 +71,9 @@ const User = () => {
         const jsonData: any = await res.json();
         console.log(jsonData);
 
-        setAllData(jsonData.data);
+        if (jsonData.status) {
+            setAllData(jsonData.data);
+        }
 
     }
 

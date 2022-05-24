@@ -44,7 +44,9 @@ const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
             });
         }
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/users/update/${AuthUtils.getTokenPayload().id}`, {
+        const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
+
+        const response = await fetch(`${ApiUtils.getApiUrl()}/users/update/${id}`, {
             method: "put",
             body: body,
             headers: {

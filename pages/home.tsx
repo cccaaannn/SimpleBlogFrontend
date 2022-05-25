@@ -30,13 +30,17 @@ const Home: NextPage = ({ postProp, referer }: any) => {
     const [selectedCategory, setSelectedCategory] = useState("All");
 
     const isMobile = useBreakpointDetector('md');
-    const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
+
+    const [pageCount, setPageCount] = useState(1);
+    const [selectedPage, setSelectedPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
 
     const [isSSR] = useSSRDetector();
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!isSSR && AuthUtils.isLoggedIn()) {
+        if (AuthUtils.isLoggedIn()) {
             fetchPosts();
         }
 
@@ -44,8 +48,13 @@ const Home: NextPage = ({ postProp, referer }: any) => {
     }, [])
 
     useEffect(() => {
-        setSelectedPage(1)
         fetchPosts();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedPage, pageSize, selectedCategory])
+
+    useEffect(() => {
+        setSelectedPage(1)
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCategory])
@@ -55,7 +64,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         console.log("CSR");
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=createdAt&asc=-1&category=${selectedCategory}`, {
+        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -67,14 +76,15 @@ const Home: NextPage = ({ postProp, referer }: any) => {
         console.log(jsonData);
 
         if (jsonData.status) {
-            setAllData(jsonData.data);
+            setPageCount(jsonData.data.totalPages)
+            setAllData(jsonData.data.data);
             setLoading(false);
         }
     }
 
     const mapCards = () => {
         const posts: any[] = []
-        activeData.map((post: any, key: any) => {
+        allData.map((post: any, key: any) => {
             posts.push(<PostCardHome post={post} loading={loading} />)
         })
         return posts
@@ -147,7 +157,7 @@ const Home: NextPage = ({ postProp, referer }: any) => {
 }
 
 export const getServerSideProps = async (context: any) => {
-    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?field=createdAt&asc=-1&category=All`, {
+    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=All&page=1&limit=5`, {
         method: "get",
         headers: {
             "Content-Type": "application/json",
@@ -157,7 +167,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
         props: {
-            postProp: jsonData.data,
+            postProp: jsonData.data.data,
             referer: context.req.headers.referer ? context.req.headers.referer : ""
         },
     }

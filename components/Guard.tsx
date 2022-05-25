@@ -7,7 +7,7 @@ import { SecuredPaths } from '../utils/secured-paths';
 
 export default function Guard({ children }: { children: ReactNode }) {
     const router = useRouter();
-    const [authorized, setAuthorized] = useState(false);
+    const [authorized, setAuthorized] = useState(true);
 
     useEffect(() => {
         // on initial load - run auth check 

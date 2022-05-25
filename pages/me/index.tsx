@@ -29,7 +29,11 @@ const User = () => {
     const [loading, setLoading] = useState(true);
 
     const isMobile = useBreakpointDetector('md');
-    const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
+
+    const [pageCount, setPageCount] = useState(1);
+    const [selectedPage, setSelectedPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
 
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
@@ -42,17 +46,23 @@ const User = () => {
     }, [])
 
     useEffect(() => {
-        setSelectedPage(1)
         fetchData();
 
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedCategory])
+    }, [selectedPage, pageSize, selectedCategory])
 
+    useEffect(() => {
+        setSelectedPage(1)
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedCategory])
 
     useEffect(() => {
         if (allData.length == 0 || allData[0].owner) {
             setLoading(false);
         }
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allData])
 
 
@@ -61,7 +71,7 @@ const User = () => {
 
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${id}?field=createdAt&asc=-1&category=${selectedCategory}`, {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${id}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -72,7 +82,8 @@ const User = () => {
         console.log(jsonData);
 
         if (jsonData.status) {
-            setAllData(jsonData.data);
+            setPageCount(jsonData.data.totalPages)
+            setAllData(jsonData.data.data);
         }
 
     }
@@ -99,7 +110,7 @@ const User = () => {
 
     const mapCards = () => {
         const posts: any[] = []
-        activeData.map((post: any, key: any) => {
+        allData.map((post: any, key: any) => {
             posts.push(<PostCardMe post={post} onDelete={onDelete} loading={loading} />)
         })
         return posts

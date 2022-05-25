@@ -27,7 +27,12 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
     const [loading, setLoading] = useState(true);
 
     const isMobile = useBreakpointDetector('md');
-    const [activeData, pageCount, selectedPage, setSelectedPage, pageSize, setPageSize] = usePagination(allData);
+
+    const [pageCount, setPageCount] = useState(1);
+    const [selectedPage, setSelectedPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+
+    const [totalPostCount, setTotalPostCount] = useState(0);
 
 
     const fetchData = async () => {
@@ -35,7 +40,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
         const paths = router.asPath.split("/");
         const userId = paths[paths.length - 1];
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?field=createdAt&asc=-1&category=${selectedCategory}`, {
+        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -45,7 +50,9 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
         const jsonData: any = await res.json();
         console.log(jsonData);
 
-        setAllData(jsonData.data as Post[]);
+        setPageCount(jsonData.data.totalPages)
+        setAllData(jsonData.data.data as Post[]);
+        setTotalPostCount(jsonData.data.totalItems)
         setLoading(false);
     }
 
@@ -57,14 +64,21 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
     }, [])
 
     useEffect(() => {
-        setSelectedPage(1)
         fetchData();
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [selectedPage, pageSize, selectedCategory])
+
+    useEffect(() => {
+        setSelectedPage(1)
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCategory])
 
 
     const mapCards = () => {
         const posts: any[] = []
-        activeData.map((post: any, key: any) => {
+        allData.map((post: any, key: any) => {
             posts.push(<PostCardHome post={post} loading={loading} />)
         })
         return posts
@@ -82,7 +96,7 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
                 allData.length > 0 ? (
                     <>
                         <Typography variant="h3" component="div" sx={{ mb: 2 }}>
-                            {`${allData[0].owner.username}'s posts (${allData.length})`}
+                            {`${allData[0].owner.username}'s posts (${totalPostCount})`}
                         </Typography>
 
                         <Grid container spacing={1} >
@@ -132,12 +146,12 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
 }
 
 export const getServerSideProps = async (context: any) => {
-    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${context.params.userId}?field=createdAt&asc=-1`)
+    const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${context.params.userId}?sort=createdAt&asc=-1&page=1&limit=5`)
     const jsonData: any = await res.json();
 
     return {
         props: {
-            postsProp: jsonData.data as Post[]
+            postsProp: jsonData.data.data as Post[]
         },
     }
 }

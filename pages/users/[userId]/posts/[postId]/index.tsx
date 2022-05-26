@@ -35,6 +35,8 @@ const Post = ({ postProp, referer }: any) => {
         else {
             setLoading(false);
         }
+
+        // eslint-disable-next-line
     }, [])
 
     const fetchData = async () => {
@@ -59,7 +61,7 @@ const Post = ({ postProp, referer }: any) => {
     const mapComments = () => {
         const comments: any[] = []
         post.comments.map((comment: any, key: any) => {
-            comments.push(<CommentCard comment={comment} onDelete={onCommentDelete} loading={loading} />)
+            comments.push(<CommentCard comment={comment} onDelete={onCommentDelete} loading={loading} key={key} />)
         })
         return comments
     }

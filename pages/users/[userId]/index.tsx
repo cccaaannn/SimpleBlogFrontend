@@ -14,21 +14,20 @@ import PostCardHome from '../../../components/Cards/PostCardHome';
 import { Post } from '../../../types/Post';
 import CategoriesMenu from '../../../components/CategoriesMenu';
 import { CategoryArr } from '../../../types/enums/Category';
-import usePagination from '../../../hooks/usePagination';
 import useBreakpointDetector from '../../../hooks/useBreakpointDetector';
 import ComboBox from '../../../components/ComboBox';
 
 
-const User = ({ postsProp }: { postsProp: Post[] }) => {
+const User = ({ ssrPosts }: any) => {
     const router = useRouter();
 
-    const [allData, setAllData] = useState(postsProp);
+    const [allData, setAllData] = useState(ssrPosts.data);
     const [selectedCategory, setSelectedCategory] = useState("All");
     const [loading, setLoading] = useState(true);
 
     const isMobile = useBreakpointDetector('md');
 
-    const [pageCount, setPageCount] = useState(1);
+    const [pageCount, setPageCount] = useState(ssrPosts.totalPages);
     const [selectedPage, setSelectedPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
 
@@ -61,25 +60,27 @@ const User = ({ postsProp }: { postsProp: Post[] }) => {
         if (AuthUtils.isLoggedIn()) {
             fetchData();
         }
+
+        // eslint-disable-next-line
     }, [])
 
     useEffect(() => {
         fetchData();
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, [selectedPage, pageSize, selectedCategory])
 
     useEffect(() => {
         setSelectedPage(1)
 
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, [selectedCategory])
 
 
     const mapCards = () => {
         const posts: any[] = []
         allData.map((post: any, key: any) => {
-            posts.push(<PostCardHome post={post} loading={loading} />)
+            posts.push(<PostCardHome post={post} loading={loading} key={key} />)
         })
         return posts
     }
@@ -151,7 +152,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
         props: {
-            postsProp: jsonData.data.data as Post[]
+            ssrPosts: jsonData.data
         },
     }
 }

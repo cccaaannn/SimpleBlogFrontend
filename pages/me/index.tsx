@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { Box, Button, Grid, Pagination, Tab, Tabs, Tooltip } from '@mui/material';
+import { Box, Button, Divider, Grid, Pagination, Tab, Tabs, Tooltip } from '@mui/material';
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
@@ -15,7 +15,6 @@ import UpdateAccountForm from '../../components/forms/UpdateAccountForm';
 import CategoriesMenu from '../../components/CategoriesMenu';
 import PostCardMe from '../../components/Cards/PostCardMe';
 import AlertMessage from '../../components/AlertMessage';
-import usePagination from '../../hooks/usePagination';
 import AccountDeleteForm from '../../components/forms/AccountDeleteForm';
 import ComboBox from '../../components/ComboBox';
 import useBreakpointDetector from '../../hooks/useBreakpointDetector';
@@ -111,7 +110,7 @@ const User = () => {
     const mapCards = () => {
         const posts: any[] = []
         allData.map((post: any, key: any) => {
-            posts.push(<PostCardMe post={post} onDelete={onDelete} loading={loading} />)
+            posts.push(<PostCardMe post={post} onDelete={onDelete} loading={loading} key={key} />)
         })
         return posts
     }
@@ -178,7 +177,7 @@ const User = () => {
                     <UpdateAccountForm
                         setMessageWithType={setMessageWithType}
                     />
-                    <hr />
+                    <Divider />
                     <AccountDeleteForm />
                 </>
             )

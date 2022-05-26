@@ -12,12 +12,12 @@ export default function SkeletonTextBody({ lineCount }: SkeletonTextBodyProps) {
         for (let i = 0; i < lineCount; i++) {
             if (i % 3 == 0 && i != 0) {
                 lines.push(
-                    <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 20 }} />
+                    <Skeleton animation="wave" height={10} width="60%" style={{ marginBottom: 20 }} key={i} />
                 )
             }
             else {
                 lines.push(
-                    <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} />
+                    <Skeleton animation="wave" height={10} width="80%" style={{ marginBottom: 6 }} key={i} />
                 )
             }
         }

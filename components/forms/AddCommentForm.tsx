@@ -31,7 +31,7 @@ export default function AddCommentForm({ comment, setComment, onPost }: AddComme
                             onChange={(e) => setComment(e.target.value)}
                             aria-label="Comment area"
                             placeholder="Comment"
-                            error={comment.trim() == "" ? true : false}
+                            // error={comment.trim() == "" ? true : false}
                             sx={{ display: 'flex' }}
                         />
                     </Grid>

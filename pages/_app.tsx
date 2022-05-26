@@ -2,7 +2,7 @@ import type { AppProps } from 'next/app'
 import '../styles/globals.css'
 
 import Layout from '../components/Layout'
-import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material';
+import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider } from '@mui/material';
 import Head from 'next/head';
 import Guard from '../components/Guard';
 
@@ -10,6 +10,7 @@ import Guard from '../components/Guard';
 function MyApp({ Component, pageProps }: AppProps) {
 	let theme = createTheme({
 		palette: {
+			// mode: 'dark',
 			primary: {
 				main: "#009688"
 			},
@@ -24,11 +25,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 	return (
 		
 		<ThemeProvider theme={theme}>
+			<CssBaseline />
 			<Head>
 				<title>Simple Blog</title>
 			</Head>
 			<Guard>
 				<Layout>
+				
 					<Component {...pageProps} />
 				</Layout>
 			</Guard>

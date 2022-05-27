@@ -37,10 +37,4 @@ interface PostUpdate {
     visibility: Visibility
 };
 
-interface PostSort {
-    visibility?: number,
-    createdAt?: number,
-    updatedAt?: number
-};
-
-export type { Post, PostAdd, PostUpdate, PostSort };
+export type { Post, PostAdd, PostUpdate };

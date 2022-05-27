@@ -11,12 +11,12 @@ import SkeletonTextBody from '../SkeletonTextBody';
 import useBreakpointDetector from '../../hooks/useBreakpointDetector';
 
 
-interface PostCardHomeProps {
+interface PostCardMainProps {
     post: Post,
     loading: boolean
 }
 
-export default function PostCardHome({ post, loading }: PostCardHomeProps) {
+export default function PostCardMain({ post, loading }: PostCardMainProps) {
 
     const router = useRouter();
     const isMobile = useBreakpointDetector('md');

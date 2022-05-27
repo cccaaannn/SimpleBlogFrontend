@@ -10,10 +10,16 @@ const Home: NextPage = () => {
 		Router.push('/home')
 	});
 
-	return (
-		<>
-		</>
-	)
+	return (<></>)
+}
+
+export async function getServerSideProps(context: any) {
+	return {
+		redirect: {
+			permanent: true,
+			destination: "/home"
+		}
+	}
 }
 
 export default Home

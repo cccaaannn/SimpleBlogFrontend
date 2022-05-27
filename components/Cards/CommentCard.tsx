@@ -16,7 +16,7 @@ interface CommentCardProps {
 }
 
 export default function CommentCard({ comment, onDelete, loading }: CommentCardProps) {
-    const [isSSR] = useSSRDetector();
+    const isSSR = useSSRDetector();
 
     const getUserId = () => {
         let userId: any = null;

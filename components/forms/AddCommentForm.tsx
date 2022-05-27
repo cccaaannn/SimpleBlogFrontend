@@ -9,7 +9,7 @@ interface AddCommentProps {
 }
 
 export default function AddCommentForm({ comment, setComment, onPost }: AddCommentProps) {
-    const [isSSR] = useSSRDetector();
+    const isSSR = useSSRDetector();
 
     const commentBox = () => {
         if (!isSSR && AuthUtils.isLoggedIn()) {

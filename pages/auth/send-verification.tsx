@@ -2,20 +2,20 @@ import * as React from 'react';
 import { useState } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Avatar from '@mui/material/Avatar';
+import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
-import { ApiUtils } from '../../utils/api-utils';
 import { isValidEmail } from '../../utils/email-validation';
-import Copyright from '../../components/Copyright';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
+import Copyright from '../../components/Copyright';
+import { ApiUtils } from '../../utils/api-utils';
 
 
 export default function SendVerification() {

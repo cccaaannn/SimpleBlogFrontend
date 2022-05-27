@@ -1,41 +1,41 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import type { NextPage } from 'next'
+
 import * as React from 'react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { Button, Grid } from '@mui/material';
+import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import Container from '@mui/material/Container';
-import Typography from '@mui/material/Typography';
-import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import { Button, Grid } from '@mui/material';
 
 import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
-import { ApiUtils } from '../../utils/api-utils';
-import { AuthUtils } from '../../utils/auth-utils';
-import { Storage } from '../../utils/storage';
-import useAlertMessage from '../../hooks/useAlertMessage';
 import { CategoryArrWithoutAll } from '../../types/enums/Category';
 import { VisibilityArr } from '../../types/enums/Visibility';
-import ComboBox from '../../components/ComboBox';
+import { AuthUtils } from '../../utils/auth-utils';
+import { ApiUtils } from '../../utils/api-utils';
+import { Storage } from '../../utils/storage';
+import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
+import ComboBox from '../../components/ComboBox';
 
 
-const AddPost = () => {
+const AddPost: NextPage = () => {
+
+    // next
     const router = useRouter();
 
+    // react
     const [newPostHeader, setNewPostHeader] = useState("");
     const [newPostBody, setNewPostBody] = useState("");
     const [newPostImage, setNewPostImage] = useState("");
     const [newPostCategory, setNewPostCategory] = useState("General");
     const [newPostVisibility, setNewPostVisibility] = useState("public");
 
+    // custom
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
-
-
-    useEffect(() => {
-        if (!AuthUtils.isLoggedIn()) {
-            router.push(`/home`);
-        }
-    }, [])
 
 
     const onPostAdd = async () => {

@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+import type { NextPage } from 'next'
+
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
@@ -6,66 +9,55 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
 import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
+import { CategoryArr } from '../../types/enums/Category';
 import { ApiUtils } from '../../utils/api-utils';
 import { AuthUtils } from '../../utils/auth-utils';
 import { Storage } from '../../utils/storage';
-import useAlertMessage from '../../hooks/useAlertMessage';
-import { CategoryArr } from '../../types/enums/Category';
 import UpdateAccountForm from '../../components/forms/UpdateAccountForm';
+import AccountDeleteForm from '../../components/forms/AccountDeleteForm';
+import useBreakpointDetector from '../../hooks/useBreakpointDetector';
 import CategoriesMenu from '../../components/CategoriesMenu';
 import PostCardMe from '../../components/Cards/PostCardMe';
+import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
-import AccountDeleteForm from '../../components/forms/AccountDeleteForm';
 import ComboBox from '../../components/ComboBox';
-import useBreakpointDetector from '../../hooks/useBreakpointDetector';
 
 
-const User = () => {
+const User: NextPage = () => {
 
+    // react
     const [allData, setAllData] = useState([1, 2, 3, 4, 5] as any[]);
-    const [selectedCategory, setSelectedCategory] = useState("All");
-    const [selectedTab, setSelectedTab] = useState(0);
     const [loading, setLoading] = useState(true);
 
-    const isMobile = useBreakpointDetector('md');
-
+    const [selectedCategory, setSelectedCategory] = useState("All");
     const [pageCount, setPageCount] = useState(1);
     const [selectedPage, setSelectedPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
+    const [selectedTab, setSelectedTab] = useState(0);
 
-
+    // custom
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
+    const isMobile = useBreakpointDetector('md');
 
-    useEffect(() => {
-        if (AuthUtils.isLoggedIn()) {
-            fetchData();
-        }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [])
 
     useEffect(() => {
         fetchData();
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedPage, pageSize, selectedCategory])
 
     useEffect(() => {
         setSelectedPage(1)
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedCategory])
 
     useEffect(() => {
         if (allData.length == 0 || allData[0].owner) {
             setLoading(false);
         }
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allData])
 
 
     const fetchData = async () => {
+        setLoading(true);
+
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
@@ -84,7 +76,12 @@ const User = () => {
             setPageCount(jsonData.data.totalPages)
             setAllData(jsonData.data.data);
         }
+        else {
+            // TODO error alert
+            console.log("Error");
+        }
 
+        setLoading(false);
     }
 
     const onDelete = async (postId: string) => {
@@ -212,5 +209,6 @@ const User = () => {
 
     )
 }
+
 
 export default User

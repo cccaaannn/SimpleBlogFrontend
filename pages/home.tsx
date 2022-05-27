@@ -1,6 +1,8 @@
-import type { NextPage } from 'next'
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useRouter } from 'next/router';
+import type { NextPage } from 'next'
 import Head from 'next/head';
+
 import * as React from 'react';
 import { useEffect, useState, useRef } from 'react';
 
@@ -8,45 +10,47 @@ import { Fab, Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 
-import { Storage } from '../utils/storage';
 import { LocalStorageKeys } from '../types/enums/local-storage-keys';
 import { CategoryArr } from '../types/enums/Category';
-import { ApiUtils } from '../utils/api-utils';
-import CategoriesMenu from '../components/CategoriesMenu';
-import PostCardHome from '../components/Cards/PostCardHome';
-import useSSRDetector from '../hooks/useSSRDetector';
-import { AuthUtils } from '../utils/auth-utils';
-import OpenGraph from '../components/OpenGraph';
 import { StaticPaths } from '../utils/static-paths';
+import { AuthUtils } from '../utils/auth-utils';
+import { ApiUtils } from '../utils/api-utils';
+import { Storage } from '../utils/storage';
 import useBreakpointDetector from '../hooks/useBreakpointDetector';
+import PostCardMain from '../components/Cards/PostCardMain';
+import CategoriesMenu from '../components/CategoriesMenu';
+import useSSRDetector from '../hooks/useSSRDetector';
+import OpenGraph from '../components/OpenGraph';
 import ComboBox from '../components/ComboBox';
 
 
-
 const Home: NextPage = ({ ssrPosts, referer }: any) => {
-    
-    const isFirstRender = useRef(true);
+
+    // next
     const router = useRouter();
+
+    // react
+    const isFirstRender = useRef(true);
+
     const [allData, setAllData] = useState(ssrPosts.data);
+    const [loading, setLoading] = useState(true);
+
     const [selectedCategory, setSelectedCategory] = useState("All");
-
-    const isMobile = useBreakpointDetector('md');
-
     const [pageCount, setPageCount] = useState(ssrPosts.totalPages);
     const [selectedPage, setSelectedPage] = useState(1);
     const [pageSize, setPageSize] = useState(5);
 
+    // custom
+    const isMobile = useBreakpointDetector('md');
+    const isSSR = useSSRDetector();
 
-    const [isSSR] = useSSRDetector();
-    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!isFirstRender.current  || AuthUtils.isLoggedIn()) {
+        if (!isFirstRender.current || AuthUtils.isLoggedIn()) {
             fetchData();
         }
 
         isFirstRender.current = false;
-        // eslint-disable-next-line
     }, [selectedPage, pageSize, selectedCategory])
 
 
@@ -59,16 +63,14 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
         if (allData.length == 0 || allData[0]._id) {
             setLoading(false);
         }
-
-        // eslint-disable-next-line
     }, [allData])
 
 
     const fetchData = async () => {
         setLoading(true);
 
-        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         console.log("CSR");
+        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
         const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
             method: "get",
@@ -79,23 +81,25 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
         });
 
         const jsonData = await response.json();
+
         console.log(jsonData);
-        
+
         if (jsonData.status) {
             setPageCount(jsonData.data.totalPages)
             setAllData(jsonData.data.data);
-            setLoading(false);
         }
         else {
             // TODO error alert
             console.log("Error");
         }
+
+        setLoading(false);
     }
 
     const mapCards = () => {
         const posts: any[] = []
         allData.map((post: any, key: any) => {
-            posts.push(<PostCardHome post={post} loading={loading} key={key} />)
+            posts.push(<PostCardMain post={post} loading={loading} key={key} />)
         })
         return posts
     }
@@ -147,7 +151,7 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
                 </Grid >
 
             </Container >
-            
+
             {/* Fab */}
             {!isSSR && AuthUtils.isLoggedIn() &&
                 <Fab color="secondary" aria-label="edit" onClick={() => router.push("/me/add-post")} sx={{
@@ -162,9 +166,9 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
                 </Fab>
             }
         </>
-
     )
 }
+
 
 export const getServerSideProps = async (context: any) => {
     const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=All&page=1&limit=5`, {

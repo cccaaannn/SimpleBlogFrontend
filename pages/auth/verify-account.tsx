@@ -1,20 +1,21 @@
-import { useRouter } from 'next/router';
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
-import Copyright from '../../components/Copyright';
-import { ApiUtils } from '../../utils/api-utils';
 import useAlertMessage from '../../hooks/useAlertMessage';
-import { AuthUtils } from '../../utils/auth-utils';
 import AlertMessage from '../../components/AlertMessage';
+import Copyright from '../../components/Copyright';
+import { AuthUtils } from '../../utils/auth-utils';
+import { ApiUtils } from '../../utils/api-utils';
 
 
 export default function VerifyAccount() {

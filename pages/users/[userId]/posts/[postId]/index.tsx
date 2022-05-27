@@ -1,32 +1,43 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import * as React from 'react';
+import type { NextPage } from 'next'
+import Head from 'next/head'
+
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import Head from 'next/head'
 
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import { Grid } from '@mui/material';
 
-import { Storage } from '../../../../../utils/storage';
 import { LocalStorageKeys } from '../../../../../types/enums/local-storage-keys';
 import { ApiUtils } from '../../../../../utils/api-utils'
-import useAlertMessage from '../../../../../hooks/useAlertMessage';
+import { Storage } from '../../../../../utils/storage';
 import PostCardDetail from '../../../../../components/Cards/PostCardDetail';
-import OpenGraph from '../../../../../components/OpenGraph';
-import AlertMessage from '../../../../../components/AlertMessage';
-import CommentCard from '../../../../../components/Cards/CommentCard';
 import AddCommentForm from '../../../../../components/forms/AddCommentForm';
-import { Divider, Grid } from '@mui/material';
+import CommentCard from '../../../../../components/Cards/CommentCard';
+import useAlertMessage from '../../../../../hooks/useAlertMessage';
+import AlertMessage from '../../../../../components/AlertMessage';
+import OpenGraph from '../../../../../components/OpenGraph';
 
 
-const Post = ({ postProp, referer }: any) => {
+const Post: NextPage = ({ postProp, referer }: any) => {
+
+    // next
     const router = useRouter();
-    const postId = router.asPath.split("/").pop();
 
+    // react
     const [post, setPost] = useState(postProp);
-    const [comment, setComment] = useState("");
     const [loading, setLoading] = useState(true);
 
+    const [comment, setComment] = useState("");
+
+    // custom
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
+
+
+    const postId = router.asPath.split("/").pop();
+
 
     useEffect(() => {
         if (post == null) {
@@ -35,11 +46,11 @@ const Post = ({ postProp, referer }: any) => {
         else {
             setLoading(false);
         }
-
-        // eslint-disable-next-line
     }, [])
 
     const fetchData = async () => {
+        setLoading(true);
+    
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
         console.log("CSR");
@@ -53,10 +64,16 @@ const Post = ({ postProp, referer }: any) => {
         const jsonData: any = await res.json();
         console.log(jsonData);
 
-        setPost(jsonData.data);
+        if (jsonData.status) {
+            setPost(jsonData.data);
+        }
+        else {
+            // TODO error alert
+            console.log("Error");
+        }
+
         setLoading(false);
     }
-
 
     const mapComments = () => {
         const comments: any[] = []
@@ -170,6 +187,7 @@ const Post = ({ postProp, referer }: any) => {
     )
 }
 
+
 export const getServerSideProps = async (context: any) => {
     const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${context.params.postId}`)
     const jsonData: any = await response.json();
@@ -181,5 +199,6 @@ export const getServerSideProps = async (context: any) => {
         },
     }
 }
+
 
 export default Post

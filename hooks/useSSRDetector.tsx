@@ -7,7 +7,7 @@ const useSSRDetector = () => {
         setIsSSR(false);
     }, []);
 
-    return [isSSR]
+    return isSSR
 }
 
 export default useSSRDetector;

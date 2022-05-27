@@ -23,14 +23,4 @@ interface UserUpdate {
     password?: string
 };
 
-interface UserSort {
-    _id?: number
-    username?: number,
-    email?: number,
-    status?: number,
-    role?: number,
-    createdAt?: number,
-    updatedAt?: number
-};
-
-export type { User, UserAdd, UserUpdate,  UserSort };
+export type { User, UserAdd, UserUpdate };

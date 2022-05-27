@@ -4,9 +4,9 @@ import { Button, Grid, Typography } from "@mui/material";
 
 import { LocalStorageKeys } from "../../types/enums/local-storage-keys";
 import { AuthUtils } from "../../utils/auth-utils";
-import AccountDeleteConfirmDialog from "../AccountDeleteConfirmDialog";
-import { Storage } from '../../utils/storage';
 import { ApiUtils } from '../../utils/api-utils';
+import { Storage } from '../../utils/storage';
+import AccountDeleteConfirmDialog from "../AccountDeleteConfirmDialog";
 
 
 const AccountDeleteForm = () => {

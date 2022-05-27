@@ -1,10 +1,17 @@
 import { ReactNode } from 'react'
 import Navbar from './Navbar'
 
-export default function Layout({ children }: { children: ReactNode }) {
+
+interface LayoutProps {
+    children: ReactNode,
+    selectedTheme: any,
+    setSelectedTheme: any
+}
+
+export default function Layout({ children, selectedTheme, setSelectedTheme }: LayoutProps) {
     return (
         <>
-            <Navbar />
+            <Navbar selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme} />
             <main>{children}</main>
         </>
     )

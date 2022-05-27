@@ -3,24 +3,26 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState } from 'react';
 
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import { IconButton, Menu, MenuItem, MenuList } from '@mui/material';
+import Brightness4Icon from '@mui/icons-material/Brightness4';
+import Brightness7Icon from '@mui/icons-material/Brightness7';
+import { IconButton, Menu, MenuItem } from '@mui/material';
 import ArticleIcon from '@mui/icons-material/Article';
+import Typography from '@mui/material/Typography';
+import Toolbar from '@mui/material/Toolbar';
+import AppBar from '@mui/material/AppBar';
+import Button from '@mui/material/Button';
+import Box from '@mui/material/Box';
 
-import { AuthUtils } from '../utils/auth-utils';
+import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import { TokenPayload } from '../types/TokenPayload';
 import useSSRDetector from '../hooks/useSSRDetector';
-import useBreakpointDetector from '../hooks/useBreakpointDetector';
+import { AuthUtils } from '../utils/auth-utils';
 
 
-export default function Navbar() {
+export default function Navbar({ selectedTheme, setSelectedTheme }: any) {
 
     const router = useRouter();
-    const [isSSR] = useSSRDetector();
+    const isSSR = useSSRDetector();
     const isMobile = useBreakpointDetector('md');
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
 
@@ -35,6 +37,15 @@ export default function Navbar() {
         router.push("/me");
     }
 
+    const onThemeChange = () => {
+        if (selectedTheme == "light") {
+            setSelectedTheme("dark");
+        }
+        else {
+            setSelectedTheme("light");
+        }
+    }
+
     const getButtons = () => {
         if (isSSR) {
             return (<></>)
@@ -42,6 +53,9 @@ export default function Navbar() {
         else if (!AuthUtils.isLoggedIn()) {
             return (
                 <>
+                    <IconButton sx={{ ml: 1 }} onClick={() => onThemeChange()} color="inherit">
+                        {selectedTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
                     <Button color="inherit" href='/auth/login'>Login</Button>
                     <Button color="inherit" href='/auth/sign-up'>Sign-up</Button>
                 </>
@@ -51,6 +65,9 @@ export default function Navbar() {
             const tokenPayload: TokenPayload = AuthUtils.getTokenPayload();
             return (
                 <>
+                    <IconButton sx={{ ml: 1 }} onClick={() => onThemeChange()} color="inherit">
+                        {selectedTheme === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
+                    </IconButton>
                     <Box sx={{ flexGrow: 0 }}>
                         <Button color="inherit" onClick={(event) => setAnchorElUser(event.currentTarget)} >{tokenPayload.username}</Button>
                         <Menu
@@ -100,13 +117,19 @@ export default function Navbar() {
                     <ArticleIcon fontSize="large" />
                 </IconButton>
 
-                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                    <Button color="inherit" href='/home'>
+                {
+                    !isMobile ?
                         <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                            Simple blog
+                            <Button color="inherit" href='/home'>
+                                <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                                    Simple blog
+                                </Typography>
+                            </Button>
                         </Typography>
-                    </Button>
-                </Typography>
+                        :
+                        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                        </Typography>
+                }
 
                 {getButtons()}
 

@@ -1,16 +1,21 @@
+import Head from 'next/head';
 import type { AppProps } from 'next/app'
+
+import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider } from '@mui/material';
+
 import '../styles/globals.css'
 
+import useThemeSelector from '../hooks/useThemeSelector';
 import Layout from '../components/Layout'
-import { createTheme, CssBaseline, responsiveFontSizes, ThemeProvider } from '@mui/material';
-import Head from 'next/head';
 import Guard from '../components/Guard';
 
 
 function MyApp({ Component, pageProps }: AppProps) {
+	const [selectedTheme, setSelectedTheme] = useThemeSelector();
+
 	let theme = createTheme({
 		palette: {
-			// mode: 'dark',
+			mode: selectedTheme,
 			primary: {
 				main: "#009688"
 			},
@@ -23,15 +28,13 @@ function MyApp({ Component, pageProps }: AppProps) {
 	theme = responsiveFontSizes(theme);
 
 	return (
-		
 		<ThemeProvider theme={theme}>
 			<CssBaseline />
 			<Head>
 				<title>Simple Blog</title>
 			</Head>
 			<Guard>
-				<Layout>
-				
+				<Layout selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme} >
 					<Component {...pageProps} />
 				</Layout>
 			</Guard>

@@ -61,7 +61,7 @@ const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
         if (jsonData.status) {
             setMessageWithType("Account updated", "success");
             AuthUtils.logout();
-            window.location = "/auth/login" as any;
+            router.replace("/home");
         }
         else {
             setMessageWithType(jsonData.message, "error");

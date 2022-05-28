@@ -183,13 +183,7 @@ const User: NextPage = () => {
 
 
     return (
-        <Container component="main" sx={{
-            marginTop: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'left',
-        }}>
-
+        <>
             <Typography variant="h2" component="div" sx={{ mb: 2 }}>
                 Account
             </Typography>
@@ -205,8 +199,7 @@ const User: NextPage = () => {
 
             {(alertMessage != "") && <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />}
             {getContentForSelectedTab()}
-        </Container >
-
+        </>
     )
 }
 

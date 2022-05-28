@@ -50,7 +50,7 @@ const Post: NextPage = ({ postProp, referer }: any) => {
 
     const fetchData = async () => {
         setLoading(true);
-    
+
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
         console.log("CSR");
@@ -147,42 +147,34 @@ const Post: NextPage = ({ postProp, referer }: any) => {
                     image={postProp != null ? postProp.image as any : ""}
                 />
             </Head>
-
-            <Container component="main" maxWidth="lg" sx={{
-                marginTop: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-            }}>
-                <Grid container spacing={1} >
-                    <Grid item xs={12} md={12}>
-                        <PostCardDetail post={post} loading={loading} />
-                    </Grid>
-                    {(alertMessage != "") &&
-                        <Grid item xs={12} md={12}>
-                            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                        </Grid>
-                    }
-                    <Grid item xs={12} md={12}>
-                        <Container component="main" sx={{
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                            mt: 2
-                        }}>
-                            <Typography gutterBottom variant="h5" component="div">
-                                Comments
-                            </Typography>
-                        </Container>
-
-                        {post != null ? mapComments() : ""}
-
-                    </Grid>
-                    <Grid item xs={12} md={12}>
-                        <AddCommentForm comment={comment} setComment={setComment} onPost={onCommentPost} />
-                    </Grid>
+            <Grid container spacing={1} >
+                <Grid item xs={12} md={12}>
+                    <PostCardDetail post={post} loading={loading} />
                 </Grid>
-            </Container>
+                {(alertMessage != "") &&
+                    <Grid item xs={12} md={12}>
+                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+                    </Grid>
+                }
+                <Grid item xs={12} md={12}>
+                    <Container component="main" sx={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        mt: 2
+                    }}>
+                        <Typography gutterBottom variant="h5" component="div">
+                            Comments
+                        </Typography>
+                    </Container>
+
+                    {post != null ? mapComments() : ""}
+
+                </Grid>
+                <Grid item xs={12} md={12}>
+                    <AddCommentForm comment={comment} setComment={setComment} onPost={onCommentPost} />
+                </Grid>
+            </Grid>
         </>
     )
 }

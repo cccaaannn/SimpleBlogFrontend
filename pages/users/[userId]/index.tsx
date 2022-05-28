@@ -103,13 +103,7 @@ const User: NextPage = ({ ssrPosts }: any) => {
 
 
     return (
-        <Container component="main" maxWidth="lg" sx={{
-            marginTop: 2,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'left',
-        }}>
-
+        <>
             {
                 allData.length > 0 ? (
                     <Typography variant="h3" component="div" sx={{ mb: 2 }}>
@@ -154,7 +148,7 @@ const User: NextPage = ({ ssrPosts }: any) => {
                     </Container>
                 </Grid>
             </Grid >
-        </Container>
+        </>
     )
 }
 

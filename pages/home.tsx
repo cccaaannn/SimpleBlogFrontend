@@ -115,42 +115,38 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
                 />
             </Head>
 
-            <Container maxWidth="lg" sx={{ alignItems: 'center', display: 'flex', flexDirection: 'row', marginTop: 3, marginBottom: 2 }}>
-
-                <Grid container spacing={1} >
-                    {isMobile &&
-                        <Grid item xs={12}>
-                            <ComboBox
-                                name='Categories'
-                                inputsList={CategoryArr}
-                                selected={selectedCategory}
-                                setSelected={setSelectedCategory}
-                            />
-                        </Grid>
-                    }
-                    {!isMobile &&
-                        <Grid item md={2}>
-                            <CategoriesMenu
-                                selected={selectedCategory}
-                                setSelected={setSelectedCategory}
-                                loading={loading}
-                            />
-                        </Grid>
-                    }
-                    <Grid item xs={12} md={10}>
-                        {mapCards()}
-                        <Container component="div" sx={{
-                            marginBottom: 3,
-                            display: 'flex',
-                            flexDirection: 'column',
-                            alignItems: 'center',
-                        }}>
-                            <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
-                        </Container>
+            <Grid container spacing={1} >
+                {isMobile &&
+                    <Grid item xs={12}>
+                        <ComboBox
+                            name='Categories'
+                            inputsList={CategoryArr}
+                            selected={selectedCategory}
+                            setSelected={setSelectedCategory}
+                        />
                     </Grid>
-                </Grid >
-
-            </Container >
+                }
+                {!isMobile &&
+                    <Grid item md={2}>
+                        <CategoriesMenu
+                            selected={selectedCategory}
+                            setSelected={setSelectedCategory}
+                            loading={loading}
+                        />
+                    </Grid>
+                }
+                <Grid item xs={12} md={10}>
+                    {mapCards()}
+                    <Container component="div" sx={{
+                        marginBottom: 3,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                    }}>
+                        <Pagination page={selectedPage} count={pageCount} onChange={(e, value) => setSelectedPage(value)} />
+                    </Container>
+                </Grid>
+            </Grid >
 
             {/* Fab */}
             {!isSSR && AuthUtils.isLoggedIn() &&

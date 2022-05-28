@@ -31,7 +31,7 @@ const AccountDeleteForm = () => {
         console.log(jsonData);
 
         AuthUtils.logout();
-        window.location = "/home" as any;
+        router.replace("/home");
     }
 
     return (

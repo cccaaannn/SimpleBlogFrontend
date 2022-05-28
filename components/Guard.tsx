@@ -1,5 +1,7 @@
 import { useRouter } from 'next/router'
 import { ReactNode, useEffect, useState } from 'react'
+import Roles from '../types/enums/Roles';
+import { TokenPayload } from '../types/TokenPayload';
 
 import { AuthUtils } from '../utils/auth-utils';
 import { SecuredPaths } from '../utils/secured-paths';
@@ -33,6 +35,7 @@ export default function Guard({ children }: { children: ReactNode }) {
     const authCheck = (url: any): void => {
         const paths: string[] = url.split("/");
         const isLoggedIn: boolean = AuthUtils.isLoggedIn();
+        const tokenPayload: TokenPayload|null = isLoggedIn ? AuthUtils.getTokenPayload(): null;
 
         // Just domain
         if (paths.length == 0) {
@@ -47,6 +50,14 @@ export default function Guard({ children }: { children: ReactNode }) {
         }
         // Logged in
         else if (isLoggedIn && SecuredPaths.PUBLIC_ONLY_PATHS.includes(paths[1])) {
+            setAuthorized(false);
+            router.replace('/home');
+        }     
+        // Not admin
+        else if (
+            isLoggedIn && 
+            tokenPayload?.role == Roles.USER && 
+            SecuredPaths.ADMIN_ONLY_PATHS.includes(paths[1])) {
             setAuthorized(false);
             router.replace('/home');
         }

@@ -1,8 +1,8 @@
 enum Status {
-    PASSIVE="0",
-    ACTIVE="1",
-    DELETED="2",
-    SUSPENDED="3"
+    PASSIVE="passive",
+    ACTIVE="active",
+    DELETED="deleted",
+    SUSPENDED="suspended"
 }
 
 export default Status;

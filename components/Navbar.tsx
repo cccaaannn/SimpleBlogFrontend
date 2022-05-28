@@ -17,6 +17,7 @@ import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import { TokenPayload } from '../types/TokenPayload';
 import useSSRDetector from '../hooks/useSSRDetector';
 import { AuthUtils } from '../utils/auth-utils';
+import Roles from '../types/enums/Roles';
 
 
 export default function Navbar({ selectedTheme, setSelectedTheme }: any) {
@@ -29,12 +30,17 @@ export default function Navbar({ selectedTheme, setSelectedTheme }: any) {
     const onLogout = () => {
         AuthUtils.logout();
         setAnchorElUser(null);
-        window.location.href = "/home";
+        router.replace("/home");
     }
 
     const onAccount = () => {
         setAnchorElUser(null);
         router.push("/me");
+    }
+
+    const onAdmin = () => {
+        setAnchorElUser(null);
+        router.push("/admin");
     }
 
     const onThemeChange = () => {
@@ -91,6 +97,13 @@ export default function Navbar({ selectedTheme, setSelectedTheme }: any) {
                                     Account
                                 </Typography>
                             </MenuItem>
+                            {tokenPayload.role != Roles.USER &&
+                                <MenuItem onClick={(e) => onAdmin()}>
+                                    <Typography textAlign="center">
+                                        Admin
+                                    </Typography>
+                                </MenuItem>
+                            }
                             <MenuItem onClick={(e) => onLogout()}>
                                 <Typography textAlign="center">
                                     Logout

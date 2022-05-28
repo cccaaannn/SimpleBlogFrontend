@@ -1,3 +1,4 @@
+import { Container } from '@mui/material'
 import { ReactNode } from 'react'
 import Navbar from './Navbar'
 
@@ -12,7 +13,12 @@ export default function Layout({ children, selectedTheme, setSelectedTheme }: La
     return (
         <>
             <Navbar selectedTheme={selectedTheme} setSelectedTheme={setSelectedTheme} />
-            <main>{children}</main>
+            <Container component="main" sx={{
+                marginTop: 2,
+                padding: 2,
+            }}>
+                <main>{children}</main>
+            </Container>
         </>
     )
 }

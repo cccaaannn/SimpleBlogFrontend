@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router'
+
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
@@ -15,6 +17,11 @@ interface UpdateAccountFormProps {
 }
 
 const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
+    
+    // next
+    const router = useRouter();
+
+    // react
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
 

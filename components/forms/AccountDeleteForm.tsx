@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router'
+
 import { useState } from 'react';
 
 import { Button, Grid, Typography } from "@mui/material";
@@ -10,7 +12,11 @@ import AccountDeleteConfirmDialog from "../AccountDeleteConfirmDialog";
 
 
 const AccountDeleteForm = () => {
+    
+    // next
+    const router = useRouter();
 
+    // react
     const [open, setOpen] = useState(false);
 
     const onDeleteAccount = async () => {

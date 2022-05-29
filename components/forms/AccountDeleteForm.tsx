@@ -4,11 +4,10 @@ import { useState } from 'react';
 
 import { Button, Grid, Typography } from "@mui/material";
 
-import { LocalStorageKeys } from "../../types/enums/local-storage-keys";
-import { AuthUtils } from "../../utils/auth-utils";
-import { ApiUtils } from '../../utils/api-utils';
-import { Storage } from '../../utils/storage';
 import AccountDeleteConfirmDialog from "../AccountDeleteConfirmDialog";
+import { ApiService } from '../../services/api-service';
+import { AuthUtils } from "../../utils/auth-utils";
+import { Storage } from '../../utils/storage';
 
 
 const AccountDeleteForm = () => {
@@ -20,20 +19,13 @@ const AccountDeleteForm = () => {
     const [open, setOpen] = useState(false);
 
     const onDeleteAccount = async () => {
-        const token = Storage.get(LocalStorageKeys.TOKEN);
-
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/users/purge/${id}`, {
-            method: "delete",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
+        const response = await ApiService.fetcher(`/users/purge/${id}`, {
+            method: "delete"
         });
-        console.log(res);
-        
-        const jsonData: any = await res.json();
+
+        const jsonData: any = await response.json();
         console.log(jsonData);
 
         AuthUtils.logout();

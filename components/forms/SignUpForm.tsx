@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 import * as React from 'react';
 import { useState, useEffect } from 'react';
 
-import { GoogleReCaptchaProvider, useGoogleReCaptcha } from 'react-google-recaptcha-v3';
+import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput } from '@mui/material';
@@ -17,12 +17,12 @@ import Typography from '@mui/material/Typography';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import Visibility from '@mui/icons-material/Visibility';
 
-import Copyright from '../../components/Copyright';
-import { ApiUtils } from '../../utils/api-utils';
 import { isValidEmail } from '../../utils/email-validation';
-import useAlertMessage from '../../hooks/useAlertMessage';
+import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
+import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
+import Copyright from '../../components/Copyright';
 
 
 const SignUpForm = () => {
@@ -66,12 +66,9 @@ const SignUpForm = () => {
             captcha: token
         });
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/auth/signUp`, {
+        const response = await ApiService.fetcher(`/auth/signUp`, {
             method: "post",
             body: body,
-            headers: {
-                "Content-Type": "application/json"
-            },
         });
 
         const jsonData = await response.json();

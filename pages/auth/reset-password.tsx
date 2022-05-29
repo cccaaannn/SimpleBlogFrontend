@@ -13,10 +13,10 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 
+import { ApiService } from '../../services/api-service';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
 import Copyright from '../../components/Copyright';
-import { ApiUtils } from '../../utils/api-utils';
 
 
 export default function ResetPassword() {
@@ -55,12 +55,9 @@ export default function ResetPassword() {
             password: password1
         });
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/auth/resetPassword`, {
+        const response = await ApiService.fetcher(`/auth/resetPassword`, {
             method: "post",
-            body: body,
-            headers: {
-                "Content-Type": "application/json"
-            },
+            body: body
         });
         const jsonData = await response.json();
         console.log(jsonData);

@@ -11,11 +11,11 @@ import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 
+import { ApiService } from '../../services/api-service';
+import { AuthUtils } from '../../utils/auth-utils';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
 import Copyright from '../../components/Copyright';
-import { AuthUtils } from '../../utils/auth-utils';
-import { ApiUtils } from '../../utils/api-utils';
 
 
 export default function VerifyAccount() {
@@ -40,12 +40,9 @@ export default function VerifyAccount() {
             token: token
         });
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/auth/verifyAccount`, {
+        const response = await ApiService.fetcher(`/auth/verifyAccount`, {
             method: "post",
-            body: body,
-            headers: {
-                "Content-Type": "application/json"
-            },
+            body: body
         });
 
         const jsonData = await response.json();

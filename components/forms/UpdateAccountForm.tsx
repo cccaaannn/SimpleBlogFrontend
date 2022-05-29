@@ -6,10 +6,8 @@ import { useEffect, useState } from 'react';
 import { Button, Grid, TextField, Tooltip } from '@mui/material';
 import Typography from '@mui/material/Typography';
 
-import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
-import { ApiUtils } from '../../utils/api-utils';
+import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
-import { Storage } from '../../utils/storage';
 
 
 interface UpdateAccountFormProps {
@@ -53,13 +51,9 @@ const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
 
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/users/update/${id}`, {
+        const response = await ApiService.fetcher(`/users/update/${id}`, {
             method: "put",
-            body: body,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+            body: body
         });
 
         const jsonData = await response.json();

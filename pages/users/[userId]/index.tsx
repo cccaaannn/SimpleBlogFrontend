@@ -9,11 +9,10 @@ import Typography from '@mui/material/Typography';
 import { Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
 
-import { LocalStorageKeys } from '../../../types/enums/local-storage-keys';
 import { CategoryArr } from '../../../types/enums/Category';
+import { ApiService } from '../../../services/api-service';
 import { AuthUtils } from '../../../utils/auth-utils';
 import { ApiUtils } from '../../../utils/api-utils';
-import { Storage } from '../../../utils/storage';
 import useBreakpointDetector from '../../../hooks/useBreakpointDetector';
 import PostCardMain from '../../../components/Cards/PostCardMain';
 import CategoriesMenu from '../../../components/CategoriesMenu';
@@ -45,16 +44,11 @@ const User: NextPage = ({ ssrPosts }: any) => {
     const fetchData = async () => {
         setLoading(true);
 
-        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
         const paths = router.asPath.split("/");
         const userId = paths[paths.length - 1];
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${userId}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
+        const res = await ApiService.fetcher(`/posts/getByUserId/${userId}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
+            method: "get"
         });
         const jsonData: any = await res.json();
         console.log(jsonData);

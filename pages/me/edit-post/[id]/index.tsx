@@ -8,15 +8,12 @@ import { useRouter } from 'next/router';
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
 import { Button, Grid } from '@mui/material';
 
-import { LocalStorageKeys } from '../../../../types/enums/local-storage-keys';
 import { CategoryArrWithoutAll } from '../../../../types/enums/Category';
 import { VisibilityArr } from '../../../../types/enums/Visibility';
+import { ApiService } from '../../../../services/api-service';
 import { AuthUtils } from '../../../../utils/auth-utils';
-import { ApiUtils } from '../../../../utils/api-utils';
-import { Storage } from '../../../../utils/storage';
 import useAlertMessage from '../../../../hooks/useAlertMessage';
 import AlertMessage from '../../../../components/AlertMessage';
 import ComboBox from '../../../../components/ComboBox';
@@ -45,12 +42,8 @@ const EditPost: NextPage = () => {
         const paths = router.asPath.split("/");
         const postId = paths[paths.length - 1];
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${postId}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+        const res = await ApiService.fetcher(`/posts/getById/${postId}`, {
+            method: "get"
         });
         const jsonData: any = await res.json();
         console.log(jsonData);
@@ -86,13 +79,9 @@ const EditPost: NextPage = () => {
         });
 
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/update/${postId}`, {
+        const response = await ApiService.fetcher(`/posts/update/${postId}`, {
             method: "put",
-            body: body,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+            body: body
         });
 
         const jsonData = await response.json();

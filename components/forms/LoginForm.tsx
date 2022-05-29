@@ -23,6 +23,7 @@ import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import { AuthUtils } from '../../utils/auth-utils';
 import AlertMessage from '../../components/AlertMessage';
+import { ApiService } from '../../services/api-service';
 
 
 const LoginForm = () => {
@@ -71,12 +72,9 @@ const LoginForm = () => {
             captcha: token
         });
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/auth/login`, {
+        const response = await ApiService.fetcher(`/auth/login`, {
             method: "post",
-            body: body,
-            headers: {
-                "Content-Type": "application/json"
-            },
+            body: body
         });
 
         const jsonData = await response.json();

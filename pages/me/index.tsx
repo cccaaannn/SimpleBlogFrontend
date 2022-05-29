@@ -8,11 +8,9 @@ import { Box, Button, Divider, Grid, Pagination, Tab, Tabs, Tooltip } from '@mui
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 
-import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
 import { CategoryArr } from '../../types/enums/Category';
-import { ApiUtils } from '../../utils/api-utils';
+import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
-import { Storage } from '../../utils/storage';
 import UpdateAccountForm from '../../components/forms/UpdateAccountForm';
 import AccountDeleteForm from '../../components/forms/AccountDeleteForm';
 import useBreakpointDetector from '../../hooks/useBreakpointDetector';
@@ -57,17 +55,10 @@ const User: NextPage = () => {
 
     const fetchData = async () => {
         setLoading(true);
-
-        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
-
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getByUserId/${id}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
+        const res = await ApiService.fetcher(`/posts/getByUserId/${id}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
+            method: "get"
         });
         const jsonData: any = await res.json();
         console.log(jsonData);
@@ -85,12 +76,8 @@ const User: NextPage = () => {
     }
 
     const onDelete = async (postId: string) => {
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/delete/${postId}`, {
-            method: "delete",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+        const res = await ApiService.fetcher(`/posts/delete/${postId}`, {
+            method: "delete"
         });
         const jsonData: any = await res.json();
         console.log(jsonData);

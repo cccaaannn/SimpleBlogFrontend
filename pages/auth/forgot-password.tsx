@@ -12,10 +12,11 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 
 import { isValidEmail } from '../../utils/email-validation';
+import { ApiService } from '../../services/api-service';
+import { ApiUtils } from '../../utils/api-utils';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
 import Copyright from '../../components/Copyright';
-import { ApiUtils } from '../../utils/api-utils';
 
 
 export default function ForgotPassword() {
@@ -32,11 +33,8 @@ export default function ForgotPassword() {
             return;
         }
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/auth/sendPasswordReset/${email}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json"
-            },
+        const response = await ApiService.fetcher(`/auth/sendPasswordReset/${email}`, {
+            method: "get"
         });
         const jsonData = await response.json();
         console.log(jsonData);

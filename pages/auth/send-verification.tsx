@@ -12,10 +12,10 @@ import Link from '@mui/material/Link';
 import Box from '@mui/material/Box';
 
 import { isValidEmail } from '../../utils/email-validation';
+import { ApiService } from '../../services/api-service';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
 import Copyright from '../../components/Copyright';
-import { ApiUtils } from '../../utils/api-utils';
 
 
 export default function SendVerification() {
@@ -31,11 +31,8 @@ export default function SendVerification() {
             return;
         }
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/auth/sendAccountVerification/${email}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json"
-            },
+        const response = await ApiService.fetcher(`/auth/sendAccountVerification/${email}`, {
+            method: "get"
         });
         const jsonData = await response.json();
         console.log(jsonData);

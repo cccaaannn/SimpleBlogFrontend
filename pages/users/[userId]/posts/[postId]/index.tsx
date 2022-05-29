@@ -10,9 +10,8 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { Grid } from '@mui/material';
 
-import { LocalStorageKeys } from '../../../../../types/enums/local-storage-keys';
+import { ApiService } from '../../../../../services/api-service';
 import { ApiUtils } from '../../../../../utils/api-utils'
-import { Storage } from '../../../../../utils/storage';
 import PostCardDetail from '../../../../../components/Cards/PostCardDetail';
 import AddCommentForm from '../../../../../components/forms/AddCommentForm';
 import CommentCard from '../../../../../components/Cards/CommentCard';
@@ -51,15 +50,9 @@ const Post: NextPage = ({ postProp, referer }: any) => {
     const fetchData = async () => {
         setLoading(true);
 
-        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
-
         console.log("CSR");
-        const res = await fetch(`${ApiUtils.getApiUrl()}/posts/getById/${postId}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
+        const res = await ApiService.fetcher(`/posts/getById/${postId}`, {
+            method: "get"
         });
         const jsonData: any = await res.json();
         console.log(jsonData);
@@ -84,12 +77,8 @@ const Post: NextPage = ({ postProp, referer }: any) => {
     }
 
     const onCommentDelete = async (commentId: any) => {
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/removeComment/${postId}/${commentId}`, {
-            method: "put",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+        const response = await ApiService.fetcher(`/posts/removeComment/${postId}/${commentId}`, {
+            method: "put"
         });
 
         const jsonData = await response.json();
@@ -114,13 +103,9 @@ const Post: NextPage = ({ postProp, referer }: any) => {
             comment: comment
         });
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/addComment/${postId}`, {
+        const response = await ApiService.fetcher(`/posts/addComment/${postId}`, {
             method: "put",
-            body: body,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+            body: body
         });
 
         const jsonData = await response.json();
@@ -186,7 +171,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
         props: {
-            postProp: jsonData.data,
+            ssrPosts: jsonData.data,
             referer: context.req.headers.referer ? context.req.headers.referer : ""
         },
     }

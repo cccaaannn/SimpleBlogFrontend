@@ -6,25 +6,17 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 import { DataGrid, GridActionsCellItem, GridColDef, GridColumns, GridRowModes, GridSortModel, GridValueGetterParams } from '@mui/x-data-grid';
-import Button from '@mui/material/Button';
-import AddIcon from '@mui/icons-material/Add';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import SaveIcon from '@mui/icons-material/Save';
-import CancelIcon from '@mui/icons-material/Close';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import DeleteIcon from '@mui/icons-material/Delete';
 import PauseIcon from '@mui/icons-material/Pause';
-import { Container } from '@mui/system'
-
-import { ApiUtils } from '../../utils/api-utils';
-import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
-import { Storage } from '../../utils/storage';
-import { User } from '../../types/User';
-import Roles from '../../types/enums/Roles';
-import Status from '../../types/enums/Status';
 import { Tooltip } from '@mui/material';
+
+import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
+import { User } from '../../types/User';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import Status from '../../types/enums/Status';
+import Roles from '../../types/enums/Roles';
 
 
 const Admin: NextPage = () => {
@@ -71,14 +63,8 @@ const Admin: NextPage = () => {
         setLoading(true);
 
         console.log("CSR");
-        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
-
-        const response = await fetch(`${ApiUtils.getApiUrl()}/users/getAll?page=${selectedPage}&limit=${pageSize}${getSortPath()}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
+        const response = await ApiService.fetcher(`/users/getAll?page=${selectedPage}&limit=${pageSize}${getSortPath()}`, {
+            method: "get"
         });
 
         const jsonData = await response.json();

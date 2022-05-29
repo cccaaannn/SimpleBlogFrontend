@@ -10,14 +10,11 @@ import { Fab, Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 
-import axios from 'axios';
-
-import { LocalStorageKeys } from '../types/enums/local-storage-keys';
 import { CategoryArr } from '../types/enums/Category';
+import { ApiService } from '../services/api-service';
 import { StaticPaths } from '../utils/static-paths';
 import { AuthUtils } from '../utils/auth-utils';
 import { ApiUtils } from '../utils/api-utils';
-import { Storage } from '../utils/storage';
 import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import PostCardMain from '../components/Cards/PostCardMain';
 import CategoriesMenu from '../components/CategoriesMenu';
@@ -72,17 +69,11 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
         setLoading(true);
 
         console.log("CSR");
-        const token = Storage.get(LocalStorageKeys.TOKEN) || "";
-
-        const response = await axios(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
-            method: "get",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`
-            },
+        const response = await ApiService.fetcher(`/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
+            method: "get"
         });
 
-        const jsonData = response.data;
+        const jsonData = await response.json();
 
         console.log(jsonData);
 
@@ -169,12 +160,7 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
 
 
 export const getServerSideProps = async (context: any) => {
-    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=All&page=1&limit=5`, {
-        method: "get",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
+    const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=All&page=1&limit=5`);
     const jsonData = await response.json();
 
     return {

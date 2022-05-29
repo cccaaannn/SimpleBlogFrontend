@@ -8,15 +8,12 @@ import { useRouter } from 'next/router';
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
-import Container from '@mui/material/Container';
 import { Button, Grid } from '@mui/material';
 
-import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
 import { CategoryArrWithoutAll } from '../../types/enums/Category';
 import { VisibilityArr } from '../../types/enums/Visibility';
+import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
-import { ApiUtils } from '../../utils/api-utils';
-import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
 import ComboBox from '../../components/ComboBox';
@@ -54,13 +51,9 @@ const AddPost: NextPage = () => {
         });
 
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/add`, {
+        const response = await ApiService.fetcher(`/posts/add`, {
             method: "post",
-            body: body,
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${Storage.get(LocalStorageKeys.TOKEN)}`
-            },
+            body: body
         });
 
         const jsonData = await response.json();

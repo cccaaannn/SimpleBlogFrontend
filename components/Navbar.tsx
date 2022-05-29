@@ -13,10 +13,10 @@ import AppBar from '@mui/material/AppBar';
 import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 
-import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import { TokenPayload } from '../types/TokenPayload';
-import useSSRDetector from '../hooks/useSSRDetector';
 import { AuthUtils } from '../utils/auth-utils';
+import useBreakpointDetector from '../hooks/useBreakpointDetector';
+import useSSRDetector from '../hooks/useSSRDetector';
 import Roles from '../types/enums/Roles';
 
 

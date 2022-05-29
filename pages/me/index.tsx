@@ -184,7 +184,7 @@ const User: NextPage = () => {
                 </Box>
             </Box>
 
-            {(alertMessage != "") && <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />}
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
             {getContentForSelectedTab()}
         </>
     )

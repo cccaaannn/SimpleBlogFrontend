@@ -1,12 +1,12 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Skeleton, Tooltip, Typography } from "@mui/material";
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
 
-import { Post } from "../../types/Post";
-import { DateUtils } from "../../utils/date-utils";
-import { StaticPaths } from "../../utils/static-paths";
 import { AvatarUtils } from "../../utils/avatar-utils";
-import SkeletonTextBody from "../SkeletonTextBody";
+import { StaticPaths } from "../../utils/static-paths";
+import { DateUtils } from "../../utils/date-utils";
+import { Post } from "../../types/Post";
 import useBreakpointDetector from "../../hooks/useBreakpointDetector";
+import SkeletonTextBody from "../SkeletonTextBody";
 
 
 interface PostCardDetailProps {

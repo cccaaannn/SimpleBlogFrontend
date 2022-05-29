@@ -73,9 +73,7 @@ export default function VerifyAccount() {
                 </Typography>
                 <Box component="form" noValidate sx={{ mt: 1 }}>
 
-                    {(alertMessage != "") &&
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                    }
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
                     <Grid container>
                         <Grid item xs>

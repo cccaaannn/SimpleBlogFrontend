@@ -14,6 +14,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
 import { User } from '../../types/User';
+import useBreakpointDetector from '../../hooks/useBreakpointDetector';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
@@ -22,9 +23,6 @@ import Roles from '../../types/enums/Roles';
 
 
 const Admin: NextPage = () => {
-
-    // next
-    const router = useRouter();
 
     // react
     const [allData, setAllData] = useState([] as User[]);
@@ -42,6 +40,7 @@ const Admin: NextPage = () => {
 
     // Custom
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
+    const isMobile = useBreakpointDetector('md');
 
 
     useEffect(() => {
@@ -195,42 +194,47 @@ const Admin: NextPage = () => {
             field: 'username',
             headerName: 'username',
             filterable: false,
-            flex: 1,
+            flex: isMobile ? 0: 1,
+            width: 150
         },
         {
             field: 'email',
             headerName: 'Email',
             filterable: false,
-            flex: 1,
+            flex: isMobile ? 0: 1,
+            width: 200
         },
         {
             field: 'role',
             headerName: 'Role',
             type: 'number',
             filterable: false,
-            flex: 1,
+            flex: isMobile ? 0: 1,
+            width: 100
         },
         {
             field: 'status',
             headerName: 'Status',
             filterable: false,
-            flex: 1,
+            flex: isMobile ? 0: 1,
+            width: 100
         },
         {
             field: 'createdAt',
             headerName: 'Created',
             type: 'dateTime',
             filterable: false,
-            flex: 1,
-            valueGetter: ({ value }) => value && new Date(value),
+            flex: isMobile ? 0: 1,
+            width: 200,
+            valueGetter: ({ value }) => value && new Date(value)
         },
         {
             field: 'actions',
             type: 'actions',
             headerName: 'Actions',
-            width: 100,
             cellClassName: 'actions',
-            getActions: ({ row }) => getTableButtons(row),
+            width: 100,
+            getActions: ({ row }) => getTableButtons(row)
         },
     ];
 
@@ -244,9 +248,7 @@ const Admin: NextPage = () => {
             <Divider sx={{ mb: 2 }} />
 
             <ConfirmDialog open={confirmOpen} setOpen={setConfirmOpen} onConfirm={() => onConfirm()} text={`${selectedRowData.username}`} title={`You sure want to ${selectedOperation} this user`} />
-            {(alertMessage != "") &&
-                <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-            }
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
             <DataGrid
                 getRowId={(row) => row._id}

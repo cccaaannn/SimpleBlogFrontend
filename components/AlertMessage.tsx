@@ -9,8 +9,12 @@ interface AlertProps {
 
 export default function AlertMessage({ alertMessage, alertType, setMessageWithType }: AlertProps) {
     return (
-        <Zoom in={alertMessage == "" ? false : true}>
-            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
-        </Zoom>
+        <>
+            {(alertMessage != "") &&
+                <Zoom in={alertMessage == "" ? false : true}>
+                    <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
+                </Zoom>
+            }
+        </>
     );
 }

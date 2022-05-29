@@ -1,18 +1,19 @@
 import { useRouter } from 'next/router';
+
 import { useState, useEffect } from 'react';
 
 import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, Grid, IconButton, Skeleton, Tooltip, Typography } from "@mui/material";
-import EditIcon from '@mui/icons-material/Edit'
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit'
 
-import { Post } from "../../types/Post";
-import { DateUtils } from "../../utils/date-utils";
-import ConfirmDialog from '../ConfirmDialog';
-import { StaticPaths } from '../../utils/static-paths';
 import { AvatarUtils } from '../../utils/avatar-utils';
-import SkeletonTextBody from '../SkeletonTextBody';
+import { StaticPaths } from '../../utils/static-paths';
+import { DateUtils } from "../../utils/date-utils";
+import { Post } from "../../types/Post";
 import useBreakpointDetector from '../../hooks/useBreakpointDetector';
+import SkeletonTextBody from '../SkeletonTextBody';
+import ConfirmDialog from '../ConfirmDialog';
 
 
 interface PostCardHomeProps {

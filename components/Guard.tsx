@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router'
-import { ReactNode, useEffect, useState } from 'react'
-import Roles from '../types/enums/Roles';
-import { TokenPayload } from '../types/TokenPayload';
 
-import { AuthUtils } from '../utils/auth-utils';
+import { ReactNode, useEffect, useState } from 'react'
+
 import { SecuredPaths } from '../utils/secured-paths';
+import { AuthUtils } from '../utils/auth-utils';
+import Roles from '../types/enums/Roles';
 
 
 export default function Guard({ children }: { children: ReactNode }) {

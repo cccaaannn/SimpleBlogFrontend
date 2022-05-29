@@ -1,4 +1,5 @@
 import { Divider, ListItemText, MenuItem, MenuList, Paper, Skeleton, Typography } from "@mui/material";
+
 import { CategoryArr } from "../types/enums/Category";
 
 interface CategoriesMenuProps {

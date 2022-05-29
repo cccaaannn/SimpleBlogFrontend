@@ -1,11 +1,11 @@
 import { Avatar, Button, Card, CardContent, CardHeader, IconButton, Skeleton, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 
+import { AvatarUtils } from "../../utils/avatar-utils";
 import { DateUtils } from "../../utils/date-utils";
+import { AuthUtils } from "../../utils/auth-utils";
 import { Comment } from '../../types/Comment';
 import useSSRDetector from "../../hooks/useSSRDetector";
-import { AuthUtils } from "../../utils/auth-utils";
-import { AvatarUtils } from "../../utils/avatar-utils";
 import SkeletonTextBody from "../SkeletonTextBody";
 
 

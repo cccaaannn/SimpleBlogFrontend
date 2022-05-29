@@ -120,9 +120,7 @@ export default function ResetPassword() {
                         autoComplete="current-password"
                     />
 
-                    {(alertMessage != "") &&
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                    }
+                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 
                     <Button
                         type="submit"

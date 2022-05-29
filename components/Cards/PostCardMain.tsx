@@ -3,12 +3,12 @@ import { useRouter } from 'next/router';
 import { Avatar, Box, Button, Card, CardContent, CardHeader, CardMedia, Chip, Grid, Skeleton, Tooltip, Typography } from "@mui/material";
 import ChevronRightRounded from '@mui/icons-material/ChevronRightRounded'
 
-import { Post } from "../../types/Post";
-import { DateUtils } from "../../utils/date-utils";
-import { StaticPaths } from '../../utils/static-paths';
 import { AvatarUtils } from '../../utils/avatar-utils';
-import SkeletonTextBody from '../SkeletonTextBody';
+import { StaticPaths } from '../../utils/static-paths';
+import { DateUtils } from "../../utils/date-utils";
+import { Post } from "../../types/Post";
 import useBreakpointDetector from '../../hooks/useBreakpointDetector';
+import SkeletonTextBody from '../SkeletonTextBody';
 
 
 interface PostCardMainProps {

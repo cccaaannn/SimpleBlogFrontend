@@ -11,6 +11,7 @@ import Container from '@mui/material/Container';
 import { Grid } from '@mui/material';
 
 import { ApiService } from '../../../../../services/api-service';
+import { StaticPaths } from '../../../../../utils/static-paths';
 import { ApiUtils } from '../../../../../utils/api-utils'
 import PostCardDetail from '../../../../../components/Cards/PostCardDetail';
 import AddCommentForm from '../../../../../components/forms/AddCommentForm';
@@ -20,13 +21,13 @@ import AlertMessage from '../../../../../components/AlertMessage';
 import OpenGraph from '../../../../../components/OpenGraph';
 
 
-const Post: NextPage = ({ postProp, referer }: any) => {
+const Post: NextPage = ({ ssrPost, referer }: any) => {
 
     // next
     const router = useRouter();
 
     // react
-    const [post, setPost] = useState(postProp);
+    const [post, setPost] = useState(ssrPost);
     const [loading, setLoading] = useState(true);
 
     const [comment, setComment] = useState("");
@@ -127,9 +128,9 @@ const Post: NextPage = ({ postProp, referer }: any) => {
             <Head>
                 <OpenGraph
                     url={referer}
-                    title={postProp != null ? postProp.header as any : ""}
-                    description={postProp != null ? postProp.body.slice(0, 100) + "..." as any : ""}
-                    image={postProp != null ? postProp.image as any : ""}
+                    title={ssrPost != null ? ssrPost.header as any : "Simple Blog"}
+                    description={ssrPost != null ? ssrPost.body.slice(0, 100) + "..." as any : "Join and share your posts."}
+                    image={ssrPost != null ? ssrPost.image as any : StaticPaths.ICON_100}
                 />
             </Head>
             <Grid container spacing={1} >
@@ -171,7 +172,7 @@ export const getServerSideProps = async (context: any) => {
 
     return {
         props: {
-            ssrPosts: jsonData.data,
+            ssrPost: jsonData.data,
             referer: context.req.headers.referer ? context.req.headers.referer : ""
         },
     }

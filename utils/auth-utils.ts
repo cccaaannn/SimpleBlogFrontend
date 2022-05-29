@@ -10,10 +10,22 @@ export namespace AuthUtils {
         return Storage.get(LocalStorageKeys.TOKEN) != null ? true : false;
     }
 
-    export function isSysAdmin(): boolean {
+    export function isAdmin(): boolean {
         const token = Storage.get(LocalStorageKeys.TOKEN);
+        if(token == null) {
+            return false;
+        }
         const tokenPayload: any = jwt.decode(token);
-        return tokenPayload.tokenPayload.role == Roles.SYS_ADMIN ? true : false;
+        return tokenPayload.tokenPayload.role == Roles.ADMIN ? true : false;
+    }
+
+    export function isRole(role: Roles): boolean {
+        const token = Storage.get(LocalStorageKeys.TOKEN);
+        if(token == null) {
+            return false;
+        }
+        const tokenPayload: any = jwt.decode(token);
+        return tokenPayload.tokenPayload.role == role ? true : false;
     }
 
     export function getTokenPayload(): TokenPayload {
@@ -29,7 +41,8 @@ export namespace AuthUtils {
     export function isExpired() {
         const token = Storage.get(LocalStorageKeys.TOKEN);
         const tokenPayload: any = jwt.decode(token);
-        if (tokenPayload.exp > +new Date) {
+
+        if ((tokenPayload.exp * 1000) < +new Date) {
             return true;
         }
         return false;

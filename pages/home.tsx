@@ -10,6 +10,8 @@ import { Fab, Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 
+import axios from 'axios';
+
 import { LocalStorageKeys } from '../types/enums/local-storage-keys';
 import { CategoryArr } from '../types/enums/Category';
 import { StaticPaths } from '../utils/static-paths';
@@ -72,7 +74,7 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
         console.log("CSR");
         const token = Storage.get(LocalStorageKeys.TOKEN) || "";
 
-        const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
+        const response = await axios(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
             method: "get",
             headers: {
                 "Content-Type": "application/json",
@@ -80,7 +82,7 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
             },
         });
 
-        const jsonData = await response.json();
+        const jsonData = response.data;
 
         console.log(jsonData);
 

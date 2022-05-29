@@ -35,7 +35,6 @@ export default function Guard({ children }: { children: ReactNode }) {
     const authCheck = (url: any): void => {
         const paths: string[] = url.split("/");
         const isLoggedIn: boolean = AuthUtils.isLoggedIn();
-        const tokenPayload: TokenPayload|null = isLoggedIn ? AuthUtils.getTokenPayload(): null;
 
         // Just domain
         if (paths.length == 0) {
@@ -44,20 +43,17 @@ export default function Guard({ children }: { children: ReactNode }) {
         }
 
         // Not logged in
-        if (!isLoggedIn && SecuredPaths.MEMBER_ONLY_PATHS.includes(paths[1])) {
+        if (!isLoggedIn && (SecuredPaths.MEMBER_ONLY_PATHS.includes(paths[1]) || SecuredPaths.ADMIN_ONLY_PATHS.includes(paths[1]))) {
             setAuthorized(false);
-            router.replace('/home');
+            router.replace('/auth/login');
         }
         // Logged in
         else if (isLoggedIn && SecuredPaths.PUBLIC_ONLY_PATHS.includes(paths[1])) {
             setAuthorized(false);
             router.replace('/home');
-        }     
+        }
         // Not admin
-        else if (
-            isLoggedIn && 
-            tokenPayload?.role == Roles.USER && 
-            SecuredPaths.ADMIN_ONLY_PATHS.includes(paths[1])) {
+        else if (AuthUtils.isRole(Roles.USER) && SecuredPaths.ADMIN_ONLY_PATHS.includes(paths[1])) {
             setAuthorized(false);
             router.replace('/home');
         }

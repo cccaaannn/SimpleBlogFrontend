@@ -119,7 +119,7 @@ const Admin: NextPage = () => {
 
         let actions = [];
 
-        if (status == Status.ACTIVE && (role != Roles.SYS_ADMIN || AuthUtils.isSysAdmin())) {
+        if (status == Status.ACTIVE && (role != Roles.SYS_ADMIN || AuthUtils.isRole(Roles.SYS_ADMIN))) {
             actions.push(
                 <Tooltip title="Suspend user" key={1}>
                     <GridActionsCellItem
@@ -134,7 +134,7 @@ const Admin: NextPage = () => {
             )
         }
 
-        if ((status == Status.SUSPENDED || status == Status.PASSIVE) && (role != Roles.SYS_ADMIN || AuthUtils.isSysAdmin())) {
+        if ((status == Status.SUSPENDED || status == Status.PASSIVE) && (role != Roles.SYS_ADMIN || AuthUtils.isRole(Roles.SYS_ADMIN))) {
             actions.push(
                 <Tooltip title="Activate user" key={1}>
                     <GridActionsCellItem
@@ -147,7 +147,7 @@ const Admin: NextPage = () => {
             )
         }
 
-        if (role != Roles.SYS_ADMIN || AuthUtils.isSysAdmin()) {
+        if (role != Roles.SYS_ADMIN || AuthUtils.isRole(Roles.SYS_ADMIN)) {
             actions.push(
                 <Tooltip title="Delete user" key={1}>
                     <GridActionsCellItem

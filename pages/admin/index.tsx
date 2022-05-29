@@ -1,11 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import type { NextPage } from 'next'
-import { useRouter } from 'next/router';
 
 import * as React from 'react';
 import { useEffect, useState } from 'react';
 
-import { DataGrid, GridActionsCellItem, GridColDef, GridColumns, GridRowModes, GridSortModel, GridValueGetterParams } from '@mui/x-data-grid';
+import { DataGrid, GridActionsCellItem, GridColumns, GridSortModel } from '@mui/x-data-grid';
 import { Divider, Tooltip, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';

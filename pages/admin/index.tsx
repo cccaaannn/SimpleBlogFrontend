@@ -6,15 +6,17 @@ import * as React from 'react';
 import { useEffect, useState } from 'react';
 
 import { DataGrid, GridActionsCellItem, GridColDef, GridColumns, GridRowModes, GridSortModel, GridValueGetterParams } from '@mui/x-data-grid';
+import { Divider, Tooltip, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PauseIcon from '@mui/icons-material/Pause';
-import { Tooltip } from '@mui/material';
 
 import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
 import { User } from '../../types/User';
 import ConfirmDialog from '../../components/ConfirmDialog';
+import useAlertMessage from '../../hooks/useAlertMessage';
+import AlertMessage from '../../components/AlertMessage';
 import Status from '../../types/enums/Status';
 import Roles from '../../types/enums/Roles';
 
@@ -37,6 +39,9 @@ const Admin: NextPage = () => {
     const [confirmOpen, setConfirmOpen] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState({} as User);
     const [selectedOperation, setSelectedOperation] = useState("" as ButtonType);
+
+    // Custom
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
 
 
     useEffect(() => {
@@ -83,7 +88,7 @@ const Admin: NextPage = () => {
         setLoading(false);
     }
 
-    type ButtonType = "SUSPEND" | "ACTIVATE" | "DELETE"
+    type ButtonType = "suspend" | "activate" | "delete"
     const onButtonClick = (buttonType: ButtonType, row: any) => {
         setSelectedRowData(row);
         setSelectedOperation(buttonType);
@@ -91,10 +96,43 @@ const Admin: NextPage = () => {
     }
 
 
-    const onConfirm = () => {
+    const onConfirm = async () => {
         console.log(selectedRowData);
         console.log(selectedOperation);
-        
+
+        const selectedUserId = selectedRowData._id;
+
+        let response: any;
+        if (selectedOperation == "suspend") {
+            response = await ApiService.fetcher(`/users/suspend/${selectedUserId}`, {
+                method: "put"
+            });
+        }
+
+        if (selectedOperation == "activate") {
+            response = await ApiService.fetcher(`/users/activate/${selectedUserId}`, {
+                method: "put"
+            });
+        }
+
+        if (selectedOperation == "delete") {
+            response = await ApiService.fetcher(`/users/purge/${selectedUserId}`, {
+                method: "delete"
+            });
+        }
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+
+        if (jsonData.status) {
+            setMessageWithType("Operation successful", "success");
+            fetchData();
+        }
+        else {
+            setMessageWithType(jsonData.message, "error");
+            console.log(jsonData.message);
+        }
+
         setConfirmOpen(false);
     }
 
@@ -112,7 +150,7 @@ const Admin: NextPage = () => {
                         icon={<PauseIcon />}
                         label="Suspend"
                         className="textPrimary"
-                        onClick={() => onButtonClick("SUSPEND", row)}
+                        onClick={() => onButtonClick("suspend", row)}
                         color="primary"
 
                     />
@@ -126,7 +164,7 @@ const Admin: NextPage = () => {
                     <GridActionsCellItem
                         icon={<PlayArrowIcon />}
                         label="Activate"
-                        onClick={() => onButtonClick("ACTIVATE", row)}
+                        onClick={() => onButtonClick("activate", row)}
                         color="primary"
                     />
                 </Tooltip>
@@ -140,7 +178,7 @@ const Admin: NextPage = () => {
                         icon={<DeleteIcon />}
                         label="Delete"
                         className="textPrimary"
-                        onClick={() => onButtonClick("DELETE", row)}
+                        onClick={() => onButtonClick("delete", row)}
                         color="inherit"
 
                     />
@@ -199,7 +237,16 @@ const Admin: NextPage = () => {
 
     return (
         <>
+            <Typography variant="h2" component="div" sx={{ mb: 1 }}>
+                Admin
+            </Typography>
+
+            <Divider sx={{ mb: 2 }} />
+
             <ConfirmDialog open={confirmOpen} setOpen={setConfirmOpen} onConfirm={() => onConfirm()} text={`${selectedRowData.username}`} title={`You sure want to ${selectedOperation} this user`} />
+            {(alertMessage != "") &&
+                <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+            }
 
             <DataGrid
                 getRowId={(row) => row._id}

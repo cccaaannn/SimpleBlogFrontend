@@ -1,8 +1,10 @@
-import { LocalStorageKeys } from "../types/enums/local-storage-keys";
-import { Storage } from "./storage";
 import jwt from 'jsonwebtoken';
+
+import { LocalStorageKeys } from "../types/enums/local-storage-keys";
 import { TokenPayload } from "../types/TokenPayload";
-import Roles from "../types/enums/Roles";
+import { Roles } from "../types/enums/Roles";
+import { Storage } from "./storage";
+
 
 export namespace AuthUtils {
 

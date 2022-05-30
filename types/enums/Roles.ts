@@ -1,7 +1,13 @@
 enum Roles {
-    USER="USER",
-    ADMIN="ADMIN",
-    SYS_ADMIN="SYS_ADMIN"
+    USER = "USER",
+    ADMIN = "ADMIN",
+    SYS_ADMIN = "SYS_ADMIN"
 }
 
-export default Roles;
+const RolesArr = [
+    "USER",
+    "ADMIN",
+    "SYS_ADMIN"
+]
+
+export { Roles, RolesArr };

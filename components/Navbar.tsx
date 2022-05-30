@@ -17,7 +17,7 @@ import { TokenPayload } from '../types/TokenPayload';
 import { AuthUtils } from '../utils/auth-utils';
 import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import useSSRDetector from '../hooks/useSSRDetector';
-import Roles from '../types/enums/Roles';
+import { Roles } from '../types/enums/Roles';
 
 
 export default function Navbar({ selectedTheme, setSelectedTheme }: any) {

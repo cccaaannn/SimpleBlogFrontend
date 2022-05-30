@@ -1,4 +1,4 @@
-import Roles from "./enums/Roles";
+import { Roles } from "./enums/Roles";
 import Status from "./enums/Status";
 
 interface User {

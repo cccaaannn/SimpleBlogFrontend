@@ -17,11 +17,16 @@ interface ConfirmDialogProps {
 }
 
 export default function ConfirmDialog({ open, setOpen, title, text, onConfirm }: ConfirmDialogProps) {
+    const _onConfirm = () => {
+        onConfirm();
+        setOpen(false);
+    }
+
     return (
         <div>
             <Dialog
                 open={open}
-                onClose={()=>setOpen(false)}
+                onClose={() => setOpen(false)}
                 aria-labelledby="responsive-dialog-title"
             >
                 <DialogTitle id="responsive-dialog-title">
@@ -33,10 +38,10 @@ export default function ConfirmDialog({ open, setOpen, title, text, onConfirm }:
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button autoFocus onClick={()=>setOpen(false)}>
+                    <Button autoFocus onClick={() => setOpen(false)}>
                         Cancel
                     </Button>
-                    <Button onClick={onConfirm} autoFocus>
+                    <Button onClick={() => _onConfirm()} autoFocus>
                         Confirm
                     </Button>
                 </DialogActions>

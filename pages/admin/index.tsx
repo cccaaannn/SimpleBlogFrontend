@@ -7,18 +7,20 @@ import { useEffect, useState } from 'react';
 import { DataGrid, GridActionsCellItem, GridColumns, GridSortModel } from '@mui/x-data-grid';
 import { Divider, Tooltip, Typography } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import FactCheckIcon from '@mui/icons-material/FactCheck';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PauseIcon from '@mui/icons-material/Pause';
 
 import { ApiService } from '../../services/api-service';
 import { AuthUtils } from '../../utils/auth-utils';
+import { Roles } from '../../types/enums/Roles';
 import { User } from '../../types/User';
+import ChangeRoleConfirmDialog from '../../components/ChangeRoleConfirmDialog';
 import useBreakpointDetector from '../../hooks/useBreakpointDetector';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import useAlertMessage from '../../hooks/useAlertMessage';
 import AlertMessage from '../../components/AlertMessage';
 import Status from '../../types/enums/Status';
-import Roles from '../../types/enums/Roles';
 
 
 const Admin: NextPage = () => {
@@ -34,8 +36,11 @@ const Admin: NextPage = () => {
     const [sortModel, setSortModel] = React.useState([{ field: 'createdAt', sort: 'asc' }] as GridSortModel); // Mui's table sort format
 
     const [confirmOpen, setConfirmOpen] = useState(false);
+    const [changeRoleConfirmOpen, setChangeRoleConfirmOpen] = useState(false);
     const [selectedRowData, setSelectedRowData] = useState({} as User);
     const [selectedOperation, setSelectedOperation] = useState("" as ButtonType);
+
+    const [headerText, setHeaderText] = useState("Admin");
 
     // Custom
     const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
@@ -44,6 +49,7 @@ const Admin: NextPage = () => {
 
     useEffect(() => {
         fetchData();
+        AuthUtils.isRole(Roles.SYS_ADMIN) && setHeaderText("SYS Admin");
     }, [selectedPage, pageSize, sortModel])
 
     useEffect(() => {
@@ -65,13 +71,11 @@ const Admin: NextPage = () => {
     const fetchData = async () => {
         setLoading(true);
 
-        console.log("CSR");
         const response = await ApiService.fetcher(`/users/getAll?page=${selectedPage}&limit=${pageSize}${getSortPath()}`, {
             method: "get"
         });
 
         const jsonData = await response.json();
-
         console.log(jsonData);
 
         if (jsonData.status) {
@@ -79,22 +83,27 @@ const Admin: NextPage = () => {
             setAllData(jsonData.data.data);
         }
         else {
-            // TODO error alert
-            console.log("Error");
+            setMessageWithType(jsonData.message, "error");
         }
 
         setLoading(false);
     }
 
-    type ButtonType = "suspend" | "activate" | "delete"
+    type ButtonType = "suspend" | "activate" | "delete" | "change-role"
     const onButtonClick = (buttonType: ButtonType, row: any) => {
         setSelectedRowData(row);
         setSelectedOperation(buttonType);
-        setConfirmOpen(true);
+
+        if(buttonType == "change-role") {
+            setChangeRoleConfirmOpen(true);
+        }
+        else {
+            setConfirmOpen(true);
+        }
+        
     }
 
-
-    const onConfirm = async () => {
+    const onConfirm = async (confirmItem?: any) => {
         console.log(selectedRowData);
         console.log(selectedOperation);
 
@@ -119,6 +128,12 @@ const Admin: NextPage = () => {
             });
         }
 
+        if (selectedOperation == "change-role") {
+            response = await ApiService.fetcher(`/users/changeRole/${selectedUserId}/${confirmItem}`, {
+                method: "put"
+            });
+        }
+
         const jsonData = await response.json();
         console.log(jsonData);
 
@@ -128,17 +143,15 @@ const Admin: NextPage = () => {
         }
         else {
             setMessageWithType(jsonData.message, "error");
-            console.log(jsonData.message);
         }
 
-        setConfirmOpen(false);
     }
 
 
     const getTableButtons = (row: any): any => {
         const status: string = row.status;
         const role: string = row.role;
-
+        
         let actions = [];
 
         if (status == Status.ACTIVE && (role != Roles.SYS_ADMIN || AuthUtils.isRole(Roles.SYS_ADMIN))) {
@@ -150,7 +163,6 @@ const Admin: NextPage = () => {
                         className="textPrimary"
                         onClick={() => onButtonClick("suspend", row)}
                         color="primary"
-
                     />
                 </Tooltip>
             )
@@ -178,7 +190,20 @@ const Admin: NextPage = () => {
                         className="textPrimary"
                         onClick={() => onButtonClick("delete", row)}
                         color="inherit"
+                    />
+                </Tooltip>
+            )
+        }
 
+        if (AuthUtils.isRole(Roles.SYS_ADMIN)) {
+            actions.push(
+                <Tooltip title="Change role" key={1}>
+                    <GridActionsCellItem
+                        icon={<FactCheckIcon />}
+                        label="Change role"
+                        className="textPrimary"
+                        onClick={() => onButtonClick("change-role", row)}
+                        color="inherit"
                     />
                 </Tooltip>
             )
@@ -193,14 +218,14 @@ const Admin: NextPage = () => {
             field: 'username',
             headerName: 'username',
             filterable: false,
-            flex: isMobile ? 0: 1,
+            flex: isMobile ? 0 : 1,
             width: 150
         },
         {
             field: 'email',
             headerName: 'Email',
             filterable: false,
-            flex: isMobile ? 0: 1,
+            flex: isMobile ? 0 : 1,
             width: 200
         },
         {
@@ -208,14 +233,14 @@ const Admin: NextPage = () => {
             headerName: 'Role',
             type: 'number',
             filterable: false,
-            flex: isMobile ? 0: 1,
+            flex: isMobile ? 0 : 1,
             width: 100
         },
         {
             field: 'status',
             headerName: 'Status',
             filterable: false,
-            flex: isMobile ? 0: 1,
+            flex: isMobile ? 0 : 1,
             width: 100
         },
         {
@@ -223,7 +248,7 @@ const Admin: NextPage = () => {
             headerName: 'Created',
             type: 'dateTime',
             filterable: false,
-            flex: isMobile ? 0: 1,
+            flex: isMobile ? 0 : 1,
             width: 200,
             valueGetter: ({ value }) => value && new Date(value)
         },
@@ -232,7 +257,7 @@ const Admin: NextPage = () => {
             type: 'actions',
             headerName: 'Actions',
             cellClassName: 'actions',
-            width: 100,
+            width: 120,
             getActions: ({ row }) => getTableButtons(row)
         },
     ];
@@ -241,11 +266,12 @@ const Admin: NextPage = () => {
     return (
         <>
             <Typography variant="h2" component="div" sx={{ mb: 1 }}>
-                Admin
+                {headerText}
             </Typography>
 
             <Divider sx={{ mb: 2 }} />
 
+            <ChangeRoleConfirmDialog open={changeRoleConfirmOpen} setOpen={setChangeRoleConfirmOpen} user={selectedRowData} onConfirm={(newRole: Roles) => onConfirm(newRole)} />
             <ConfirmDialog open={confirmOpen} setOpen={setConfirmOpen} onConfirm={() => onConfirm()} text={`${selectedRowData.username}`} title={`You sure want to ${selectedOperation} this user`} />
             <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
 

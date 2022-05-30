@@ -62,8 +62,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
             setPost(jsonData.data);
         }
         else {
-            // TODO error alert
-            console.log("Error");
+            setMessageWithType(jsonData.message, "error");
         }
 
         setLoading(false);

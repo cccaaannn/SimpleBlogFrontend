@@ -68,8 +68,7 @@ const User: NextPage = () => {
             setAllData(jsonData.data.data);
         }
         else {
-            // TODO error alert
-            console.log("Error");
+            setMessageWithType(jsonData.message, "error");
         }
 
         setLoading(false);

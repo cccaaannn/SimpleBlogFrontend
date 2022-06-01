@@ -1,6 +1,7 @@
 import { Visibility } from "./enums/Visibility";
 import { Comment } from "./Comment";
 import { Category } from "./enums/Category";
+import { Like } from "./Like";
 
 
 interface Post {
@@ -12,6 +13,7 @@ interface Post {
     category: Category,
     visibility: Visibility,
     comments: Comment[],
+    likes: Like[],
     createdAt: Date,
     updatedAt: Date
 };

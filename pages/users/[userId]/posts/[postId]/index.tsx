@@ -121,6 +121,38 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
 
     }
 
+    const onLikeAdd = async () => {
+        const response = await ApiService.fetcher(`/posts/addLike/${postId}`, {
+            method: "put"
+        });
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+
+        if (jsonData.status) {
+            fetchData();
+        }
+        else {
+            setMessageWithType(jsonData.message, "error");
+        }
+    }
+
+    const onLikeRemove = async () => {
+        const response = await ApiService.fetcher(`/posts/removeLike/${postId}`, {
+            method: "put"
+        });
+
+        const jsonData = await response.json();
+        console.log(jsonData);
+
+        if (jsonData.status) {
+            fetchData();
+        }
+        else {
+            setMessageWithType(jsonData.message, "error");
+        }
+    }
+
 
     return (
         <>
@@ -134,7 +166,12 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
             </Head>
             <Grid container spacing={1} >
                 <Grid item xs={12} md={12}>
-                    <PostCardDetail post={post} loading={loading} />
+                    <PostCardDetail
+                        post={post}
+                        onLike={() => onLikeAdd()}
+                        onUnLike={() => onLikeRemove()}
+                        loading={loading}
+                    />
                 </Grid>
                 {(alertMessage != "") &&
                     <Grid item xs={12} md={12}>

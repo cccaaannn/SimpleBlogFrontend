@@ -1,22 +1,40 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Skeleton, Tooltip, Typography } from "@mui/material";
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Grid, Skeleton, Tooltip, Typography } from "@mui/material";
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 
 import { AvatarUtils } from "../../utils/avatar-utils";
 import { StaticPaths } from "../../utils/static-paths";
 import { DateUtils } from "../../utils/date-utils";
+import { AuthUtils } from "../../utils/auth-utils";
 import { Post } from "../../types/Post";
-import useBreakpointDetector from "../../hooks/useBreakpointDetector";
 import SkeletonTextBody from "../SkeletonTextBody";
+import useSSRDetector from "../../hooks/useSSRDetector";
 
 
 interface PostCardDetailProps {
     post: Post,
+    onLike: any,
+    onUnLike: any,
     loading: boolean
 }
 
-export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
+export default function PostCardDetail({ post, onLike, onUnLike, loading }: PostCardDetailProps) {
 
-    const isMobile = useBreakpointDetector('md');
+    const isSSR = useSSRDetector();
+
+    const isLiked = () => {
+        if (AuthUtils.isLoggedIn()) {
+            const userId = AuthUtils.getTokenPayload().id;
+            if (post.likes.some(like => like.owner === userId)) {
+                return true;
+            }
+            return false;
+        }
+        else {
+            return false;
+        }
+    }
 
     return (
         <Card>
@@ -92,11 +110,25 @@ export default function PostCardDetail({ post, loading }: PostCardDetailProps) {
                 )}
             </CardContent>
             <CardActions>
-                {loading ?
-                    <Skeleton animation="wave" height={10} width="10%" style={{ marginBottom: 6 }} />
-                    :
-                    <Button size="small" href='/home'><ChevronLeftRounded /> Go Back</Button>
-                }
+                <Grid container spacing={2} >
+                    <Grid item xs={6}>
+                        {loading ?
+                            <Skeleton animation="wave" height={10} width="10%" style={{ marginBottom: 6 }} />
+                            :
+                            <Button size="small" href='/home'><ChevronLeftRounded /> Go Back</Button>
+                        }
+                    </Grid>
+                    <Grid item xs={6}>
+                        {!isSSR && !loading &&
+                            (
+                                isLiked() ?
+                                    <Button size="small" onClick={() => onUnLike()} sx={{ float: 'right' }}><FavoriteIcon /> {post.likes.length}</Button>
+                                    :
+                                    <Button size="small" onClick={() => onLike()} sx={{ float: 'right' }}><FavoriteBorderIcon /> {post.likes.length}</Button>
+                            )
+                        }
+                    </Grid>
+                </Grid>
             </CardActions>
         </Card>
     );

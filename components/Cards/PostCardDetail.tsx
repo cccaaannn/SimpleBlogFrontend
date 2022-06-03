@@ -23,16 +23,34 @@ export default function PostCardDetail({ post, onLike, onUnLike, loading }: Post
 
     const isSSR = useSSRDetector();
 
-    const isLiked = () => {
-        if (AuthUtils.isLoggedIn()) {
-            const userId = AuthUtils.getTokenPayload().id;
-            if (post.likes.some(like => like.owner === userId)) {
-                return true;
+
+    const getLikeButton = () => {
+        if (!isSSR && !loading) {
+            if (AuthUtils.isLoggedIn()) {
+                const userId = AuthUtils.getTokenPayload().id;
+                if (post.likes.some(like => like.owner === userId)) {
+                    return (
+                        <Tooltip title="Un like">
+                            <Button size="medium" onClick={() => onUnLike()} sx={{ float: 'right' }}><FavoriteIcon /> {post.likes.length}</Button>
+                        </Tooltip>
+                    );
+                }
+                return (
+                    <Tooltip title="Like">
+                        <Button size="medium" onClick={() => onLike()} sx={{ float: 'right' }}><FavoriteBorderIcon /> {post.likes.length}</Button>
+                    </Tooltip>
+                );
             }
-            return false;
+            else {
+                return (
+                    <Tooltip title="Login for like">
+                        <Button size="medium" href="/auth/login" sx={{ float: 'right' }}><FavoriteBorderIcon /> {post.likes.length}</Button>
+                    </Tooltip>
+                );
+            }
         }
         else {
-            return false;
+            return <></>
         }
     }
 
@@ -119,14 +137,7 @@ export default function PostCardDetail({ post, onLike, onUnLike, loading }: Post
                         }
                     </Grid>
                     <Grid item xs={6}>
-                        {!isSSR && !loading &&
-                            (
-                                isLiked() ?
-                                    <Button size="small" onClick={() => onUnLike()} sx={{ float: 'right' }}><FavoriteIcon /> {post.likes.length}</Button>
-                                    :
-                                    <Button size="small" onClick={() => onLike()} sx={{ float: 'right' }}><FavoriteBorderIcon /> {post.likes.length}</Button>
-                            )
-                        }
+                        {getLikeButton()}
                     </Grid>
                 </Grid>
             </CardActions>

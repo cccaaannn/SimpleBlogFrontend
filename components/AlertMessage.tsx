@@ -1,5 +1,5 @@
-import Zoom from '@mui/material/Zoom';
-import { Alert } from '@mui/material';
+import { Alert, Snackbar } from '@mui/material';
+
 
 interface AlertProps {
     alertMessage: any,
@@ -9,12 +9,8 @@ interface AlertProps {
 
 export default function AlertMessage({ alertMessage, alertType, setMessageWithType }: AlertProps) {
     return (
-        <>
-            {(alertMessage != "") &&
-                <Zoom in={alertMessage == "" ? false : true}>
-                    <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
-                </Zoom>
-            }
-        </>
+        <Snackbar open={alertMessage == "" ? false : true} autoHideDuration={5000} onClose={() => { setMessageWithType("") }}>
+            <Alert severity={alertType} onClose={() => { setMessageWithType("") }}>{alertMessage}</Alert>
+        </Snackbar>
     );
 }

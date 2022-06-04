@@ -10,20 +10,25 @@ import { Fab, Grid, Pagination } from '@mui/material';
 import Container from '@mui/material/Container';
 import EditIcon from '@mui/icons-material/Edit';
 
+import Carousel from 'react-material-ui-carousel';
+
 import { CategoryArr } from '../types/enums/Category';
 import { ApiService } from '../services/api-service';
 import { StaticPaths } from '../utils/static-paths';
 import { AuthUtils } from '../utils/auth-utils';
 import { ApiUtils } from '../utils/api-utils';
+import PostCardMostLiked from '../components/Cards/PostCardMostLiked';
 import useBreakpointDetector from '../hooks/useBreakpointDetector';
 import PostCardMain from '../components/Cards/PostCardMain';
 import CategoriesMenu from '../components/CategoriesMenu';
+import useAlertMessage from '../hooks/useAlertMessage';
+import AlertMessage from '../components/AlertMessage';
 import useSSRDetector from '../hooks/useSSRDetector';
 import OpenGraph from '../components/OpenGraph';
 import ComboBox from '../components/ComboBox';
 
 
-const Home: NextPage = ({ ssrPosts, referer }: any) => {
+const Home: NextPage = ({ ssrPosts, ssrMostLikedPosts, referer }: any) => {
 
     // next
     const router = useRouter();
@@ -32,6 +37,7 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
     const isFirstRender = useRef(true);
 
     const [allData, setAllData] = useState(ssrPosts.data);
+    const [mostLikedData, setMostLikedData] = useState(ssrMostLikedPosts.data);
     const [loading, setLoading] = useState(true);
 
     const [selectedCategory, setSelectedCategory] = useState("All");
@@ -40,13 +46,16 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
     const [pageSize, setPageSize] = useState(5);
 
     // custom
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
     const isMobile = useBreakpointDetector('md');
+    const isSm = useBreakpointDetector('sm');
     const isSSR = useSSRDetector();
 
 
     useEffect(() => {
         if (!isFirstRender.current || AuthUtils.isLoggedIn()) {
             fetchData();
+            fetchMostLiked();
         }
 
         isFirstRender.current = false;
@@ -69,9 +78,7 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
         setLoading(true);
 
         console.log("CSR");
-        const response = await ApiService.fetcher(`/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
-            method: "get"
-        });
+        const response = await ApiService.get(`/posts/getAll?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`);
 
         const jsonData = await response.json();
 
@@ -82,8 +89,26 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
             setAllData(jsonData.data.data);
         }
         else {
-            // TODO error alert
-            console.log("Error");
+            setMessageWithType(jsonData.message, "error");
+        }
+
+        setLoading(false);
+    }
+
+    const fetchMostLiked = async () => {
+        setLoading(true);
+
+        const response = await ApiService.get(`/posts/getAll?sort=likes&asc=-1&category=${selectedCategory}&page=1&limit=8`);
+
+        const jsonData = await response.json();
+
+        console.log(jsonData);
+
+        if (jsonData.status) {
+            setMostLikedData(jsonData.data.data);
+        }
+        else {
+            setMessageWithType(jsonData.message, "error");
         }
 
         setLoading(false);
@@ -94,6 +119,44 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
         allData.map((post: any, key: any) => {
             posts.push(<PostCardMain post={post} loading={loading} key={key} />)
         })
+        return posts
+    }
+
+
+    const getMostLikedRow = (i: number) => {
+        return (
+            <Grid item xs={12} sm={6} md={3} >
+                {mostLikedData[i] && <PostCardMostLiked post={mostLikedData[i]} loading={loading} key={i} />}
+            </Grid>
+        )
+    }
+
+    const mapMostLiked = () => {
+        const posts: any[] = []
+
+        const itemCount = isMobile ? 1 : isSm ? 2 : 4;
+
+        for (let i = 0; i < mostLikedData.length; i = i + itemCount) {
+            posts.push(
+                <Grid container spacing={1} >
+                    {
+                        getMostLikedRow(i)
+                    }
+                    {
+                        !isSm &&
+                        getMostLikedRow(i + 1)
+                    }
+                    {
+                        !isMobile &&
+                        getMostLikedRow(i + 2)
+                    }
+                    {
+                        !isMobile &&
+                        getMostLikedRow(i + 3)
+                    }
+                </Grid>
+            )
+        }
         return posts
     }
 
@@ -108,7 +171,24 @@ const Home: NextPage = ({ ssrPosts, referer }: any) => {
                 />
             </Head>
 
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
             <Grid container spacing={1} >
+                <Grid item xs={12}>
+                    <Carousel
+                        animation='fade'
+                        cycleNavigation={true}
+                        navButtonsAlwaysVisible={false}
+                        swipe={true}
+                        changeOnFirstRender={true}
+                        stopAutoPlayOnHover={true}
+                        // height={300}
+
+                        sx={{ mb: 2 }}
+                    >
+                        {mapMostLiked()}
+                    </Carousel>
+                </Grid>
+
                 {isMobile &&
                     <Grid item xs={12}>
                         <ComboBox
@@ -163,9 +243,13 @@ export const getServerSideProps = async (context: any) => {
     const response = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=createdAt&asc=-1&category=All&page=1&limit=5`);
     const jsonData = await response.json();
 
+    const response2 = await fetch(`${ApiUtils.getApiUrl()}/posts/getAll?sort=likes&asc=-1&category=All&page=1&limit=8`);
+    const jsonData2 = await response2.json();
+
     return {
         props: {
             ssrPosts: jsonData.data,
+            ssrMostLikedPosts: jsonData2.data,
             referer: context.req.headers.referer ? context.req.headers.referer : ""
         },
     }

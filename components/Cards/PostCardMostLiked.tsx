@@ -28,7 +28,7 @@ export default function PostCardMostLiked({ post, loading }: PostCardMostLikedPr
     }
 
     return (
-        <Card sx={{ display: 'flex', minHeight: 300 }} key={post._id}>
+        <Card onClick={() => onReadMore(post)} sx={{ display: 'flex', minHeight: 300, cursor: 'pointer' }} key={post._id}>
 
             <Grid container spacing={0} >
                 <Grid item xs={12} md={12} >

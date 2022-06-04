@@ -19,8 +19,10 @@ import { Post } from '../../../types/Post';
 import useBreakpointDetector from '../../../hooks/useBreakpointDetector';
 import PostCardMain from '../../../components/Cards/PostCardMain';
 import CategoriesMenu from '../../../components/CategoriesMenu';
-import ComboBox from '../../../components/ComboBox';
+import useAlertMessage from '../../../hooks/useAlertMessage';
+import AlertMessage from '../../../components/AlertMessage';
 import OpenGraph from '../../../components/OpenGraph';
+import ComboBox from '../../../components/ComboBox';
 
 
 const User: NextPage = ({ ssrPosts, referer }: any) => {
@@ -42,6 +44,7 @@ const User: NextPage = ({ ssrPosts, referer }: any) => {
     const [totalPostCount, setTotalPostCount] = useState(0);
 
     // custom
+    const [alertMessage, alertType, setMessageWithType] = useAlertMessage();
     const isMobile = useBreakpointDetector('md');
 
 
@@ -51,9 +54,7 @@ const User: NextPage = ({ ssrPosts, referer }: any) => {
         const paths = router.asPath.split("/");
         const userId = paths[paths.length - 1];
 
-        const res = await ApiService.fetcher(`/posts/getByUserId/${userId}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
-            method: "get"
-        });
+        const res = await ApiService.get(`/posts/getByUserId/${userId}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`);
         const jsonData: any = await res.json();
         console.log(jsonData);
 
@@ -63,8 +64,7 @@ const User: NextPage = ({ ssrPosts, referer }: any) => {
             setTotalPostCount(jsonData.data.totalItems);
         }
         else {
-            // TODO error alert
-            console.log("Error");
+            setMessageWithType(jsonData.message, "error");
         }
 
         setLoading(false);
@@ -123,6 +123,7 @@ const User: NextPage = ({ ssrPosts, referer }: any) => {
                     </Typography>
             }
 
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
             <Grid container spacing={1} >
                 {isMobile &&
                     <Grid item xs={12}>

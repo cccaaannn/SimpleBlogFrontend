@@ -21,9 +21,7 @@ const AccountDeleteForm = () => {
     const onDeleteAccount = async () => {
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const response = await ApiService.fetcher(`/users/purge/${id}`, {
-            method: "delete"
-        });
+        const response = await ApiService.delete(`/users/purge/${id}`);
 
         const jsonData: any = await response.json();
         console.log(jsonData);

@@ -57,9 +57,7 @@ const User: NextPage = () => {
         setLoading(true);
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const res = await ApiService.fetcher(`/posts/getByUserId/${id}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`, {
-            method: "get"
-        });
+        const res = await ApiService.get(`/posts/getByUserId/${id}?sort=createdAt&asc=-1&category=${selectedCategory}&page=${selectedPage}&limit=${pageSize}`);
         const jsonData: any = await res.json();
         console.log(jsonData);
 
@@ -75,9 +73,7 @@ const User: NextPage = () => {
     }
 
     const onDelete = async (postId: string) => {
-        const res = await ApiService.fetcher(`/posts/delete/${postId}`, {
-            method: "delete"
-        });
+        const res = await ApiService.delete(`/posts/delete/${postId}`);
         const jsonData: any = await res.json();
         console.log(jsonData);
 

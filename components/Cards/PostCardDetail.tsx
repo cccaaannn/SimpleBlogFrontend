@@ -1,7 +1,7 @@
 import { Avatar, Button, Card, CardActions, CardContent, CardHeader, CardMedia, Chip, Grid, Skeleton, Tooltip, Typography } from "@mui/material";
 import ChevronLeftRounded from '@mui/icons-material/ChevronLeftRounded';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
+import FavoriteIcon from '@mui/icons-material/Favorite';
 
 import { AvatarUtils } from "../../utils/avatar-utils";
 import { StaticPaths } from "../../utils/static-paths";
@@ -22,7 +22,6 @@ interface PostCardDetailProps {
 export default function PostCardDetail({ post, onLike, onUnLike, loading }: PostCardDetailProps) {
 
     const isSSR = useSSRDetector();
-
 
     const getLikeButton = () => {
         if (!isSSR && !loading) {

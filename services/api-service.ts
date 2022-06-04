@@ -5,9 +5,9 @@ import { Storage } from "../utils/storage";
 
 
 export class ApiService {
-    
+
     static tokenExpiredInterceptor() {
-        if(AuthUtils.isLoggedIn() && AuthUtils.isExpired()) {
+        if (AuthUtils.isLoggedIn() && AuthUtils.isExpired()) {
             AuthUtils.logout();
             window.location = "/home" as any;
             return true;
@@ -17,23 +17,23 @@ export class ApiService {
 
     static getFetchOptions(options: any) {
         const update = { ...options };
-        
+
         update.headers = {
             "Content-Type": 'application/json; charset=utf-8'
         }
-        
+
         if (AuthUtils.isLoggedIn()) {
             const token = Storage.get(LocalStorageKeys.TOKEN) || "";
             update.headers.Authorization = `Bearer ${token}`;
         }
-        
+
         return update;
     }
-    
-    static async fetcher(url: string, options: any) {
+
+    static async fetcher(url: string, options?: any) {
         // Intercept on token expiration
         const isExpired = ApiService.tokenExpiredInterceptor();
-        if(isExpired) {
+        if (isExpired) {
             return new Response();
         }
 
@@ -43,5 +43,24 @@ export class ApiService {
         return await fetch(url, options);
     }
 
+    static async get(url: string, options?: any) {
+        const updatedOptions = { ...options, method: "get" };
+        return await ApiService.fetcher(url, updatedOptions);
+    }
+
+    static async post(url: string, options?: any) {
+        const updatedOptions = { ...options, method: "post" };
+        return await ApiService.fetcher(url, updatedOptions);
+    }
+    
+    static async put(url: string, options?: any) {
+        const updatedOptions = { ...options, method: "put" };
+        return await ApiService.fetcher(url, updatedOptions);
+    }
+    
+    static async delete(url: string, options?: any) {
+        const updatedOptions = { ...options, method: "delete" };
+        return await ApiService.fetcher(url, updatedOptions);
+    }
 }
 

@@ -6,25 +6,24 @@ import { useEffect, useState } from 'react';
 import { useGoogleReCaptcha } from 'react-google-recaptcha-v3';
 
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Avatar from '@mui/material/Avatar';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import Container from '@mui/material/Container';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import Typography from '@mui/material/Typography';
+import Container from '@mui/material/Container';
+import TextField from '@mui/material/TextField';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
 
-import Copyright from '../../components/Copyright';
 import { LocalStorageKeys } from '../../types/enums/local-storage-keys';
-import { ApiUtils } from '../../utils/api-utils';
+import { ApiService } from '../../services/api-service';
+import { AuthUtils } from '../../utils/auth-utils';
 import { Storage } from '../../utils/storage';
 import useAlertMessage from '../../hooks/useAlertMessage';
-import { AuthUtils } from '../../utils/auth-utils';
 import AlertMessage from '../../components/AlertMessage';
-import { ApiService } from '../../services/api-service';
+import Copyright from '../../components/Copyright';
 
 
 const LoginForm = () => {
@@ -55,7 +54,7 @@ const LoginForm = () => {
         event.preventDefault();
 
         if (username.trim() == "" || password.trim() == "") {
-            setMessageWithType("Please fill required fields", "error")
+            setMessageWithType("Please fill required fields", "warning")
             return;
         }
 
@@ -73,8 +72,7 @@ const LoginForm = () => {
             captcha: token
         });
 
-        const response = await ApiService.fetcher(`/auth/login`, {
-            method: "post",
+        const response = await ApiService.post(`/auth/login`, {
             body: body
         });
 

@@ -47,7 +47,7 @@ const SignUpForm = () => {
         event.preventDefault();
 
         if (username.trim() == "" || password.trim() == "" || !isValidEmail(email)) {
-            setMessageWithType("Please fill required fields", "error")
+            setMessageWithType("Please fill required fields", "warning")
             return;
         }
 
@@ -66,9 +66,8 @@ const SignUpForm = () => {
             captcha: token
         });
 
-        const response = await ApiService.fetcher(`/auth/signUp`, {
-            method: "post",
-            body: body,
+        const response = await ApiService.post(`/auth/signUp`, {
+            body: body
         });
 
         const jsonData = await response.json();

@@ -71,9 +71,7 @@ const Admin: NextPage = () => {
     const fetchData = async () => {
         setLoading(true);
 
-        const response = await ApiService.fetcher(`/users/getAll?page=${selectedPage}&limit=${pageSize}${getSortPath()}`, {
-            method: "get"
-        });
+        const response = await ApiService.get(`/users/getAll?page=${selectedPage}&limit=${pageSize}${getSortPath()}`);
 
         const jsonData = await response.json();
         console.log(jsonData);
@@ -111,27 +109,19 @@ const Admin: NextPage = () => {
 
         let response: any;
         if (selectedOperation == "suspend") {
-            response = await ApiService.fetcher(`/users/suspend/${selectedUserId}`, {
-                method: "put"
-            });
+            response = await ApiService.put(`/users/suspend/${selectedUserId}`);
         }
 
         if (selectedOperation == "activate") {
-            response = await ApiService.fetcher(`/users/activate/${selectedUserId}`, {
-                method: "put"
-            });
+            response = await ApiService.put(`/users/activate/${selectedUserId}`);
         }
 
         if (selectedOperation == "delete") {
-            response = await ApiService.fetcher(`/users/purge/${selectedUserId}`, {
-                method: "delete"
-            });
+            response = await ApiService.delete(`/users/purge/${selectedUserId}`);
         }
 
         if (selectedOperation == "change-role") {
-            response = await ApiService.fetcher(`/users/changeRole/${selectedUserId}/${confirmItem}`, {
-                method: "put"
-            });
+            response = await ApiService.put(`/users/changeRole/${selectedUserId}/${confirmItem}`);
         }
 
         const jsonData = await response.json();

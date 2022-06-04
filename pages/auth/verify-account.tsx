@@ -40,8 +40,7 @@ export default function VerifyAccount() {
             token: token
         });
 
-        const response = await ApiService.fetcher(`/auth/verifyAccount`, {
-            method: "post",
+        const response = await ApiService.post(`/auth/verifyAccount`, {
             body: body
         });
 

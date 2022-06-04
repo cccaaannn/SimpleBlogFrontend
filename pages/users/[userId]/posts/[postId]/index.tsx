@@ -52,9 +52,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
         setLoading(true);
 
         console.log("CSR");
-        const res = await ApiService.fetcher(`/posts/getById/${postId}`, {
-            method: "get"
-        });
+        const res = await ApiService.get(`/posts/getById/${postId}`);
         const jsonData: any = await res.json();
         console.log(jsonData);
 
@@ -77,9 +75,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
     }
 
     const onCommentDelete = async (commentId: any) => {
-        const response = await ApiService.fetcher(`/posts/removeComment/${postId}/${commentId}`, {
-            method: "put"
-        });
+        const response = await ApiService.put(`/posts/removeComment/${postId}/${commentId}`);
 
         const jsonData = await response.json();
         console.log(jsonData);
@@ -95,7 +91,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
 
     const onCommentPost = async () => {
         if (comment.trim() == "") {
-            setMessageWithType("Please write a comment", "error");
+            setMessageWithType("Please write a comment", "warning");
             return;
         }
 
@@ -103,8 +99,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
             comment: comment
         });
 
-        const response = await ApiService.fetcher(`/posts/addComment/${postId}`, {
-            method: "put",
+        const response = await ApiService.put(`/posts/addComment/${postId}`, {
             body: body
         });
 
@@ -122,9 +117,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
     }
 
     const onLikeAdd = async () => {
-        const response = await ApiService.fetcher(`/posts/addLike/${postId}`, {
-            method: "put"
-        });
+        const response = await ApiService.put(`/posts/addLike/${postId}`);
 
         const jsonData = await response.json();
         console.log(jsonData);
@@ -138,9 +131,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
     }
 
     const onLikeRemove = async () => {
-        const response = await ApiService.fetcher(`/posts/removeLike/${postId}`, {
-            method: "put"
-        });
+        const response = await ApiService.put(`/posts/removeLike/${postId}`);
 
         const jsonData = await response.json();
         console.log(jsonData);
@@ -164,6 +155,7 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
                     image={ssrPost != null ? ssrPost.image as any : StaticPaths.ICON_100}
                 />
             </Head>
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
             <Grid container spacing={1} >
                 <Grid item xs={12} md={12}>
                     <PostCardDetail
@@ -173,11 +165,6 @@ const Post: NextPage = ({ ssrPost, referer }: any) => {
                         loading={loading}
                     />
                 </Grid>
-                {(alertMessage != "") &&
-                    <Grid item xs={12} md={12}>
-                        <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
-                    </Grid>
-                }
                 <Grid item xs={12} md={12}>
                     <Container component="main" sx={{
                         display: 'flex',

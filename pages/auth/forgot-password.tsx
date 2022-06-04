@@ -29,13 +29,11 @@ export default function ForgotPassword() {
         event.preventDefault();
 
         if (!isValidEmail(email)) {
-            setMessageWithType("Please enter a valid email", "error")
+            setMessageWithType("Please enter a valid email", "warning")
             return;
         }
 
-        const response = await ApiService.fetcher(`/auth/sendPasswordReset/${email}`, {
-            method: "get"
-        });
+        const response = await ApiService.get(`/auth/sendPasswordReset/${email}`);
         const jsonData = await response.json();
         console.log(jsonData);
 

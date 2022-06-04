@@ -51,8 +51,7 @@ const UpdateAccountForm = ({ setMessageWithType }: UpdateAccountFormProps) => {
 
         const id = AuthUtils.isLoggedIn() ? AuthUtils.getTokenPayload().id : "";
 
-        const response = await ApiService.fetcher(`/users/update/${id}`, {
-            method: "put",
+        const response = await ApiService.put(`/users/update/${id}`, {
             body: body
         });
 

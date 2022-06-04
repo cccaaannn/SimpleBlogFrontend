@@ -51,8 +51,7 @@ const AddPost: NextPage = () => {
         });
 
 
-        const response = await ApiService.fetcher(`/posts/add`, {
-            method: "post",
+        const response = await ApiService.post(`/posts/add`, {
             body: body
         });
 
@@ -69,93 +68,91 @@ const AddPost: NextPage = () => {
     }
 
     return (
-        <Grid container spacing={2} >
-            <Grid item xs={12}>
-                <Typography gutterBottom variant="h2" component="div">
-                    Create a new post
-                </Typography>
-            </Grid>
-            <Grid item xs={12}>
-                <TextField
-                    value={newPostHeader}
-                    onChange={(e) => setNewPostHeader(e.target.value)}
-                    error={newPostHeader.trim() == "" ? true : false}
-                    required
-                    autoFocus
-                    label="Post title"
-                    placeholder="Title"
-                    sx={{ mb: 2, display: 'flex' }}
-                />
-            </Grid>
-            <Grid item xs={4} md={8}>
-                <TextField
-                    value={newPostImage}
-                    onChange={(e) => setNewPostImage(e.target.value)}
-                    error={newPostImage.trim() == "" ? true : false}
-                    required
-                    label="Post image"
-                    placeholder="Image url"
-                    sx={{ mb: 2, display: 'flex' }}
-                />
-            </Grid>
-
-            <Grid item xs={4} md={2}>
-                <ComboBox
-                    name='Category'
-                    inputsList={CategoryArrWithoutAll}
-                    selected={newPostCategory}
-                    setSelected={setNewPostCategory}
-                />
-            </Grid>
-            <Grid item xs={4} md={2}>
-                <ComboBox
-                    name='Visibility'
-                    inputsList={VisibilityArr}
-                    selected={newPostVisibility}
-                    setSelected={setNewPostVisibility}
-                />
-            </Grid>
-            <Grid item xs={12}>
-                <TextField
-                    id="outlined-multiline-static"
-                    label="Post body"
-                    multiline
-                    required
-                    rows={12}
-                    value={newPostBody}
-                    onChange={(e) => setNewPostBody(e.target.value)}
-                    aria-label="Post area"
-                    placeholder="Post"
-                    error={newPostBody.trim() == "" ? true : false}
-                    sx={{ display: 'flex' }}
-                />
-            </Grid>
-            {(alertMessage != "") &&
-                <Grid item xs={12} sx={{ mt: 1 }}>
-                    <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+        <>
+            <AlertMessage alertMessage={alertMessage} alertType={alertType} setMessageWithType={setMessageWithType} />
+            <Grid container spacing={2} >
+                <Grid item xs={12}>
+                    <Typography gutterBottom variant="h2" component="div">
+                        Create a new post
+                    </Typography>
                 </Grid>
-            }
-            <Grid item xs={6}>
-                <Button
-                    size="large"
-                    variant="outlined"
-                    href='/me'
-                    sx={{ mt: 1, mb: 1, float: 'left' }}
-                >
-                    <ChevronLeftRounded /> Go Back
-                </Button>
-            </Grid>
-            <Grid item xs={6}>
-                <Button
-                    onClick={onPostAdd}
-                    variant="contained"
-                    size="large"
-                    sx={{ mt: 1, mb: 1, float: 'right' }}
-                >
-                    Post!
-                </Button>
-            </Grid>
-        </Grid >
+                <Grid item xs={12}>
+                    <TextField
+                        value={newPostHeader}
+                        onChange={(e) => setNewPostHeader(e.target.value)}
+                        error={newPostHeader.trim() == "" ? true : false}
+                        required
+                        autoFocus
+                        label="Post title"
+                        placeholder="Title"
+                        sx={{ mb: 2, display: 'flex' }}
+                    />
+                </Grid>
+                <Grid item xs={4} md={8}>
+                    <TextField
+                        value={newPostImage}
+                        onChange={(e) => setNewPostImage(e.target.value)}
+                        error={newPostImage.trim() == "" ? true : false}
+                        required
+                        label="Post image"
+                        placeholder="Image url"
+                        sx={{ mb: 2, display: 'flex' }}
+                    />
+                </Grid>
+
+                <Grid item xs={4} md={2}>
+                    <ComboBox
+                        name='Category'
+                        inputsList={CategoryArrWithoutAll}
+                        selected={newPostCategory}
+                        setSelected={setNewPostCategory}
+                    />
+                </Grid>
+                <Grid item xs={4} md={2}>
+                    <ComboBox
+                        name='Visibility'
+                        inputsList={VisibilityArr}
+                        selected={newPostVisibility}
+                        setSelected={setNewPostVisibility}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        id="outlined-multiline-static"
+                        label="Post body"
+                        multiline
+                        required
+                        rows={12}
+                        value={newPostBody}
+                        onChange={(e) => setNewPostBody(e.target.value)}
+                        aria-label="Post area"
+                        placeholder="Post"
+                        error={newPostBody.trim() == "" ? true : false}
+                        sx={{ display: 'flex' }}
+                    />
+                </Grid>
+                <Grid item xs={6}>
+                    <Button
+                        size="large"
+                        variant="outlined"
+                        href='/me'
+                        sx={{ mt: 1, mb: 1, float: 'left' }}
+                    >
+                        <ChevronLeftRounded /> Go Back
+                    </Button>
+                </Grid>
+                <Grid item xs={6}>
+                    <Button
+                        onClick={onPostAdd}
+                        variant="contained"
+                        size="large"
+                        sx={{ mt: 1, mb: 1, float: 'right' }}
+                    >
+                        Post!
+                    </Button>
+                </Grid>
+            </Grid >
+        </>
     )
 }
 

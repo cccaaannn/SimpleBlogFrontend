@@ -27,13 +27,11 @@ export default function SendVerification() {
         event.preventDefault();
 
         if (!isValidEmail(email)) {
-            setMessageWithType("Please enter a valid email", "error")
+            setMessageWithType("Please enter a valid email", "warning")
             return;
         }
 
-        const response = await ApiService.fetcher(`/auth/sendAccountVerification/${email}`, {
-            method: "get"
-        });
+        const response = await ApiService.get(`/auth/sendAccountVerification/${email}`);
         const jsonData = await response.json();
         console.log(jsonData);
 

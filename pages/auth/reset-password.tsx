@@ -43,7 +43,7 @@ export default function ResetPassword() {
         event.preventDefault();
 
         if (!isPasswordsMatching(password1, password2)) {
-            setMessageWithType("Passwords are not matching.", "error")
+            setMessageWithType("Passwords are not matching.", "warning")
             return;
         }
 
@@ -55,8 +55,7 @@ export default function ResetPassword() {
             password: password1
         });
 
-        const response = await ApiService.fetcher(`/auth/resetPassword`, {
-            method: "post",
+        const response = await ApiService.post(`/auth/resetPassword`, {
             body: body
         });
         const jsonData = await response.json();
